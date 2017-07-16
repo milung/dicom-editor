@@ -15,7 +15,7 @@ app.get('/hello/:who',  (req, res) => {
 });
 
 app.get('/calc/add',  (req, res) => { 
-    let sum = Number.parseInt(req.query.left) + Number.parseInt(req.query.right);
+    let sum = parseInt(req.query.left) + parseInt(req.query.right);
     res.send(`${req.query.left} + ${req.query.right} = ${sum}` );
 });
 

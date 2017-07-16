@@ -2,3 +2,4 @@
 **/.tmp/
 **/*.log
 **/dist
+**/out
