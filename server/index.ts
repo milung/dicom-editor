@@ -14,11 +14,13 @@ app.get('/hello/:who',  (req, res) => {
       message: `Hello ${req.params.who}, my friendly friend!` })
 });
 
-app.get('/calc/add',  (req, res) => {
+app.get('/calc/add',  (req, res) => { 
     let sum = Number.parseInt(req.query.left) + Number.parseInt(req.query.right);
     res.send(`${req.query.left} + ${req.query.right} = ${sum}` );
 });
 
-app.listen( 3000, () => {
+var port = process.env.PORT || 8080; 
+
+app.listen( port, () => {
     console.log('Example app listening on port 3000!');
 });
