@@ -35,5 +35,5 @@ module.exports = {
     resolve: {
         extensions: [".tsx", ".ts", ".js"]
     },
-    devServer: { inline: true, hot: true }
+    devServer: { inline: true }
 };
