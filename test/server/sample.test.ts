@@ -1,7 +1,7 @@
 import 'mocha';
 import { expect } from 'chai';
 
-describe("Sample test", () => {
+describe("Sample test server", () => {
     it("Passes", () => {
         // given
 
