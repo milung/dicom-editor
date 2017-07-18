@@ -2,6 +2,10 @@ import * as React from 'react';
 import AppBar from 'material-ui/AppBar';
 
 import './App.css';
+import { ApplicationStateReducer } from "./application-state";
+import { FileLoader } from "./components/file-loader/file-loader";
+
+let reducer = new ApplicationStateReducer();
 
 export default class App extends React.Component<{}, {}> {
   render() {
@@ -15,6 +19,7 @@ export default class App extends React.Component<{}, {}> {
           {/*<SideBar />
           <Route exact path="/" render={() => (<Redirect to="/dashboard" />)} />*/}
           <div className="main-content">
+            <FileLoader reducer={reducer}/>
             {/*<Switch>
               <Route exact path="/dashboard" render={() => (<Dashboard />)} />
               <Route exact path="/containers" render={() => (<ContainersPage />)} />
