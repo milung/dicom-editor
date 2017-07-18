@@ -1,15 +1,13 @@
 import * as React from "react";
 import * as ReactDOM from "react-dom";
-import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
-import Hello from "./HelloWorld";
+import * as injectTapEventPlugin from 'react-tap-event-plugin';
+import AppContainer from './AppContainer';
 
-const App = () => (
-  <MuiThemeProvider>
-    <Hello name="Test2" />
-  </MuiThemeProvider>
-);
+import './index.css'
+
+injectTapEventPlugin();
 
 ReactDOM.render(
-  <App />,
+  <AppContainer />,
   document.getElementById("root")
 );

@@ -5,7 +5,7 @@ import { expect } from 'chai';
 import * as chaiEnzyme from 'chai-enzyme';
 // import * as sinon from 'sinon';
 
-import HelloWorld from '../../src/client/HelloWorld';
+import HelloWorld from '../../src/client/components/HelloWorld';
 
 chai.use(chaiEnzyme());
 
@@ -19,7 +19,7 @@ describe("Sample test client", () => {
     });
 
     it('should contain the text passed as props', () => {
-        expect(container.find('h1').html()).to.equal('<h1>Hello, Test2</h1>');
+        expect(container.find('h1').text()).to.equal('Hello, Test2');
   });
 });
   

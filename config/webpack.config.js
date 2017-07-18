@@ -23,6 +23,13 @@ module.exports = {
                 enforce: 'pre',
                 test: /\.tsx?$/,
                 use: "source-map-loader"
+            },
+            {
+                test: /\.css$/,
+                use: [
+                    { loader: 'style-loader' },
+                    { loader: 'css-loader' }
+                ]
             }
         ]
     },
@@ -33,6 +40,7 @@ module.exports = {
     ],
     devtool: 'inline-source-map',
     resolve: {
+        modules: ['node_modules', 'src/client'],
         extensions: [".tsx", ".ts", ".js"]
     },
     devServer: { inline: true }
