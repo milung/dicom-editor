@@ -27,5 +27,9 @@
   ],
   "types": [
     "typePatches"
+  ],
+  "typeRoots" : [
+    "node_modules/@types",
+    "./typings"
   ]
 }
