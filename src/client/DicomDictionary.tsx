@@ -1,4 +1,4 @@
-var DicomDictionary = {
+export var dicomDictionary = {
     "0002" : {
         "0001" : ["OB", "FileMetaInformationVersion"],
         "0002" : ["UI", "MediaStoredSOPClassUID"],
