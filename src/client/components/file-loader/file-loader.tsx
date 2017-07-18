@@ -46,17 +46,15 @@ export class FileLoader extends React.Component<FileLoaderProps, FileLoaderStats
     }
 
     private onFilesChange(files: File[]) {
-        console.log(files);
         let fileReader = new FileReader();
         fileReader.readAsArrayBuffer(files[0]);
 
-        // this.props.reducer.testMethod('Filip');
+         this.props.reducer.handleInputFile(files[0]);
 
     };
 
     private onFilesError(files: File[]) {
         console.log('Error ');
-
     };
 }
 

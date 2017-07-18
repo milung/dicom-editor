@@ -4,10 +4,29 @@ import AppBar from 'material-ui/AppBar';
 import './App.css';
 import { ApplicationStateReducer } from "./application-state";
 import { FileLoader } from "./components/file-loader/file-loader";
+import { DicomTable } from "./components/dicom-table/dicom-table";
+import { DicomEntry } from "./model/dicom-entry";
 
 let reducer = new ApplicationStateReducer();
 
-export default class App extends React.Component<{}, {}> {
+interface AppState {
+  dicomEntries: DicomEntry[];
+}
+
+
+export default class App extends React.Component<{}, AppState> {
+
+  public constructor(props: {}) {
+    super(props);
+    this.state = {
+      dicomEntries: []
+    };
+  }
+
+  public componentDidMount() {
+    reducer.state$.subscribe(_ => {this.setState({dicomEntries: _.dicomEntries})});
+  }
+
   render() {
     return (
       <div className="app">
@@ -20,6 +39,7 @@ export default class App extends React.Component<{}, {}> {
           <Route exact path="/" render={() => (<Redirect to="/dashboard" />)} />*/}
           <div className="main-content">
             <FileLoader reducer={reducer}/>
+            <DicomTable data={this.state.dicomEntries}/>
             {/*<Switch>
               <Route exact path="/dashboard" render={() => (<Dashboard />)} />
               <Route exact path="/containers" render={() => (<ContainersPage />)} />

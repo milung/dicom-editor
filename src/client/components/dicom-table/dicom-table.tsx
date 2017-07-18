@@ -32,9 +32,9 @@ export class DicomTable extends React.Component<DicomTableProps, DicomTableState
                     </TableRow>
                 </TableHeader>
                 <TableBody displayRowCheckbox={false}>
-                    {this.props.data.map(_ => {
+                    {this.props.data.map((_, index) => {
                         return (
-                            <TableRow>
+                            <TableRow key={index}>
                                 <TableRowColumn>{_.tagName}</TableRowColumn>
                                 <TableRowColumn>{_.tagValue}</TableRowColumn>
                             </TableRow>
