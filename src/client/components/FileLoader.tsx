@@ -1,6 +1,7 @@
 import * as React from "react";
-import Files from 'react-files';
 import { FileConverter } from "../FileConverter";
+//var Files = require('react-files');
+import Files from 'react-files';
 
 export class FileLoader extends React.Component<{}, {}> {
 

@@ -66,6 +66,7 @@
     "webpack-node-externals": "^1.6.0"
   },
   "dependencies": {
+    "dicom-parser": "^1.7.5",
     "express": "^4.15.3",
     "react-files": "^2.4.2"
   }
