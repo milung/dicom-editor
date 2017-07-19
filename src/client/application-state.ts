@@ -18,7 +18,7 @@ export class ApplicationStateReducer {
     public constructor() {
         this.currentState = {
             dicomEntries: [],
-        }
+        };
 
         this.stateSubject$ = new BehaviorSubject(this.currentState);
     }
@@ -30,7 +30,7 @@ export class ApplicationStateReducer {
                 this.currentState.dicomEntries = array;
                 this.stateSubject$.next(this.currentState);
             }
-        )
+        );
     }
 
 }

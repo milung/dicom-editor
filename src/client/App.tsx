@@ -2,17 +2,16 @@ import * as React from 'react';
 import AppBar from 'material-ui/AppBar';
 
 import './App.css';
-import { ApplicationStateReducer } from "./application-state";
-import { FileLoader } from "./components/file-loader/file-loader";
-import { DicomTable } from "./components/dicom-table/dicom-table";
-import { DicomEntry } from "./model/dicom-entry";
+import { ApplicationStateReducer } from './application-state';
+import { FileLoader } from './components/file-loader/file-loader';
+import { DicomTable } from './components/dicom-table/dicom-table';
+import { DicomEntry } from './model/dicom-entry';
 
 let reducer = new ApplicationStateReducer();
 
 interface AppState {
   dicomEntries: DicomEntry[];
 }
-
 
 export default class App extends React.Component<{}, AppState> {
 
@@ -24,7 +23,7 @@ export default class App extends React.Component<{}, AppState> {
   }
 
   public componentDidMount() {
-    reducer.state$.subscribe(_ => {this.setState({dicomEntries: _.dicomEntries})});
+    reducer.state$.subscribe(_ => {this.setState({dicomEntries: _.dicomEntries});});
   }
 
   render() {

@@ -8,10 +8,12 @@ interface HelloProps {
 
 class Hello extends React.Component<HelloProps, {}> {
   render() {
-    return <div>
-      <h1 className='redh1'>Hello, {this.props.name}</h1>
-      <RaisedButton label="Default" />
-    </div>;
+    return (
+      <div>
+        <h1 className="redh1">Hello, {this.props.name}</h1>
+        <RaisedButton label="Default" />
+      </div>
+    );
   }
 }
 
