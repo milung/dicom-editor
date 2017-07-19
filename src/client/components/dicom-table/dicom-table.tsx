@@ -8,10 +8,10 @@ import {
     TableRowColumn,
 } from 'material-ui';
 
-import { DicomEntry } from '../../model/dicom-entry';
+import { DicomData } from '../../model/dicom-entry';
 
 interface DicomTableProps {
-    data: DicomEntry[];
+    data: DicomData;
 }
 
 interface DicomTableState {
@@ -32,14 +32,14 @@ export class DicomTable extends React.Component<DicomTableProps, DicomTableState
                     </TableRow>
                 </TableHeader>
                 <TableBody displayRowCheckbox={false}>
-                    {this.props.data.map((_, index) => {
+                    {/* {this.props.data.map((_, index) => {
                         return (
                             <TableRow key={index}>
                                 <TableRowColumn>{_.tagName}</TableRowColumn>
                                 <TableRowColumn>{_.tagValue}</TableRowColumn>
                             </TableRow>
                         );
-                    })}
+                    })} */}
                 </TableBody>
             </Table>
         );

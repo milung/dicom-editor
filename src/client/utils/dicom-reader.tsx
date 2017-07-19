@@ -1,13 +1,15 @@
 import { DicomEntry } from '../model/dicom-entry';
 import { dicomDictionary } from './dicom-dictionary';
 import { convertFileToArrayBuffer } from './file-converter';
+import { translateTagGroup } from './group-name-translator';
+import { DicomGroupEntry, DicomData } from "../model/dicom-group-entry";
 
 var dicomParser = require('dicom-parser');
 
 export class DicomReader {
 
-    public getData(file: File): Promise<DicomEntry[]> {
-        return new Promise<DicomEntry[]>((resolve, reject) => {
+    public getData(file: File): Promise<DicomData> {
+        return new Promise<DicomData>((resolve, reject) => {
             convertFileToArrayBuffer(file).then(arrayBuffer => {
                 this.getDicomEntries(arrayBuffer).then(entries => {
                     resolve(entries);
@@ -16,9 +18,9 @@ export class DicomReader {
         });
     }
 
-    public getDicomEntries(bytes: Uint8Array): Promise<DicomEntry[]> {
-        return new Promise<DicomEntry[]>((resolve, reject) => {
-            let data: DicomEntry[] = [];
+    public getDicomEntries(bytes: Uint8Array): Promise<DicomData> {
+        return new Promise<DicomData>((resolve, reject) => {
+            let data: DicomData = {};
             setTimeout(
                 function () {
                     var dataset;
@@ -44,10 +46,27 @@ export class DicomReader {
                                 }
 
                                 let entry: DicomEntry = {
-                                    tagGroup: firstHalf, tagElement: latterHalf,
-                                    tagName: dictResult, tagValue: value
+                                    tagGroup: firstHalf,
+                                    tagElement: latterHalf,
+                                    tagName: dictResult,
+                                    tagValue: value
                                 };
-                                data.push(entry);
+
+                                // if tag group already exists, add new entry to it
+                                if (data[firstHalf]) {
+                                    data[firstHalf].entries.push(entry);
+                                } else { // else create new group entry
+                                    let groupEntry: DicomGroupEntry = {
+
+                                        groupName: translateTagGroup(firstHalf),
+                                        groupNumber: firstHalf,
+                                        entries: [
+                                            entry
+                                        ]
+                                    }
+                                    data[firstHalf] = groupEntry;
+                                }
+
                             }
                         }
                     } catch (err) {

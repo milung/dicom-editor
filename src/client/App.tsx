@@ -5,12 +5,12 @@ import './App.css';
 import { ApplicationStateReducer } from './application-state';
 import { FileLoader } from './components/file-loader/file-loader';
 import { DicomTable } from './components/dicom-table/dicom-table';
-import { DicomEntry } from './model/dicom-entry';
+import { DicomData } from './model/dicom-entry';
 
 let reducer = new ApplicationStateReducer();
 
 interface AppState {
-  dicomEntries: DicomEntry[];
+  dicomData: DicomData;
 }
 
 export default class App extends React.Component<{}, AppState> {
@@ -18,12 +18,12 @@ export default class App extends React.Component<{}, AppState> {
   public constructor(props: {}) {
     super(props);
     this.state = {
-      dicomEntries: []
+      dicomData: {}
     };
   }
 
   public componentDidMount() {
-    reducer.state$.subscribe(_ => {this.setState({dicomEntries: _.dicomEntries});});
+    reducer.state$.subscribe(_ => {this.setState({dicomData: _.dicomData});});
   }
 
   render() {
@@ -38,7 +38,7 @@ export default class App extends React.Component<{}, AppState> {
           <Route exact path="/" render={() => (<Redirect to="/dashboard" />)} />*/}
           <div className="main-content">
             <FileLoader reducer={reducer}/>
-            <DicomTable data={this.state.dicomEntries}/>
+            <DicomTable data={this.state.dicomData}/>
             {/*<Switch>
               <Route exact path="/dashboard" render={() => (<Dashboard />)} />
               <Route exact path="/containers" render={() => (<ContainersPage />)} />

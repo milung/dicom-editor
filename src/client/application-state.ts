@@ -1,10 +1,10 @@
+import { DicomData } from './model/dicom-entry';
 import { DicomReader } from './utils/dicom-reader';
 import { Observable } from 'rxjs/Observable';
 import { BehaviorSubject } from 'rxjs/BehaviorSubject';
-import { DicomEntry } from './model/dicom-entry';
 
 export interface ApplicationState {
-    dicomEntries: DicomEntry[];
+    dicomData: DicomData;
 }
 
 export class ApplicationStateReducer {
@@ -17,7 +17,7 @@ export class ApplicationStateReducer {
 
     public constructor() {
         this.currentState = {
-            dicomEntries: [],
+            dicomData: {},
         };
 
         this.stateSubject$ = new BehaviorSubject(this.currentState);
@@ -26,8 +26,8 @@ export class ApplicationStateReducer {
     public handleInputFile(file: File) {
         let dicomReader = new DicomReader();
         dicomReader.getData(file).then(
-            array => {
-                this.currentState.dicomEntries = array;
+            data => {
+                this.currentState.dicomData = data;
                 this.stateSubject$.next(this.currentState);
             }
         );
