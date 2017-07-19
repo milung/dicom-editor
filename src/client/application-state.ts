@@ -1,4 +1,4 @@
-import { FileConverter } from './FileConverter';
+import { DicomReader } from './utils/dicom-reader';
 import { Observable } from 'rxjs/Observable';
 import { BehaviorSubject } from 'rxjs/BehaviorSubject';
 import { DicomEntry } from './model/dicom-entry';
@@ -24,8 +24,8 @@ export class ApplicationStateReducer {
     }
 
     public handleInputFile(file: File) {
-        let fileConverter = new FileConverter();
-        fileConverter.getData(file).then(
+        let dicomReader = new DicomReader();
+        dicomReader.getData(file).then(
             array => {
                 this.currentState.dicomEntries = array;
                 this.stateSubject$.next(this.currentState);

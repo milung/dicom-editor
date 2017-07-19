@@ -1,5 +1,4 @@
 import * as React from 'react';
-// import { FileConverter } from '../FileConverter';
 import Files from 'react-files';
 import { ApplicationStateReducer } from "../../application-state";
 
@@ -49,7 +48,7 @@ export class FileLoader extends React.Component<FileLoaderProps, FileLoaderStats
         let fileReader = new FileReader();
         fileReader.readAsArrayBuffer(files[0]);
 
-         this.props.reducer.handleInputFile(files[0]);
+        this.props.reducer.handleInputFile(files[0]);
 
     };
 
