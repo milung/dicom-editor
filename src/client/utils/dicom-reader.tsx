@@ -8,6 +8,11 @@ var dicomParser = require('dicom-parser');
 
 export class DicomReader {
 
+    /**
+     * Converts file to array buffer and then parses Dicom data
+     * @param file File object to process
+     * @return DicomData object with parsed data
+     */
     public getData(file: File): Promise<DicomData> {
         return new Promise<DicomData>((resolve, reject) => {
             convertFileToArrayBuffer(file).then(arrayBuffer => {
@@ -18,6 +23,11 @@ export class DicomReader {
         });
     }
 
+    /**
+     * Parses ArrayBuffer with DicomReader
+     * @param bytes ArrayBuffer to parse
+     * @return parsed DicomData
+     */
     public getDicomEntries(bytes: Uint8Array): Promise<DicomData> {
         return new Promise<DicomData>((resolve, reject) => {
             let data: DicomData = {};
