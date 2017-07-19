@@ -48,7 +48,8 @@ export class DicomReader {
                                 let entry: DicomEntry = {
                                     tagGroup: firstHalf,
                                     tagElement: latterHalf,
-                                    tagName: dictResult,
+                                    //need to get second item, because of dicom dictionary structure
+                                    tagName: dictResult[1],
                                     tagValue: value
                                 };
 
