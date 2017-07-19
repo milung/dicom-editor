@@ -2,7 +2,7 @@ import { DicomEntry } from '../model/dicom-entry';
 import { dicomDictionary } from './dicom-dictionary';
 import { convertFileToArrayBuffer } from './file-converter';
 import { translateTagGroup } from './group-name-translator';
-import { DicomGroupEntry, DicomData } from "../model/dicom-group-entry";
+import { DicomGroupEntry, DicomData } from "../model/dicom-entry";
 
 var dicomParser = require('dicom-parser');
 
