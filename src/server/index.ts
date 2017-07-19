@@ -11,16 +11,14 @@ app.get('/', (req, res) => {
 app.get('/hello/:who',  (req, res) => {
   res.render('hello', { 
       title: 'Hey', 
-      message: `Hello ${req.params.who}, my friendly friend!` })
+      message: `Hello ${req.params.who}, my friendly friend!` });
 });
 
 app.get('/calc/add',  (req, res) => { 
-    let sum = parseInt(req.query.left) + parseInt(req.query.right);
+    let sum = parseInt(req.query.left, 10) + parseInt(req.query.right, 10);
     res.send(`${req.query.left} + ${req.query.right} = ${sum}` );
 });
 
 var port = process.env.PORT || 8080; 
 
-app.listen( port, () => {
-    console.log('Example app listening on port 3000!');
-});
+app.listen(port);

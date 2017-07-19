@@ -4,7 +4,7 @@ import { convertFileToArrayBuffer } from './file-converter';
 import { translateTagGroup } from './group-name-translator';
 import { DicomGroupEntry, DicomData } from "../model/dicom-entry";
 
-var dicomParser = require('dicom-parser');
+import * as dicomParser from 'dicom-parser';
 
 export class DicomReader {
 
@@ -14,13 +14,9 @@ export class DicomReader {
      * @return DicomData object with parsed data
      */
     public getData(file: File): Promise<DicomData> {
-        return new Promise<DicomData>((resolve, reject) => {
-            convertFileToArrayBuffer(file).then(arrayBuffer => {
-                this.getDicomEntries(arrayBuffer).then(entries => {
-                    resolve(entries);
-                });
+            return convertFileToArrayBuffer(file).then(arrayBuffer => {
+                return this.getDicomEntries(arrayBuffer);
             });
-        });
     }
 
     /**

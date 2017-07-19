@@ -1,11 +1,17 @@
 import * as React from 'react';
 import AppBar from 'material-ui/AppBar';
 
+import SideBar from './components/SideBar';
+import MainView from './containers/MainView';
+import FileDropZone from './components/file-loader/file-drop-zone';
+
 import './App.css';
 import { ApplicationStateReducer } from './application-state';
-import { FileLoader } from './components/file-loader/file-loader';
-import { DicomTable } from './components/dicom-table/dicom-table';
+
 import { DicomData } from './model/dicom-entry';
+// import { FileLoader } from './components/file-loader/file-loader';
+// import { DicomTable } from './components/dicom-table/dicom-table';
+
 
 let reducer = new ApplicationStateReducer();
 
@@ -31,14 +37,14 @@ export default class App extends React.Component<{}, AppState> {
       <div className="app">
         <AppBar
           className="app-bar"
-          title="Title"
+          title="Dicom Viewer"
         />
         <div className="app-view">
-          {/*<SideBar />
-          <Route exact path="/" render={() => (<Redirect to="/dashboard" />)} />*/}
+          {/*<Route exact path="/" render={() => (<Redirect to="/dashboard" />)} />*/}
           <div className="main-content">
-            <FileLoader reducer={reducer}/>
-            <DicomTable data={this.state.dicomData}/>
+            {/*<FileLoader reducer={reducer}/>
+            <DicomTable data={this.state.dicomEntries}/>*/}
+            <MainView />
             {/*<Switch>
               <Route exact path="/dashboard" render={() => (<Dashboard />)} />
               <Route exact path="/containers" render={() => (<ContainersPage />)} />
@@ -49,7 +55,9 @@ export default class App extends React.Component<{}, AppState> {
               <Route exact path="/volumes" render={() => (<VolumesPage />)} />
             </Switch>*/}
           </div>
+          <SideBar />
         </div>
+        <FileDropZone reducer={reducer}/>
       </div>
     );
   }

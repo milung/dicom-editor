@@ -1,1 +1,1 @@
-declare module 'react-files';
+declare module 'dicom-parser';

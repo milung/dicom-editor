@@ -20,6 +20,5 @@ describe("Sample test client", () => {
 
     it('should contain the text passed as props', () => {
         expect(container.find('h1').text()).to.equal('Hello, Test2');
-  });
+    });
 });
-  
