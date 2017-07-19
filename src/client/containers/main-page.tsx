@@ -1,5 +1,5 @@
 import * as React from 'react';
-import './MainPage.css';
+import './main-page.css';
 
 interface MainPageProps {
   name: string;

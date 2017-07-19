@@ -1,5 +1,5 @@
 import { DicomEntry } from '../model/dicom-entry';
-import { dicomDictionary } from '../DicomDictionary';
+import { dicomDictionary } from './dicom-dictionary';
 import { convertFileToArrayBuffer } from './file-converter';
 
 var dicomParser = require('dicom-parser');
