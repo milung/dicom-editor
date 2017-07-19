@@ -49,6 +49,7 @@ export class FileLoader extends React.Component<FileLoaderProps, FileLoaderStats
         fileReader.readAsArrayBuffer(files[0]);
 
         this.props.reducer.handleInputFile(files[0]);
+        files.pop();
 
     };
 
