@@ -12,6 +12,11 @@ interface TagViewerState {
 }
 
 export default class TagViewer extends React.Component<TagViewerProps, TagViewerState> {
+
+    public constructor(props: TagViewerProps){
+        super(props);
+    }
+
     render() {
         return (
             <div>

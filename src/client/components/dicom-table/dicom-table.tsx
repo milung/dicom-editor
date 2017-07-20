@@ -18,20 +18,18 @@ interface DicomTableState {
 
 export class DicomTable extends React.Component<DicomTableProps, DicomTableState> {
 
-    finalArr: DicomEntry[] = [];
-
     constructor(props: DicomTableProps) {
         super(props);
     }
 
     render() {
-
+        let finalArr: DicomEntry[] = [];
         if (this.props.data) {
 
             for (var groupNumber in this.props.data) {
                 if (groupNumber) {
                     this.props.data[groupNumber].entries.forEach(_ => {
-                        this.finalArr.push(_);
+                        finalArr.push(_);
                     });
                 }
             }
@@ -44,7 +42,7 @@ export class DicomTable extends React.Component<DicomTableProps, DicomTableState
                         </TableRow>
                     </TableHeader>
                     <TableBody displayRowCheckbox={false}>
-                        {this.finalArr.map((_, index) => {
+                        {finalArr.map((_, index) => {
 
                             return (
                                 <TableRow key={index}>

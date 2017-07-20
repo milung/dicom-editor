@@ -45,7 +45,7 @@ export default class MainView extends React.Component<MainViewProps, MainViewSta
         <Tab
           label="Tags"
         >
-          <TagViewer data={this.state.dicomData}/>
+          <TagViewer data={this.state.dicomData} />
         </Tab>
       </Tabs>
     );
