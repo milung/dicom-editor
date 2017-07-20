@@ -74,7 +74,7 @@ export class DicomReader {
                             entries: [
                                 entry
                             ]
-                        }
+                        };
                         data[firstHalf] = groupEntry;
                     }
 
@@ -85,7 +85,6 @@ export class DicomReader {
             if (err.exception) {
                 message = err.exception;
             }
-            console.log(err);
             throw err;
         }
         return data;
