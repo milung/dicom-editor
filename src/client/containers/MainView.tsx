@@ -34,7 +34,7 @@ export default class MainView extends React.Component<MainViewProps, MainViewSta
 
   render() {
     return (
-      <Tabs className="tabs">
+      <Tabs className="tabs" initialSelectedIndex={1}>
         <Tab
           label="Image viewer"
         >
