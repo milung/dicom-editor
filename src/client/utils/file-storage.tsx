@@ -67,13 +67,14 @@ export class FileStorage {
 
     public getData(fileObject: LightweightFile): Promise<HeavyweightFile> {
 
-        var promise = this.storage.getItem<Uint8Array>(fileObject.dbKey).then(function (readValue: Uint8Array) {
+        var promise = this.storage.getItem<DatabaseEntry>(fileObject.dbKey).then(function (readValue: DatabaseEntry) {
             let dicomReader = new DicomReader();
+            console.log(readValue);
             let toReturn: HeavyweightFile = {
                 fileName: fileObject.fileName,
-                bufferedData: readValue,
+                bufferedData: readValue.data,
                 timestamp: fileObject.timestamp,
-                dicomData: dicomReader.getDicomEntries(readValue)
+                dicomData: dicomReader.getDicomEntries(readValue.data)
             };
 
             return toReturn;
