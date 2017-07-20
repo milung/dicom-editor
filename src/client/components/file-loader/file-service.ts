@@ -8,7 +8,7 @@ export default class FileService {
 
     }
 
-    public async loadFiles(files: File[]) {
+    public async loadFiles(files: File[]): Promise<void> {
         const promises = files.map(file => {
             let dicomReader = new DicomReader();
             return convertFileToArrayBuffer(file)
