@@ -6,6 +6,8 @@
   
 
   background-color: #30426a;
+  
+  overflow-y: auto;
 
   width: 300px;
 }

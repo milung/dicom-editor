@@ -36,25 +36,26 @@ export default class App extends React.Component<{}, AppState> {
           className="app-bar"
           title="Dicom Viewer"
         />
-        <div className="app-view">
-          {/*<Route exact path="/" render={() => (<Redirect to="/dashboard" />)} />*/}
-          <div className="main-content">
-            {/*<FileLoader reducer={reducer}/>
-            <DicomTable data={this.state.dicomEntries}/>*/}
-            <MainView reducer={reducer}/>
-            {/*<Switch>
-              <Route exact path="/dashboard" render={() => (<Dashboard />)} />
-              <Route exact path="/containers" render={() => (<ContainersPage />)} />
-              <Route exact path="/containers/new" render={() => (<NewContainerPage />)} />
-              <Route exact path="/containers/:Id" render={(props) => (<ContainerInspectPage {...props} />)} />
-              <Route exact path="/images" render={() => (<ImagesPage />)} />
-              <Route exact path="/networks" render={() => (<NetworksPage />)} />
-              <Route exact path="/volumes" render={() => (<VolumesPage />)} />
-            </Switch>*/}
+        <FileDropZone reducer={reducer} >
+          <div className="app-view">
+            {/*<Route exact path="/" render={() => (<Redirect to="/dashboard" />)} />*/}
+            <div className="main-content">
+              {/*<FileLoader reducer={reducer}/>
+              <DicomTable data={this.state.dicomEntries}/>*/}
+              <MainView reducer={reducer}/>
+              {/*<Switch>
+                <Route exact path="/dashboard" render={() => (<Dashboard />)} />
+                <Route exact path="/containers" render={() => (<ContainersPage />)} />
+                <Route exact path="/containers/new" render={() => (<NewContainerPage />)} />
+                <Route exact path="/containers/:Id" render={(props) => (<ContainerInspectPage {...props} />)} />
+                <Route exact path="/images" render={() => (<ImagesPage />)} />
+                <Route exact path="/networks" render={() => (<NetworksPage />)} />
+                <Route exact path="/volumes" render={() => (<VolumesPage />)} />
+              </Switch>*/}
+            </div>
+            <SideBar reducer={reducer}/>
           </div>
-          <SideBar reducer={reducer}/>
-        </div>
-        <FileDropZone reducer={reducer}/>
+        </FileDropZone>
       </div>
     );
   }

@@ -1,9 +1,11 @@
 .dropzoneHandler {
-  position: absolute;
+  /*position: absolute;
   top: 0;
   right: 0;
   bottom: 0;
   left: 0;
   padding: 2.5em 0;
-  text-align: center;
+  text-align: center;*/
+  height: 100%;
+  display: flex;
 };

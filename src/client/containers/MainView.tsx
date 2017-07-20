@@ -38,14 +38,17 @@ export default class MainView extends React.Component<MainViewProps, MainViewSta
         <Tab
           label="Image viewer"
         >
-          <ImageViewer/>
-
+          <div className="container">
+            <ImageViewer/>
+          </div>
         </Tab>
 
         <Tab
           label="Tags"
         >
-          <TagViewer data={this.state.dicomData} />
+          <div className="container">
+            <TagViewer data={this.state.dicomData} />
+          </div>
         </Tab>
       </Tabs>
     );

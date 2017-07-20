@@ -33,7 +33,9 @@ export default class FileDropZone extends React.Component<FileDropZoneProps, Fil
                 disablePreview={true}
                 className="dropzoneHandler"
                 onDrop={this.onDrop}
-            />
+            >
+            {this.props.children}
+            </Dropzone>
         );
     }
 }
