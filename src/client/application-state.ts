@@ -29,10 +29,9 @@ export class ApplicationStateReducer {
     }
 
     public addLoadedFiles(files: HeavyweightFile[]) {
-        this.currentState.loadedFiles = this.currentState.loadedFiles.concat(files);
+        this.currentState.loadedFiles = files.concat(this.currentState.loadedFiles);
         this.currentState.currentFile = files[0];
         this.currentState.currentIndex = this.currentState.loadedFiles.indexOf(files[0]);
-
         this.stateSubject$.next(this.currentState);
     }
 
