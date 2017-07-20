@@ -29,7 +29,7 @@ export default class App extends React.Component<{}, AppState> {
   }
 
   public componentDidMount() {
-    reducer.state$.subscribe(_ => {this.setState({dicomData: _.dicomData});});
+    // reducer.state$.subscribe(_ => {this.setState({dicomData: _.dicomData});});
   }
 
   render() {

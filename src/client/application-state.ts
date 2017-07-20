@@ -1,10 +1,8 @@
-import { DicomData } from './model/dicom-entry';
 import { HeavyweightFile, LightweightFile } from './model/file-interfaces';
 import { Observable } from 'rxjs/Observable';
 import { BehaviorSubject } from 'rxjs/BehaviorSubject';
 
 export interface ApplicationState {
-    dicomData: DicomData;
     recentFiles: LightweightFile[],
     loadedFiles: HeavyweightFile[],
     currentFile?: HeavyweightFile,
@@ -21,7 +19,6 @@ export class ApplicationStateReducer {
 
     public constructor() {
         this.currentState = {
-            dicomData: {},
             recentFiles: [],
             loadedFiles: [],
             currentFile: undefined,
@@ -33,6 +30,8 @@ export class ApplicationStateReducer {
 
     public addLoadedFiles(files: HeavyweightFile[]) {
         this.currentState.loadedFiles = this.currentState.loadedFiles.concat(files);
+        this.currentState.currentFile = files[0];
+        this.currentState.currentIndex = this.currentState.loadedFiles.indexOf(files[0]);
 
         console.log(files, this.currentState);
         this.stateSubject$.next(this.currentState);
