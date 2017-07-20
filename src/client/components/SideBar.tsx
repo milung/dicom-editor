@@ -2,7 +2,7 @@ import * as React from 'react';
 
 import Paper from 'material-ui/Paper';
 import { List, ListItem, makeSelectable } from 'material-ui/List';
-import {  Tabs, Tab  } from 'material-ui/Tabs';
+import { Tabs, Tab } from 'material-ui/Tabs';
 
 // import FontIcon from 'material-ui/FontIcon';
 // icon={<FontIcon className="material-icons">restore</FontIcon>}
@@ -32,13 +32,17 @@ export default class SideBar extends React.Component<SideBarProps, SideBarState>
         this.state = {
             loadedFiles: [],
             recentFiles: [],
-        }
+        };
 
         this.selectCurrentFile = this.selectCurrentFile.bind(this);
     }
 
     public componentDidMount() {
-        this.props.reducer.state$.subscribe(state => {this.setState({loadedFiles: state.loadedFiles, recentFiles: state.recentFiles});});
+        this.props.reducer.state$.subscribe(state => {
+            this.setState({
+                loadedFiles: state.loadedFiles, recentFiles: state.recentFiles
+            });
+        });
     }
 
     render() {

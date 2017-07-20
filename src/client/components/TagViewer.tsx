@@ -13,7 +13,7 @@ interface TagViewerState {
 
 export default class TagViewer extends React.Component<TagViewerProps, TagViewerState> {
 
-    public constructor(props: TagViewerProps){
+    public constructor(props: TagViewerProps) {
         super(props);
     }
 
@@ -21,7 +21,7 @@ export default class TagViewer extends React.Component<TagViewerProps, TagViewer
         return (
             <div>
                 <h1>TagViewer</h1>
-                <DicomTable data={this.props.data}/>
+                <DicomTable data={this.props.data} />
             </div>
         );
     }

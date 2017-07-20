@@ -19,6 +19,7 @@ export default class FileDropZone extends React.Component<FileDropZoneProps, Fil
     constructor(props: FileDropZoneProps) {
         super(props);
         this.fileService = new FileService(this.props.reducer);
+        this.onDrop = this.onDrop.bind(this);
     }
 
     onDrop(files: File[]) {
@@ -31,7 +32,7 @@ export default class FileDropZone extends React.Component<FileDropZoneProps, Fil
                 disableClick={true}
                 disablePreview={true}
                 className="dropzoneHandler"
-                onDrop={this.onDrop.bind(this)}
+                onDrop={this.onDrop}
             />
         );
     }
