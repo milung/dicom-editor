@@ -69,7 +69,6 @@ export class FileStorage {
 
         var promise = this.storage.getItem<DatabaseEntry>(fileObject.dbKey).then(function (readValue: DatabaseEntry) {
             let dicomReader = new DicomReader();
-            console.log(readValue);
             let toReturn: HeavyweightFile = {
                 fileName: fileObject.fileName,
                 bufferedData: readValue.data,

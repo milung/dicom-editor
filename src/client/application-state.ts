@@ -52,7 +52,6 @@ export class ApplicationStateReducer {
     }
 
     public updateCurrentFromRecentFile(file: LightweightFile) {
-        console.log(file);
         let fileStorage = new FileStorage(this);
         fileStorage.getData(file).then(data => {
                 this.addLoadedFiles([data]);
