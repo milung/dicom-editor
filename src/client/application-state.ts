@@ -45,4 +45,9 @@ export class ApplicationStateReducer {
 
         this.stateSubject$.next(this.currentState);
     }
+
+    public updateCurrentFile(file: HeavyweightFile) {
+        this.currentState.currentFile = file;
+        this.stateSubject$.next(this.currentState);
+    }
 }

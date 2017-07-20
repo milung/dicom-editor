@@ -33,6 +33,8 @@ export default class SideBar extends React.Component<SideBarProps, SideBarState>
             loadedFiles: [],
             recentFiles: [],
         }
+
+        this.selectCurrentFile = this.selectCurrentFile.bind(this);
     }
 
     public componentDidMount() {
@@ -50,6 +52,7 @@ export default class SideBar extends React.Component<SideBarProps, SideBarState>
                             {
                                 this.state.loadedFiles.map((item, index) => (
                                     <ListItem
+                                        onClick={() => this.selectCurrentFile(item)}
                                         key={index}
                                         value={item}
                                         primaryText={item.fileName}
@@ -78,5 +81,9 @@ export default class SideBar extends React.Component<SideBarProps, SideBarState>
 
             </Paper>
         );
+    }
+
+    private selectCurrentFile(file: HeavyweightFile) {
+        this.props.reducer.updateCurrentFile(file);
     }
 }
