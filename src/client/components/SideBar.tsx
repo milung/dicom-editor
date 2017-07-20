@@ -8,15 +8,37 @@ import {  Tabs, Tab  } from 'material-ui/Tabs';
 // icon={<FontIcon className="material-icons">restore</FontIcon>}
 
 import './SideBar.css';
+import { ApplicationStateReducer } from '../application-state';
+import { HeavyweightFile, LightweightFile } from '../model/file-interfaces';
 
 export interface SideBarProps {
+    reducer: ApplicationStateReducer;
     // loadedFiles: File[],
     // recentFiles: File[]
 }
 
+export interface SideBarState {
+    loadedFiles: HeavyweightFile[];
+    recentFiles: LightweightFile[];
+}
+
 const SelectableList = makeSelectable(List);
 
-export default class SideBar extends React.Component<SideBarProps, {}> {
+export default class SideBar extends React.Component<SideBarProps, SideBarState> {
+
+    public constructor(props: SideBarProps) {
+        super(props);
+
+        this.state = {
+            loadedFiles: [],
+            recentFiles: [],
+        }
+    }
+
+    public componentDidMount() {
+        this.props.reducer.state$.subscribe(state => {this.setState({loadedFiles: state.loadedFiles, recentFiles: state.recentFiles});});
+    }
+
     render() {
         return (
             <Paper className="side-bar">
@@ -26,11 +48,11 @@ export default class SideBar extends React.Component<SideBarProps, {}> {
                     >
                         <SelectableList>
                             {
-                                ['81',  '82',  '83',  '84'].map((item, index) => (
+                                this.state.loadedFiles.map((item, index) => (
                                     <ListItem
                                         key={index}
                                         value={item}
-                                        primaryText={item}
+                                        primaryText={item.fileName}
                                     />
                                 ))
                             }
@@ -42,11 +64,11 @@ export default class SideBar extends React.Component<SideBarProps, {}> {
                     >
                         <SelectableList>
                             {
-                                ['1',  '2',  '3',  '4'].map((item) => (
+                                this.state.recentFiles.map((item, index) => (
                                     <ListItem
-                                        key={item}
+                                        key={index}
                                         value={item}
-                                        primaryText={item}
+                                        primaryText={item.fileName}
                                     />
                                 ))
                             }

@@ -52,7 +52,7 @@ export default class App extends React.Component<{}, AppState> {
               <Route exact path="/volumes" render={() => (<VolumesPage />)} />
             </Switch>*/}
           </div>
-          <SideBar />
+          <SideBar reducer={reducer}/>
         </div>
         <FileDropZone reducer={reducer}/>
       </div>
