@@ -41,12 +41,13 @@ export class DicomTable extends React.Component<DicomTableProps, DicomTableState
                         return (
                             <ListItem
                                 primaryText={group.groupNumber}
+                                key={groupIndex}
                                 nestedItems={[
 
-                                    <ListItem disabled={true}>
+                                    <ListItem disabled={true} key={groupIndex}>
                                         {group.entries.map((entry, entryIndex) => {
                                             return (
-                                                <Table selectable={false}>
+                                                <Table selectable={false} key={entryIndex}>
                                                     <TableHeader displaySelectAll={false} adjustForCheckbox={false}>
                                                         <TableRow>
                                                             <TableHeaderColumn>{entry.tagName}</TableHeaderColumn>
