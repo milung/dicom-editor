@@ -28,10 +28,6 @@ export class ApplicationStateReducer {
         this.stateSubject$ = new BehaviorSubject(this.currentState);
     }
 
-    public getState(): ApplicationState {
-        return this.currentState;
-    }
-
     public addLoadedFiles(files: HeavyweightFile[]) {
         this.currentState.loadedFiles = this.currentState.loadedFiles.concat(files);
         this.currentState.currentFile = files[0];
