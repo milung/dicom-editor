@@ -3,7 +3,7 @@ import { LightweightFile, HeavyweightFile } from '../model/file-interfaces';
 import { ApplicationStateReducer } from '../application-state';
 import { DicomReader } from './dicom-reader';
 
-const MAX_RECENT_FILES_IN_DB = 5;
+const MAX_RECENT_FILES = 5;
 
 interface DatabaseEntry {
     fileInterface: LightweightFile;
@@ -19,7 +19,7 @@ export class FileStorage {
             driver: localForage.INDEXEDDB,
             name: 'DICOM viewer',
             version: 1.0,
-            storeName: 'dataStore',
+            storeName: 'recentFilesStore',
             description: 'Storage for last 5 dicom files'
         });
 
@@ -30,36 +30,25 @@ export class FileStorage {
         let entryToStore = this.prepareDatabaseEntry(dataArray, fileObject);
         let reducerRecentFiles = this.reducer.getState().recentFiles;
         let newRecentFiles: LightweightFile[] = JSON.parse(JSON.stringify(reducerRecentFiles));
+        let indexOfFileToUpdate = this.findIndexOfFileToUpdate(entryToStore.fileInterface.dbKey, newRecentFiles);
 
-        let count = await this.storage.length();
-        let indexOfUpdateFile = this.findIndexOfUpdatedFile(entryToStore.fileInterface.dbKey, newRecentFiles);
-        
-        if (count < MAX_RECENT_FILES_IN_DB && reducerRecentFiles.length < MAX_RECENT_FILES_IN_DB) {
-            await this.storage.setItem(entryToStore.fileInterface.dbKey, entryToStore);
-            if (indexOfUpdateFile === -1) { 
+        if (reducerRecentFiles.length < MAX_RECENT_FILES) {
+            if (indexOfFileToUpdate === -1) {
+                await this.storage.setItem(entryToStore.fileInterface.dbKey, entryToStore);
                 newRecentFiles.unshift(entryToStore.fileInterface);
             } else {
-                newRecentFiles.splice(indexOfUpdateFile, 1);
-                newRecentFiles.unshift(entryToStore.fileInterface);
+                await this.updateDbAndState(indexOfFileToUpdate, entryToStore, newRecentFiles);
             }
         } else {
-            let indexOfOldest = this.findOldestFileIndex(reducerRecentFiles);
+            let indexToRemove = this.findOldestFileIndex(reducerRecentFiles);
 
-            let keys = await this.storage.keys();
-            if (keys.indexOf(entryToStore.fileInterface.dbKey) !== -1) {
-                await this.storage.setItem(entryToStore.fileInterface.dbKey, entryToStore);
-                newRecentFiles.splice(indexOfUpdateFile, 1);
-                newRecentFiles.unshift(entryToStore.fileInterface);
+            if (indexOfFileToUpdate === -1) {
+                await this.storage.removeItem(newRecentFiles[indexToRemove].dbKey);
             } else {
-                let oldestFile: LightweightFile = newRecentFiles[indexOfOldest];
-                if (oldestFile) {
-                    await this.storage.removeItem(oldestFile.dbKey);
-                    await this.storage.setItem(entryToStore.fileInterface.dbKey, entryToStore);
-
-                    newRecentFiles.splice(indexOfOldest, 1);
-                    newRecentFiles.unshift(entryToStore.fileInterface);
-                }
+                indexToRemove = indexOfFileToUpdate;
             }
+
+            await this.updateDbAndState(indexToRemove, entryToStore, newRecentFiles);
         }
 
         this.reducer.updateRecentFiles(newRecentFiles);
@@ -103,7 +92,13 @@ export class FileStorage {
         });
     }
 
-     private findOldestFileIndex(recentFiles: LightweightFile[]): number {
+    private async updateDbAndState(index: number, entryToStore: DatabaseEntry, newRecentFiles: LightweightFile[]) {
+        await this.storage.setItem(entryToStore.fileInterface.dbKey, entryToStore);
+        newRecentFiles.splice(index, 1);
+        newRecentFiles.unshift(entryToStore.fileInterface);
+    }
+
+    private findOldestFileIndex(recentFiles: LightweightFile[]): number {
         let indexOfOldestFile = 0;
         let oldestFile = recentFiles[0];
 
@@ -130,7 +125,7 @@ export class FileStorage {
         return newDbEntry;
     }
 
-    private findIndexOfUpdatedFile(searchDbKey: string, recentFiles: LightweightFile[]): number {
+    private findIndexOfFileToUpdate(searchDbKey: string, recentFiles: LightweightFile[]): number {
         for (var i = 0; i < recentFiles.length; i++) {
             if (recentFiles[i].dbKey === searchDbKey) {
                 return i;
