@@ -36,4 +36,15 @@ export class ApplicationStateReducer {
         console.log(files, this.currentState);
         this.stateSubject$.next(this.currentState);
     }
+
+    public getState(): ApplicationState {
+        return this.currentState;
+    }
+
+    public updateRecentFiles(files: LightweightFile[]) {
+        this.currentState.recentFiles = files;
+
+        console.log(files, this.currentState);
+        this.stateSubject$.next(this.currentState);
+    }
 }
