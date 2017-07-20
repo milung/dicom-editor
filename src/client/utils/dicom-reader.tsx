@@ -7,7 +7,7 @@ import { DicomGroupEntry, DicomData } from '../model/dicom-entry';
 import * as dicomParser from 'dicom-parser';
 
 export function getValueMultiplicity(value: string) {
-    return value == undefined ? 0 : (value.match(/\\/g) || []).length + 1;
+    return value === undefined ? 0 : (value.match(/\\/g) || []).length + 1;
 }
 
 export class DicomReader {
@@ -38,8 +38,6 @@ export class DicomReader {
                 if (tag) {
                     var value = dataset.string(tag, undefined);
                     let VM = getValueMultiplicity(value);
-
-                    var value = dataset.string(tag, undefined);
 
                     var firstHalf: string = tag.slice(1, 5);
                     var latterHalf: string = tag.slice(5, 9);
