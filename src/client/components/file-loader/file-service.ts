@@ -1,18 +1,22 @@
 import { ApplicationStateReducer } from '../../application-state';
 import { HeavyweightFile } from '../../model/file-interfaces';
 import { convertFileToArrayBuffer } from '../../utils/file-converter';
-import { DicomReader } from "../../utils/dicom-reader";
-import { DicomData } from "../../model/dicom-entry";
+import { DicomReader } from '../../utils/dicom-reader';
+import { DicomData } from '../../model/dicom-entry';
+import { FileStorage } from '../../utils/file-storage';
 
-interface tmpData {
-    buffer: Uint8Array,
-    file: File,
-    dicomData: DicomData
+interface TmpData {
+    buffer: Uint8Array;
+    file: File;
+    dicomData: DicomData;
 }
 
 export default class FileService {
-    public constructor(private reducer: ApplicationStateReducer) {
 
+    private fileStorage: FileStorage;
+
+    public constructor(private reducer: ApplicationStateReducer) {
+        this.fileStorage = new FileStorage(reducer);
     }
 
     public async loadFiles(files: File[]): Promise<void> {
@@ -22,6 +26,7 @@ export default class FileService {
                 .then(buffer => {
                     let data = {};
                     try {
+                        this.fileStorage.storeData(buffer, file);
                         data = dicomReader.getDicomEntries(buffer);
 
                     } catch (err) {
@@ -35,11 +40,11 @@ export default class FileService {
                 });
         });
 
-        let results: tmpData[] = [];
+        let results: TmpData[] = [];
         try {
             results = await Promise.all(promises);
         } catch (err) {
-            console.log(err);
+            // console.log(err);
             return;
         }
 

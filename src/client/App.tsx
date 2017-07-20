@@ -9,8 +9,11 @@ import './App.css';
 import { ApplicationStateReducer } from './application-state';
 
 import { DicomData } from './model/dicom-entry';
+import { FileStorage } from './utils/file-storage';
 
 let reducer = new ApplicationStateReducer();
+let fileStorage = new FileStorage(reducer);
+fileStorage.loadRecentFiles();
 
 interface AppState {
   dicomData: DicomData;
