@@ -1,5 +1,5 @@
 import * as React from 'react';
-import './HelloWorld.css';
+import './hello-world.css';
 import RaisedButton from 'material-ui/RaisedButton';
 
 interface HelloProps {

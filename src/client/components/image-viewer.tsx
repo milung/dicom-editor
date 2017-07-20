@@ -1,5 +1,5 @@
 import * as React from 'react';
-import './ImageViewer.css';
+import './image-viewer.css';
 
 export default class ImageViewer extends React.Component<{}, {}> {
     render() {

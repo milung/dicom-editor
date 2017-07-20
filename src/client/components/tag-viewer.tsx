@@ -1,5 +1,5 @@
 import * as React from 'react';
-import './TagViewer.css';
+import './tag-viewer.css';
 import { DicomTable } from './dicom-table/dicom-table';
 import { DicomData } from '../model/dicom-entry';
 

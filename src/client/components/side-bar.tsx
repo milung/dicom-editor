@@ -7,7 +7,7 @@ import { Tabs, Tab } from 'material-ui/Tabs';
 // import FontIcon from 'material-ui/FontIcon';
 // icon={<FontIcon className="material-icons">restore</FontIcon>}
 
-import './SideBar.css';
+import './side-bar.css';
 import { ApplicationStateReducer } from '../application-state';
 import { HeavyweightFile, LightweightFile } from '../model/file-interfaces';
 

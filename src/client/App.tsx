@@ -1,11 +1,11 @@
 import * as React from 'react';
 import AppBar from 'material-ui/AppBar';
 
-import SideBar from './components/SideBar';
-import MainView from './containers/MainView';
+import SideBar from './components/side-bar';
+import MainView from './containers/main-view';
 import FileDropZone from './components/file-loader/file-drop-zone';
 
-import './App.css';
+import './app.css';
 import { ApplicationStateReducer } from './application-state';
 
 import { DicomData } from './model/dicom-entry';
