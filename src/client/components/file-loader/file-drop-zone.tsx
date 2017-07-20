@@ -23,7 +23,9 @@ export default class FileDropZone extends React.Component<FileDropZoneProps, Fil
     }
 
     onDrop(files: File[]) {
-        this.fileService.loadFiles(files);     
+        if (files.length > 0) {
+            this.fileService.loadFiles(files);  
+        }
     }
 
     render() {       
