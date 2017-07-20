@@ -6,6 +6,10 @@ import { DicomGroupEntry, DicomData } from '../model/dicom-entry';
 
 import * as dicomParser from 'dicom-parser';
 
+export function getValueMultiplicity(value: string){
+    return (value.match(/\\/g) || []).length + 1;
+}
+
 export class DicomReader {
 
     /**
@@ -32,6 +36,8 @@ export class DicomReader {
 
             for (var tag in dataset.elements) {
                 if (tag) {
+                    var value = dataset.string(tag, undefined);
+                    let VM = getValueMultiplicity(value);
 
                     var value = dataset.string(tag, undefined);
 
@@ -47,15 +53,17 @@ export class DicomReader {
                     if (dictResult === undefined) {
                         continue;
                     }
-
                     let entry: DicomEntry = {
                         tagGroup: firstHalf,
                         tagElement: latterHalf,
-                        //need to get second item, because of dicom dictionary structure
+                        // need to get second item, because of dicom dictionary structure
                         tagName: dictResult[1],
-                        tagValue: value
+                        tagValue: value,
+                        tagVR: dictResult[0],
+                        tagVM: VM.toString()
                     };
 
+                   
                     // if tag group already exists, add new entry to it
                     if (data[firstHalf]) {
                         data[firstHalf].entries.push(entry);

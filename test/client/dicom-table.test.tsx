@@ -12,13 +12,17 @@ const arrayTest = {
                tagGroup: '0152',
                tagElement: '0145',
                tagName: 'PatientName',
-               tagValue: 'Michal Mrkvicka'
+               tagValue: 'Michal Mrkvicka',
+               tagVR: 'PN',
+               tagVM: '2'
            },
            {
                tagGroup: '5478',
                tagElement: '1548',
                tagName: 'PatientAge',
-               tagValue: '18'
+               tagValue: '18',
+               tagVR: 'PA',
+               tagVM: '1'
            }
        ]
    }

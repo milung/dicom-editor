@@ -3,6 +3,8 @@ export interface DicomEntry {
     tagElement: string;
     tagName: string;
     tagValue: string;
+    tagVR: string;
+    tagVM: string;
 }
 
 export interface DicomGroupEntry {
