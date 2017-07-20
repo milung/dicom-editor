@@ -6,8 +6,8 @@ import { DicomGroupEntry, DicomData } from '../model/dicom-entry';
 
 import * as dicomParser from 'dicom-parser';
 
-export function getValueMultiplicity(value: string){
-    return (value.match(/\\/g) || []).length + 1;
+export function getValueMultiplicity(value: string) {
+    return value == undefined ? 0 : (value.match(/\\/g) || []).length + 1;
 }
 
 export class DicomReader {
@@ -63,7 +63,6 @@ export class DicomReader {
                         tagVM: VM.toString()
                     };
 
-                   
                     // if tag group already exists, add new entry to it
                     if (data[firstHalf]) {
                         data[firstHalf].entries.push(entry);
