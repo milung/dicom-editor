@@ -19,4 +19,4 @@ var groupNameTranslation = {
     '0007': 'SevenName',
     '0002': 'TwoName'
     // this data needs to be filled
-}
+};

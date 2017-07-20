@@ -9,9 +9,6 @@ import './App.css';
 import { ApplicationStateReducer } from './application-state';
 
 import { DicomData } from './model/dicom-entry';
-// import { FileLoader } from './components/file-loader/file-loader';
-// import { DicomTable } from './components/dicom-table/dicom-table';
-
 
 let reducer = new ApplicationStateReducer();
 
@@ -44,7 +41,7 @@ export default class App extends React.Component<{}, AppState> {
           <div className="main-content">
             {/*<FileLoader reducer={reducer}/>
             <DicomTable data={this.state.dicomEntries}/>*/}
-            <MainView />
+            <MainView reducer={reducer}/>
             {/*<Switch>
               <Route exact path="/dashboard" render={() => (<Dashboard />)} />
               <Route exact path="/containers" render={() => (<ContainersPage />)} />

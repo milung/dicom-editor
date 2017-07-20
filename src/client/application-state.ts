@@ -3,10 +3,10 @@ import { Observable } from 'rxjs/Observable';
 import { BehaviorSubject } from 'rxjs/BehaviorSubject';
 
 export interface ApplicationState {
-    recentFiles: LightweightFile[],
-    loadedFiles: HeavyweightFile[],
-    currentFile?: HeavyweightFile,
-    currentIndex?: number
+    recentFiles: LightweightFile[];
+    loadedFiles: HeavyweightFile[];
+    currentFile?: HeavyweightFile;
+    currentIndex?: number;
 }
 
 export class ApplicationStateReducer {
@@ -33,7 +33,6 @@ export class ApplicationStateReducer {
         this.currentState.currentFile = files[0];
         this.currentState.currentIndex = this.currentState.loadedFiles.indexOf(files[0]);
 
-        console.log(files, this.currentState);
         this.stateSubject$.next(this.currentState);
     }
 
@@ -44,7 +43,6 @@ export class ApplicationStateReducer {
     public updateRecentFiles(files: LightweightFile[]) {
         this.currentState.recentFiles = files;
 
-        console.log(files, this.currentState);
         this.stateSubject$.next(this.currentState);
     }
 }

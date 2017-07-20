@@ -1,5 +1,5 @@
 import * as React from 'react';
-import * as Dropzone from 'react-dropzone'
+import * as Dropzone from 'react-dropzone';
 
 import { ApplicationStateReducer } from '../../application-state';
 import FileService from './file-service';
@@ -22,14 +22,13 @@ export default class FileDropZone extends React.Component<FileDropZoneProps, Fil
     }
 
     onDrop(files: File[]) {
-        console.log(files);
         this.fileService.loadFiles(files);     
     }
 
     render() {       
         return (
             <Dropzone
-                disableClick
+                disableClick={true}
                 disablePreview={true}
                 className="dropzoneHandler"
                 onDrop={this.onDrop.bind(this)}

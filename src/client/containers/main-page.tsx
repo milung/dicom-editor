@@ -8,9 +8,7 @@ interface MainPageProps {
 export default class MainPage extends React.Component<MainPageProps, {}> {
   render() {
     return (
-      <div>
-
-      </div>
+      <div/>
     );
   }
 }

@@ -2,7 +2,7 @@ import { DicomEntry } from '../model/dicom-entry';
 import { dicomDictionary } from './dicom-dictionary';
 import { convertFileToArrayBuffer } from './file-converter';
 import { translateTagGroup } from './group-name-translator';
-import { DicomGroupEntry, DicomData } from "../model/dicom-entry";
+import { DicomGroupEntry, DicomData } from '../model/dicom-entry';
 
 import * as dicomParser from 'dicom-parser';
 
@@ -54,7 +54,7 @@ export class DicomReader {
                                 let entry: DicomEntry = {
                                     tagGroup: firstHalf,
                                     tagElement: latterHalf,
-                                    //need to get second item, because of dicom dictionary structure
+                                    // need to get second item, because of dicom dictionary structure
                                     tagName: dictResult[1],
                                     tagValue: value
                                 };
@@ -70,7 +70,7 @@ export class DicomReader {
                                         entries: [
                                             entry
                                         ]
-                                    }
+                                    };
                                     data[firstHalf] = groupEntry;
                                 }
 

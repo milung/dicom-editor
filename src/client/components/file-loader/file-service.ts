@@ -1,7 +1,7 @@
 import { ApplicationStateReducer } from '../../application-state';
 import { HeavyweightFile } from '../../model/file-interfaces';
 import { convertFileToArrayBuffer } from '../../utils/file-converter';
-import { DicomReader } from "../../utils/dicom-reader";
+import { DicomReader } from '../../utils/dicom-reader';
 
 export default class FileService {
     public constructor(private reducer: ApplicationStateReducer) {
