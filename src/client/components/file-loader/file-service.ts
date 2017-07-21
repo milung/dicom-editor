@@ -15,12 +15,18 @@ export default class FileService {
     private fileStorage: FileStorage;
     private dicomReader: DicomReader;
 
+    
     public constructor(private reducer: ApplicationStateReducer) {
         this.fileStorage = new FileStorage(reducer);
         this.dicomReader = new DicomReader();
     }
 
-    public async nieco(promises: Promise<FileContent>[]): Promise<HeavyweightFile[]> {
+    /**
+     * @description Constructs HeavyFiles from base File objects
+     * @param {Promise<FileContent>[]} promises 
+     * @returns {Promise<HeavyweightFile[]>} 
+     */
+    public async processLoadedFiles(promises: Promise<FileContent>[]): Promise<HeavyweightFile[]> {
         let bumps: FileContent[];
         try {
             bumps = await Promise.all(promises);
@@ -28,17 +34,18 @@ export default class FileService {
             throw new Error(`Failed to convert file: ${err.toString()}`);
         }
 
-        let loadedFiles: HeavyweightFile[];
-        try {
-            loadedFiles = bumps.map(bump => {
-                return this.createHeavyFile(bump);
-            });
-        } catch (err) {
-            throw new Error(`Failed to convert file: ${err.toString()}`);
-        }
+        let loadedFiles: HeavyweightFile[] = bumps.map(bump => {
+            return this.createHeavyFile(bump);
+        });
+
         return loadedFiles;
     }
 
+    /**
+     * @description Parse file with dicomReader
+     * @param {FileContent} bump 
+     * @returns {HeavyweightFile} 
+     */
     public createHeavyFile(bump: FileContent): HeavyweightFile {
         let data = {};
         try {
@@ -56,8 +63,15 @@ export default class FileService {
         };
     }
 
+    /**
+     * @description Parse and save loaded files to state
+     * @param {File[]} files 
+     * @returns {Promise<void>} 
+     */
     public async loadFiles(files: File[]): Promise<void> {
-
+        /**
+         * replace DOM File object with custom FileContent structure
+         */
         const promises: Promise<FileContent>[] = files.map(file => {
             return convertFileToArrayBuffer(file)
                 .then(buffer => {
@@ -71,7 +85,7 @@ export default class FileService {
 
         let loadedFiles: HeavyweightFile[];
         try {
-            loadedFiles = await this.nieco(promises);
+            loadedFiles = await this.processLoadedFiles(promises);
         } catch (err) {
             // TODO handle error... show to user;
             return;
@@ -82,7 +96,12 @@ export default class FileService {
         this.reducer.addLoadedFiles(loadedFiles);
     }
 
-    public async saveRecentFiles(files: HeavyweightFile[]) {
+    /**
+     * @description Save loaded files as recent files
+     * @param {HeavyweightFile[]} files 
+     * @returns {Promise<void>} 
+     */
+    public async saveRecentFiles(files: HeavyweightFile[]): Promise<void> {
         for (let i = 0; i < files.length; i++) {
             const item = files[i];
             await this.fileStorage.storeData(item);
