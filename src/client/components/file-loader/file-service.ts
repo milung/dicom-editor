@@ -26,9 +26,7 @@ export default class FileService {
                 .then(buffer => {
                     let data = {};
                     try {
-                        this.fileStorage.storeData(buffer, file);
                         data = dicomReader.getDicomEntries(buffer);
-
                     } catch (err) {
                         throw new Error(`Could not load file ${file.name}`);
                     }
@@ -43,6 +41,10 @@ export default class FileService {
         let results: TmpData[] = [];
         try {
             results = await Promise.all(promises);
+            for(let i = 0; i < results.length; i++) {
+                const item = results[i];
+                await this.fileStorage.storeData(item.buffer, item.file);
+            }
         } catch (err) {
             // console.log(err);
             return;
