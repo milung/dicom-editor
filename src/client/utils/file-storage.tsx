@@ -6,7 +6,7 @@ import { DicomReader } from './dicom-reader';
 const MAX_RECENT_FILES = 5;
 const SIZE_DELIMITER = '_';
 
-interface DatabaseEntry {
+export interface DatabaseEntry {
     fileInterface: LightweightFile;
     data: Uint8Array;
 }
@@ -95,13 +95,40 @@ export class FileStorage {
         });
     }
 
-    private async updateDbAndState(index: number, entryToStore: DatabaseEntry, newRecentFiles: LightweightFile[]) {
-        await this.storage.setItem(entryToStore.fileInterface.dbKey, entryToStore);
-        newRecentFiles.splice(index, 1);
-        newRecentFiles.unshift(entryToStore.fileInterface);
+    /**
+     * @description Parses dbKey containing information about file size and returns size in bytes
+     * @param {string} dbKey dbKey to parse
+     * @returns {number} size in bytes
+     */
+    public getFileSizeFromDbKey(dbKey: string): number {
+        var lastIndex = dbKey.lastIndexOf(SIZE_DELIMITER);
+        var size = dbKey.substr(lastIndex + 1, dbKey.length);
+        return parseInt(size, 10);
     }
 
-    private findOldestFileIndex(recentFiles: LightweightFile[]): number {
+    /**
+     * @description function finds index of file to be updated. Id recentFiles does not contain
+     * dbKey to find, -1 is returned
+     * @param {string} searchDbKey db key to find in recentFiles
+     * @param {LightweightFile[]} recentFiles array of {LightweightFile} objects to find db key in
+     * @returns {number} index of found db key or -1 if index is not found
+     */
+    public findIndexOfFileToUpdate(searchDbKey: string, recentFiles: LightweightFile[]): number {
+        for (var i = 0; i < recentFiles.length; i++) {
+            if (recentFiles[i].dbKey === searchDbKey) {
+                return i;
+            }
+        }
+
+        return -1;
+    }
+
+    /**
+     * @description finds oldest file index to be removed from recent files
+     * @param {LightweightFile[]} recentFiles recent files to find in
+     * @returns {number} index of oldest file
+     */
+    public findOldestFileIndex(recentFiles: LightweightFile[]): number {
         let indexOfOldestFile = 0;
         let oldestFile = recentFiles[0];
 
@@ -115,39 +142,32 @@ export class FileStorage {
         return indexOfOldestFile;
     }
 
-    private prepareDatabaseEntry(file: HeavyweightFile): DatabaseEntry {
-        let dataArray: Uint8Array = file.bufferedData;
-        let fileName = file.fileName;
-        let fileSize = file.fileSize;
-        let newDbEntry: DatabaseEntry = {
+    /**
+     * @description creates DB entry from {HeavyweightFile} object
+     * @param {HeavyweightFile} file heavy file to convert
+     * @returns {DatabaseEntry} DB entry that can be stored into DB
+     */
+    public prepareDatabaseEntry(file: HeavyweightFile): DatabaseEntry {
+        return {
             fileInterface: {
-                fileName: fileName,
-                dbKey: fileName + SIZE_DELIMITER + fileSize,
-                timestamp: new Date().getTime(),
+                fileName: file.fileName,
+                dbKey: file.fileName + SIZE_DELIMITER + file.fileSize,
+                timestamp: file.timestamp,
             },
-            data: dataArray
+            data: file.bufferedData
         };
-
-        return newDbEntry;
-    }
-
-    private findIndexOfFileToUpdate(searchDbKey: string, recentFiles: LightweightFile[]): number {
-        for (var i = 0; i < recentFiles.length; i++) {
-            if (recentFiles[i].dbKey === searchDbKey) {
-                return i;
-            }
-        }
-
-        return -1;
     }
 
     /**
-     * Parses dbKey containing information about file size and returns size in bytes
-     * @param dbKey dbKey to parse
+     * @description inserts entryToStore into new recent files array at specific index
+     * @param {number} index index where entry is to be stored into array
+     * @param {DatabaseEntry} entryToStore entry to store to DB and memory
+     * @param {LightweightFile[]} newRecentFiles new array where entry is to be inserted
      */
-    private getFileSizeFromDbKey(dbKey: string): number {
-        var lastIndex = dbKey.lastIndexOf(SIZE_DELIMITER);
-        var size = dbKey.substr(lastIndex, dbKey.length);
-        return parseInt(size, 10);
+    private async updateDbAndState(index: number, entryToStore: DatabaseEntry, newRecentFiles: LightweightFile[]) {
+        await this.storage.setItem(entryToStore.fileInterface.dbKey, entryToStore);
+        newRecentFiles.splice(index, 1);
+        newRecentFiles.unshift(entryToStore.fileInterface);
     }
+
 }
