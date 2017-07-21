@@ -50,8 +50,11 @@ export class DicomTable extends React.Component<DicomTableProps, DicomTableState
                                                 <Table selectable={false} key={entryIndex}>
                                                     <TableHeader displaySelectAll={false} adjustForCheckbox={false}>
                                                         <TableRow>
+                                                            <TableHeaderColumn>{entry.tagGroup}{", "}{entry.tagElement}</TableHeaderColumn>
                                                             <TableHeaderColumn>{entry.tagName}</TableHeaderColumn>
                                                             <TableHeaderColumn>{entry.tagValue}</TableHeaderColumn>
+                                                            <TableHeaderColumn>{entry.tagVR}</TableHeaderColumn>
+                                                            <TableHeaderColumn>{entry.tagVM}</TableHeaderColumn>
                                                         </TableRow>
                                                     </TableHeader>
                                                 </Table>
