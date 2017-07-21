@@ -12,5 +12,8 @@ export function convertFileToArrayBuffer(file: File): Promise<Uint8Array> {
         reader.onloadend = function (event: Event) {
             resolve(new Uint8Array(reader.result));
         };
+        reader.onerror = (err) => {
+            reject(err);
+        };
     });
 }

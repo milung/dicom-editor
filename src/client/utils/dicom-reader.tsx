@@ -6,10 +6,6 @@ import { DicomGroupEntry, DicomData } from '../model/dicom-entry';
 
 import * as dicomParser from 'dicom-parser';
 
-export function getValueMultiplicity(value: string) {
-    return value === undefined ? 0 : (value.match(/\\/g) || []).length + 1;
-}
-
 export class DicomReader {
 
     /**
@@ -21,6 +17,10 @@ export class DicomReader {
         return convertFileToArrayBuffer(file).then(arrayBuffer => {
             return this.getDicomEntries(arrayBuffer);
         });
+    }
+
+    public getValueMultiplicity(value: string) {
+        return value === undefined ? 0 : (value.match(/\\/g) || []).length + 1;
     }
 
     /**
@@ -37,7 +37,7 @@ export class DicomReader {
             for (var tag in dataset.elements) {
                 if (tag) {
                     var value = dataset.string(tag, undefined);
-                    let VM = getValueMultiplicity(value);
+                    let VM = this.getValueMultiplicity(value);
 
                     var firstHalf: string = tag.slice(1, 5);
                     var latterHalf: string = tag.slice(5, 9);
