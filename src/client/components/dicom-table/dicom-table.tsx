@@ -6,8 +6,11 @@ import {
     TableRow,
     List,
     ListItem,
+    TableBody,
+    TableRowColumn,
 } from 'material-ui';
-import { DicomEntry, DicomData, DicomGroupEntry } from '../../model/dicom-entry';
+import { DicomData, DicomGroupEntry } from '../../model/dicom-entry';
+import './dicom-table.css';
 
 interface DicomTableProps {
     data: DicomData;
@@ -23,40 +26,66 @@ export class DicomTable extends React.Component<DicomTableProps, DicomTableState
     }
 
     render() {
-        let finalArr: DicomEntry[] = [];
         let groupArray: DicomGroupEntry[] = [];
+        let tableRowStyle = { color: '#FFFFFF' };
         if (this.props.data) {
 
             for (var groupNumber in this.props.data) {
                 if (groupNumber) {
-                    groupArray.push(this.props.data[groupNumber]);
-                    this.props.data[groupNumber].entries.forEach(_ => {
-                        finalArr.push(_);
-                    });
+                    groupArray.push(this.props.data[groupNumber]);         
                 }
             }
             return (
                 <List>
+                    {/* iterates over groups */}
                     {groupArray.map((group, groupIndex) => {
                         return (
                             <ListItem
                                 primaryText={group.groupNumber}
                                 key={groupIndex}
                                 nestedItems={[
-
                                     <ListItem disabled={true} key={groupIndex}>
+                                        <Table selectable={false}>
+                                            <TableHeader
+                                                className="tableHeader"
+                                                displaySelectAll={false}
+                                                adjustForCheckbox={false}
+                                            >
+                                                <TableRow>
+                                                    <TableHeaderColumn style={tableRowStyle}>
+                                                        Tag group, tag element
+                                                        </TableHeaderColumn>
+                                                    <TableHeaderColumn style={tableRowStyle}>
+                                                        Tag name
+                                                        </TableHeaderColumn>
+                                                    <TableHeaderColumn style={tableRowStyle}>
+                                                        Tag value
+                                                        </TableHeaderColumn>
+                                                    <TableHeaderColumn style={tableRowStyle}>
+                                                        VR
+                                                        </TableHeaderColumn>
+                                                    <TableHeaderColumn style={tableRowStyle}>
+                                                        VM
+                                                        </TableHeaderColumn>
+                                                </TableRow>
+                                            </TableHeader>
+                                        </Table>
+                                        {/* iterates over group entries*/}
                                         {group.entries.map((entry, entryIndex) => {
                                             return (
                                                 <Table selectable={false} key={entryIndex}>
-                                                    <TableHeader displaySelectAll={false} adjustForCheckbox={false}>
+                                                    <TableHeader displaySelectAll={false} adjustForCheckbox={false} />
+                                                    <TableBody selectable={false} displayRowCheckbox={false}>
                                                         <TableRow>
-                                                            <TableHeaderColumn>{entry.tagGroup}{", "}{entry.tagElement}</TableHeaderColumn>
-                                                            <TableHeaderColumn>{entry.tagName}</TableHeaderColumn>
-                                                            <TableHeaderColumn>{entry.tagValue}</TableHeaderColumn>
-                                                            <TableHeaderColumn>{entry.tagVR}</TableHeaderColumn>
-                                                            <TableHeaderColumn>{entry.tagVM}</TableHeaderColumn>
+                                                            <TableRowColumn>
+                                                                {entry.tagGroup}{', '}{entry.tagElement}
+                                                                </TableRowColumn>
+                                                            <TableRowColumn>{entry.tagName}</TableRowColumn>
+                                                            <TableRowColumn>{entry.tagValue}</TableRowColumn>
+                                                            <TableRowColumn>{entry.tagVR}</TableRowColumn>
+                                                            <TableRowColumn>{entry.tagVM}</TableRowColumn>
                                                         </TableRow>
-                                                    </TableHeader>
+                                                    </TableBody>
                                                 </Table>
                                             );
                                         })}
