@@ -6,8 +6,8 @@
   "scripts": {
     "test": "mocha-webpack --webpack-config config/webpack-test.config.js --reporter list \"test/**/*.test.{ts,tsx}\" ",
     "test:watch": "mocha-webpack --webpack-config webpack-test.config.js --watch --reporter list \"**/*.test.ts\"",
-    "lint:client": "tslint -c tslint.json src/client/**/*.{ts,tsx}",
-    "lint:server": "tslint -c tslint.json src/server/**/*.{ts,tsx}",
+    "lint:client": "tslint --project tsconfig.json -c tslint.json src/client/**/*.{ts,tsx} --type-check",
+    "lint:server": "tslint --project tsconfig.json -c tslint.json src/server/**/*.{ts,tsx} --type-check",
     "lint": "npm run lint:server && npm run lint:client",
     "start": "webpack-dev-server --config config/webpack.config.js --inline",
     "build": "npm run build:client && npm run build:server",
