@@ -1,16 +1,15 @@
 import * as React from 'react';
 import {
     Table,
-    TableHeader,
-    TableHeaderColumn,
-    TableRow,
     List,
     ListItem,
     TableBody,
-    TableRowColumn,
+    TableHeader,
 } from 'material-ui';
 import { DicomData, DicomGroupEntry } from '../../model/dicom-entry';
 import './dicom-table.css';
+import { DicomTableRow } from "./dicom-table-row";
+import { DicomTableHeader } from "./dicom-table-header";
 
 interface DicomTableProps {
     data: DicomData;
@@ -27,12 +26,12 @@ export class DicomTable extends React.Component<DicomTableProps, DicomTableState
 
     render() {
         let groupArray: DicomGroupEntry[] = [];
-        let tableRowStyle = { color: '#FFFFFF' };
+        // let keyCounter = 0;
         if (this.props.data) {
 
             for (var groupNumber in this.props.data) {
                 if (groupNumber) {
-                    groupArray.push(this.props.data[groupNumber]);         
+                    groupArray.push(this.props.data[groupNumber]);
                 }
             }
             return (
@@ -51,44 +50,20 @@ export class DicomTable extends React.Component<DicomTableProps, DicomTableState
                                                 displaySelectAll={false}
                                                 adjustForCheckbox={false}
                                             >
-                                                <TableRow>
-                                                    <TableHeaderColumn style={tableRowStyle}>
-                                                        Tag group, tag element
-                                                        </TableHeaderColumn>
-                                                    <TableHeaderColumn style={tableRowStyle}>
-                                                        Tag name
-                                                        </TableHeaderColumn>
-                                                    <TableHeaderColumn style={tableRowStyle}>
-                                                        Tag value
-                                                        </TableHeaderColumn>
-                                                    <TableHeaderColumn style={tableRowStyle}>
-                                                        VR
-                                                        </TableHeaderColumn>
-                                                    <TableHeaderColumn style={tableRowStyle}>
-                                                        VM
-                                                        </TableHeaderColumn>
-                                                </TableRow>
+                                            {/* Header containing tag value names*/}
+                                                <DicomTableHeader />
                                             </TableHeader>
+                                            <TableBody selectable={false} displayRowCheckbox={false}>
+
+                                                {group.entries.map((entry, entryIndex) => {
+                                                    return (
+                                                        // single row with single DicomEntry
+                                                        <DicomTableRow entry={entry} key={entryIndex} />
+
+                                                    );
+                                                })}
+                                            </TableBody>
                                         </Table>
-                                        {/* iterates over group entries*/}
-                                        {group.entries.map((entry, entryIndex) => {
-                                            return (
-                                                <Table selectable={false} key={entryIndex}>
-                                                    <TableHeader displaySelectAll={false} adjustForCheckbox={false} />
-                                                    <TableBody selectable={false} displayRowCheckbox={false}>
-                                                        <TableRow>
-                                                            <TableRowColumn>
-                                                                {entry.tagGroup}{', '}{entry.tagElement}
-                                                                </TableRowColumn>
-                                                            <TableRowColumn>{entry.tagName}</TableRowColumn>
-                                                            <TableRowColumn>{entry.tagValue}</TableRowColumn>
-                                                            <TableRowColumn>{entry.tagVR}</TableRowColumn>
-                                                            <TableRowColumn>{entry.tagVM}</TableRowColumn>
-                                                        </TableRow>
-                                                    </TableBody>
-                                                </Table>
-                                            );
-                                        })}
                                     </ListItem>
 
                                 ]}
