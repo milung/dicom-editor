@@ -4,6 +4,7 @@ import { ApplicationStateReducer } from '../application-state';
 import { DicomReader } from './dicom-reader';
 
 const MAX_RECENT_FILES = 5;
+const SIZE_DELIMITER = '_';
 
 interface DatabaseEntry {
     fileInterface: LightweightFile;
@@ -26,8 +27,8 @@ export class FileStorage {
         this.dicomReader = new DicomReader();
     }
 
-    public async storeData(dataArray: Uint8Array, fileObject: File) {
-        let entryToStore = this.prepareDatabaseEntry(dataArray, fileObject);
+    public async storeData(file: HeavyweightFile) {
+        let entryToStore = this.prepareDatabaseEntry(file);
         let reducerRecentFiles = this.reducer.getState().recentFiles;
         let newRecentFiles: LightweightFile[] = JSON.parse(JSON.stringify(reducerRecentFiles));
         let indexOfFileToUpdate = this.findIndexOfFileToUpdate(entryToStore.fileInterface.dbKey, newRecentFiles);
@@ -56,10 +57,12 @@ export class FileStorage {
 
     public getData(fileObject: LightweightFile): Promise<HeavyweightFile> {
 
+        let fileSize = this.getFileSizeFromDbKey(fileObject.fileName);
         var promise = this.storage.getItem<DatabaseEntry>(fileObject.dbKey).then(function (readValue: DatabaseEntry) {
             let dicomReader = new DicomReader();
             let toReturn: HeavyweightFile = {
                 fileName: fileObject.fileName,
+                fileSize: fileSize,
                 bufferedData: readValue.data,
                 timestamp: fileObject.timestamp,
                 dicomData: dicomReader.getDicomEntries(readValue.data)
@@ -112,11 +115,14 @@ export class FileStorage {
         return indexOfOldestFile;
     }
 
-    private prepareDatabaseEntry(dataArray: Uint8Array, fileObject: File): DatabaseEntry {
+    private prepareDatabaseEntry(file: HeavyweightFile): DatabaseEntry {
+        let dataArray: Uint8Array = file.bufferedData;
+        let fileName = file.fileName;
+        let fileSize = file.fileSize;
         let newDbEntry: DatabaseEntry = {
             fileInterface: {
-                fileName: fileObject.name,
-                dbKey: fileObject.name + '_' + fileObject.size,
+                fileName: fileName,
+                dbKey: fileName + SIZE_DELIMITER + fileSize,
                 timestamp: new Date().getTime(),
             },
             data: dataArray
@@ -133,5 +139,15 @@ export class FileStorage {
         }
 
         return -1;
+    }
+
+    /**
+     * Parses dbKey containing information about file size and returns size in bytes
+     * @param dbKey dbKey to parse
+     */
+    private getFileSizeFromDbKey(dbKey: string): number {
+        var lastIndex = dbKey.lastIndexOf(SIZE_DELIMITER);
+        var size = dbKey.substr(lastIndex, dbKey.length);
+        return parseInt(size, 10);
     }
 }

@@ -1,5 +1,5 @@
+import { HeavyweightFile } from './../../model/file-interfaces';
 import { ApplicationStateReducer } from '../../application-state';
-import { HeavyweightFile } from '../../model/file-interfaces';
 import { convertFileToArrayBuffer } from '../../utils/file-converter';
 import { DicomReader } from '../../utils/dicom-reader';
 import { DicomData } from '../../model/dicom-entry';
@@ -41,9 +41,9 @@ export default class FileService {
         let results: TmpData[] = [];
         try {
             results = await Promise.all(promises);
-            for(let i = 0; i < results.length; i++) {
+            for (let i = 0; i < results.length; i++) {
                 const item = results[i];
-                await this.fileStorage.storeData(item.buffer, item.file);
+                await this.fileStorage.storeData(this.createHeavyFile(item));
             }
         } catch (err) {
             // console.log(err);
@@ -51,15 +51,22 @@ export default class FileService {
         }
 
         const loadedFiles: HeavyweightFile[] = results.map(item => {
-
-            return {
-                fileName: item.file.name,
-                bufferedData: item.buffer,
-                dicomData: item.dicomData,
-                timestamp: new Date().getTime()
-            };
+            return this.createHeavyFile(item);
         });
 
         this.reducer.addLoadedFiles(loadedFiles);
+    }
+
+    /**
+     * Helper method creates HeavyWeightFile object from temp data
+     */
+    private createHeavyFile(tmpData: TmpData) {
+        return {
+            fileName: tmpData.file.name,
+            fileSize: tmpData.file.size,
+            bufferedData: tmpData.buffer,
+            dicomData: tmpData.dicomData,
+            timestamp: new Date().getTime()
+        };
     }
 }

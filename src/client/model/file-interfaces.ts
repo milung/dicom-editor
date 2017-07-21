@@ -8,6 +8,7 @@ export interface LightweightFile {
 
 export interface HeavyweightFile {
     fileName: string;
+    fileSize: number;
     bufferedData: Uint8Array;
     dicomData: DicomData;
     timestamp: number;
