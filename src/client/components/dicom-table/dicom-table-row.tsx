@@ -1,6 +1,6 @@
 import * as React from 'react';
-import { TableRow, TableRowColumn } from "material-ui";
-import { DicomEntry } from "../../model/dicom-entry";
+import { TableRow, TableRowColumn } from 'material-ui';
+import { DicomEntry } from '../../model/dicom-entry';
 
 export interface DicomTableRowProps {
     entry: DicomEntry;

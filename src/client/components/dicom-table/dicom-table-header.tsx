@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { TableRow, TableHeaderColumn } from "material-ui";
+import { TableRow, TableHeaderColumn } from 'material-ui';
 
 export interface DicomTableHeaderProps {
 
@@ -17,7 +17,6 @@ export class DicomTableHeader extends React.Component<DicomTableHeaderProps, Dic
     public render() {
         let tableRowStyle = { color: '#FFFFFF' };
         return (
-           
                 <TableRow>
                     <TableHeaderColumn style={tableRowStyle}>
                         Tag group, tag element

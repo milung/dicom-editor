@@ -15,7 +15,6 @@ export default class FileService {
     private fileStorage: FileStorage;
     private dicomReader: DicomReader;
 
-    
     public constructor(private reducer: ApplicationStateReducer) {
         this.fileStorage = new FileStorage(reducer);
         this.dicomReader = new DicomReader();

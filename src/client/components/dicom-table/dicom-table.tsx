@@ -8,8 +8,8 @@ import {
 } from 'material-ui';
 import { DicomData, DicomGroupEntry } from '../../model/dicom-entry';
 import './dicom-table.css';
-import { DicomTableRow } from "./dicom-table-row";
-import { DicomTableHeader } from "./dicom-table-header";
+import { DicomTableRow } from './dicom-table-row';
+import { DicomTableHeader } from './dicom-table-header';
 
 interface DicomTableProps {
     data: DicomData;
