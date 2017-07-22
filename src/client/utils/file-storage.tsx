@@ -15,6 +15,10 @@ export class FileStorage {
     private storage: LocalForage;
     private dicomReader: DicomReader;
 
+    /**
+     * Constructor of fileStorage which create instace of localForage for storing data to IndexedDB.
+     * @param reducer is reducer of application.
+     */
     public constructor(private reducer: ApplicationStateReducer) {
         this.storage = localForage.createInstance({
             driver: localForage.INDEXEDDB,
@@ -27,34 +31,61 @@ export class FileStorage {
         this.dicomReader = new DicomReader();
     }
 
+    /**
+     * Store new file into recent file database and update application state of recent files.
+     * If database already contains file with asociated key then data in database is updated.  
+     * @param {HeavyweightFile} file is interface of file to be stored in recent files. 
+     */
     public async storeData(file: HeavyweightFile) {
-        let entryToStore = this.prepareDatabaseEntry(file);
         let reducerRecentFiles = this.reducer.getState().recentFiles;
-        let newRecentFiles: LightweightFile[] = JSON.parse(JSON.stringify(reducerRecentFiles));
-        let indexOfFileToUpdate = this.findIndexOfFileToUpdate(entryToStore.fileInterface.dbKey, newRecentFiles);
 
-        if (reducerRecentFiles.length < MAX_RECENT_FILES) {
-            if (indexOfFileToUpdate === -1) {
-                await this.storage.setItem(entryToStore.fileInterface.dbKey, entryToStore);
-                newRecentFiles.unshift(entryToStore.fileInterface);
-            } else {
-                await this.updateDbAndState(indexOfFileToUpdate, entryToStore, newRecentFiles);
-            }
-        } else {
-            let indexToRemove = this.findOldestFileIndex(reducerRecentFiles);
+        let entryToStore = this.prepareDatabaseEntry(file);
+        let indexToModify = this.storeDataToDatabase(entryToStore, reducerRecentFiles);
+        await this.updateRecentFiles(indexToModify, entryToStore.fileInterface, reducerRecentFiles);
+    }
 
-            if (indexOfFileToUpdate === -1) {
-                await this.storage.removeItem(newRecentFiles[indexToRemove].dbKey);
-            } else {
-                indexToRemove = indexOfFileToUpdate;
-            }
+    /**
+     * Stores database entry into database. If database is full then oldest file is removed from database.
+     * If database already contains entry with asociated key then entry in database is updated.
+     * @param entryToStore is object which will be stored in indexedDB.
+     * @param reducerRecentFiles is array of application recentFiles. 
+     * @returns index (in recent files array) of file which was modified.
+     */
+    public storeDataToDatabase(entryToStore: DatabaseEntry, reducerRecentFiles: LightweightFile[]): number {
+        let indexToChange = this.findIndexOfFileToUpdate(entryToStore.fileInterface.dbKey, reducerRecentFiles);
 
-            await this.updateDbAndState(indexToRemove, entryToStore, newRecentFiles);
+        if (reducerRecentFiles.length === MAX_RECENT_FILES && indexToChange === -1) {
+            indexToChange = this.findOldestFileIndex(reducerRecentFiles);
+            this.storage.removeItem(reducerRecentFiles[indexToChange].dbKey);
         }
+
+        this.storage.setItem(entryToStore.fileInterface.dbKey, entryToStore);
+        return indexToChange;
+    }
+
+    /**
+     * Updates recent files in application state reducer.
+     * @param {number} index defines index of element in array of recentFiles to be removed.
+     * @param {LightweighFile} fileInterfaceToStore is file interface to be stored in application state.
+     * @param {LightweighFile[]} reducerRecentFiles is array of application recentFiles.
+     */
+    public updateRecentFiles(index: number, fileInterfaceToStore: LightweightFile, 
+                             reducerRecentFiles: LightweightFile[]) {
+        let newRecentFiles: LightweightFile[] = JSON.parse(JSON.stringify(reducerRecentFiles));
+
+        if (!(reducerRecentFiles.length < MAX_RECENT_FILES && index === -1)) {
+            newRecentFiles.splice(index, 1);
+        }
+        newRecentFiles.unshift(fileInterfaceToStore);
 
         this.reducer.updateRecentFiles(newRecentFiles);
     }
 
+    /**
+     * @description Provides access to indexedDB and load file according to dbKey in fileObject.
+     * @param {LightweightFile} fileObject represent interface for file to be loaded from indexedDB.
+     * @returns {Promise<HeavyWeightFile>} which contains loaded file data from indexedDB.[]
+     */
     public getData(fileObject: LightweightFile): Promise<HeavyweightFile> {
 
         let fileSize = this.getFileSizeFromDbKey(fileObject.fileName);
@@ -74,6 +105,9 @@ export class FileStorage {
         return promise;
     }
 
+    /**
+     * @description Load all files stored in indexedDB DICOMviewer in table recentFilesStore.
+     */
     public loadRecentFiles() {
         this.storage.keys().then(keys => {
             let promises = keys.map(key => {
@@ -157,17 +191,4 @@ export class FileStorage {
             data: file.bufferedData
         };
     }
-
-    /**
-     * @description inserts entryToStore into new recent files array at specific index
-     * @param {number} index index where entry is to be stored into array
-     * @param {DatabaseEntry} entryToStore entry to store to DB and memory
-     * @param {LightweightFile[]} newRecentFiles new array where entry is to be inserted
-     */
-    private async updateDbAndState(index: number, entryToStore: DatabaseEntry, newRecentFiles: LightweightFile[]) {
-        await this.storage.setItem(entryToStore.fileInterface.dbKey, entryToStore);
-        newRecentFiles.splice(index, 1);
-        newRecentFiles.unshift(entryToStore.fileInterface);
-    }
-
 }
