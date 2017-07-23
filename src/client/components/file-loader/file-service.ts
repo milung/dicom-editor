@@ -1,3 +1,4 @@
+import { DicomSimpleData } from './../../model/dicom-entry';
 import { HeavyweightFile } from './../../model/file-interfaces';
 import { ApplicationStateReducer } from '../../application-state';
 import { convertFileToArrayBuffer } from '../../utils/file-converter';
@@ -46,7 +47,9 @@ export default class FileService {
      * @returns {HeavyweightFile} 
      */
     public createHeavyFile(bump: FileContent): HeavyweightFile {
-        let data = {};
+        let data: DicomSimpleData = {
+            entries: []
+        };
         try {
             data = this.dicomReader.getDicomEntries(bump.buffer);
         } catch (err) {

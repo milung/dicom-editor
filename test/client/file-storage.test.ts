@@ -156,7 +156,9 @@ describe('file-storage', () => {
             fileName: 'my-name.dcm',
             fileSize: 12345,
             bufferedData: buffer,
-            dicomData: {},
+            dicomData: {
+                entries: []
+            },
             timestamp: 123
         }
 

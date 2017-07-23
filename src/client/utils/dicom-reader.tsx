@@ -1,8 +1,8 @@
 import { DicomEntry } from '../model/dicom-entry';
 import { dicomDictionary } from './dicom-dictionary';
 import { convertFileToArrayBuffer } from './file-converter';
-import { translateTagGroup } from './group-name-translator';
-import { DicomGroupEntry, DicomData } from '../model/dicom-entry';
+// import { translateTagGroup } from './group-name-translator';
+import { DicomSimpleData } from '../model/dicom-entry';
 
 import * as dicomParser from 'dicom-parser';
 
@@ -13,7 +13,7 @@ export class DicomReader {
      * @param file File object to process
      * @return DicomData object with parsed data
      */
-    public getData(file: File): Promise<DicomData> {
+    public getData(file: File): Promise<DicomSimpleData> {
         return convertFileToArrayBuffer(file).then(arrayBuffer => {
             return this.getDicomEntries(arrayBuffer);
         });
@@ -28,8 +28,10 @@ export class DicomReader {
      * @param bytes ArrayBuffer to parse
      * @return parsed DicomData
      */
-    public getDicomEntries(bytes: Uint8Array): DicomData {
-        let data: DicomData = {};
+    public getDicomEntries(bytes: Uint8Array): DicomSimpleData {
+        let data: DicomSimpleData = {
+            entries: []
+        };
         var dataset;
         try {
             dataset = dicomParser.parseDicom(bytes);
@@ -61,20 +63,7 @@ export class DicomReader {
                         tagVM: VM.toString()
                     };
 
-                    // if tag group already exists, add new entry to it
-                    if (data[firstHalf]) {
-                        data[firstHalf].entries.push(entry);
-                    } else { // else create new group entry
-                        let groupEntry: DicomGroupEntry = {
-
-                            groupName: translateTagGroup(firstHalf),
-                            groupNumber: firstHalf,
-                            entries: [
-                                entry
-                            ]
-                        };
-                        data[firstHalf] = groupEntry;
-                    }
+                    data.entries.push(entry);
 
                 }
             }

@@ -8,7 +8,6 @@ import FileDropZone from './components/file-loader/file-drop-zone';
 import './app.css';
 import { ApplicationStateReducer } from './application-state';
 
-import { DicomData } from './model/dicom-entry';
 import { FileStorage } from './utils/file-storage';
 
 let reducer = new ApplicationStateReducer();
@@ -16,16 +15,12 @@ let fileStorage = new FileStorage(reducer);
 fileStorage.loadRecentFiles();
 
 interface AppState {
-  dicomData: DicomData;
 }
 
 export default class App extends React.Component<{}, AppState> {
 
   public constructor(props: {}) {
     super(props);
-    this.state = {
-      dicomData: {}
-    };
   }
 
   public componentDidMount() {

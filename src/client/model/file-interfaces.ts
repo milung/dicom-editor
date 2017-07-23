@@ -1,4 +1,4 @@
-import { DicomData } from './dicom-entry';
+import { DicomSimpleData } from './dicom-entry';
 
 export interface LightweightFile {
     fileName: string;
@@ -10,6 +10,6 @@ export interface HeavyweightFile {
     fileName: string;
     fileSize: number;
     bufferedData: Uint8Array;
-    dicomData: DicomData;
+    dicomData: DicomSimpleData;
     timestamp: number;
 }

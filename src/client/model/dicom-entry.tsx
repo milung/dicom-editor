@@ -7,12 +7,18 @@ export interface DicomEntry {
     tagVM: string;
 }
 
-export interface DicomGroupEntry {
-    groupNumber: string;
-    groupName: string;
-    entries: DicomEntry[];
+/**
+ * @description Data used in extended hierarchical table, grouped by module names
+ */
+export interface DicomExtendedData {
+    [moduleName: string]: DicomEntry[];
 }
 
-export interface DicomData {
-    [groupNumber: string]: DicomGroupEntry;
+/**
+ * @description Simple form of Dicom data, consists only of array of {DicomEntry}
+ * @export
+ * @interface DicomSimpleData
+ */
+export interface DicomSimpleData {
+    entries: DicomEntry[];
 }

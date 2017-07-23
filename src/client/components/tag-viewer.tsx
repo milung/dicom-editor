@@ -1,10 +1,10 @@
 import * as React from 'react';
 import './tag-viewer.css';
 import { DicomTable } from './dicom-table/dicom-table';
-import { DicomData } from '../model/dicom-entry';
+import { DicomExtendedData } from '../model/dicom-entry';
 
 interface TagViewerProps {
-  data: DicomData;
+  data: DicomExtendedData;
 }
 
 interface TagViewerState {
