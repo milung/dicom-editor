@@ -4,9 +4,10 @@ import TagViewer from '../components/tag-viewer';
 import ImageViewer from '../components/image-viewer';
 
 import './main-view.css';
-import { ApplicationStateReducer } from '../application-state';
+import { ApplicationStateReducer, SelectedFile } from '../application-state';
 import { DicomSimpleData } from '../model/dicom-entry';
-import { convertSimpleDicomToExtended } from '../utils/dicom-entry-converter';
+import { HeavyweightFile } from "../model/file-interfaces";
+import { TableType } from "../model/table-enum";
 
 interface MainViewProps {
   reducer: ApplicationStateReducer;
@@ -14,6 +15,8 @@ interface MainViewProps {
 
 interface MainViewState {
   dicomData: DicomSimpleData;
+  loadedFiles: HeavyweightFile[];
+  selectedFiles: SelectedFile[];
 }
 
 export default class MainView extends React.Component<MainViewProps, MainViewState> {
@@ -22,20 +25,30 @@ export default class MainView extends React.Component<MainViewProps, MainViewSta
     super(props);
     this.state = {
       dicomData: {
-        entries: []
-      }
+        entries: [],
+        
+      },
+      selectedFiles: [],
+      loadedFiles: []
     };
   }
 
   public componentDidMount() {
     this.props.reducer.state$.subscribe(state => {
       this.setState({
-        dicomData: state.currentFile ? state.currentFile.dicomData : { entries: []}
+        dicomData: state.currentFile ? state.currentFile.dicomData : { entries: []},
+        selectedFiles: state.selectedFiles ? state.selectedFiles : [],
+        loadedFiles: state.loadedFiles ? state.loadedFiles : []
       });
     });
   }
 
   render() {
+    let files: HeavyweightFile[] = [];
+    this.state.selectedFiles.forEach(selectedFile => {
+      files.push(this.state.loadedFiles[selectedFile.fileIndex])
+    })
+
     return (
       <Tabs className="tabs" initialSelectedIndex={1}>
         <Tab
@@ -50,7 +63,7 @@ export default class MainView extends React.Component<MainViewProps, MainViewSta
           label="Tags"
         >
           <div className="container">
-            <TagViewer data={convertSimpleDicomToExtended(this.state.dicomData)} />
+            <TagViewer files = {files} tableType = {TableType.SIMPLE} />
           </div>
         </Tab>
       </Tabs>

@@ -1,10 +1,14 @@
 import * as React from 'react';
 import './tag-viewer.css';
-import { DicomExtendedTable } from './dicom-table/dicom-extended-table';
-import { DicomExtendedData } from '../model/dicom-entry';
+import { DicomSimpleTable } from "./dicom-table/dicom-simple-table";
+import { TableType } from "../model/table-enum";
+import { HeavyweightFile } from "../model/file-interfaces";
+import { DicomExtendedTable } from "./dicom-table/dicom-extended-table";
 
 interface TagViewerProps {
-  data: DicomExtendedData;
+    tableType: TableType;
+    files: HeavyweightFile[];
+
 }
 
 interface TagViewerState {
@@ -18,11 +22,49 @@ export default class TagViewer extends React.Component<TagViewerProps, TagViewer
     }
 
     render() {
+        switch (this.props.tableType) {
+            case TableType.SIMPLE:
+                return this.renderSimpleTable();
+            case TableType.EXTENDED:
+                return this.renderExtendedTable();
+            case TableType.SIMPLE_COMPARISON:
+                return this.renderSimpleComparisonTable();
+            case TableType.EXTENDED_COMPARISON:
+                return this.renderExtendedComparisonTable();
+            default:
+                return (
+                    <div />
+                );
+        }
+    }
+
+    private renderSimpleTable(): JSX.Element {
         return (
             <div>
                 <h1>TagViewer</h1>
-                <DicomExtendedTable data={this.props.data} />
+                <DicomSimpleTable entries={[]} />
             </div>
+        );
+    }
+
+    private renderExtendedTable(): JSX.Element {
+        return (
+            <div>
+                <h1>TagViewer</h1>
+                <DicomExtendedTable data={{}} />
+            </div>
+        );
+    }
+
+    private renderSimpleComparisonTable(): JSX.Element {
+        return (
+            <div/>
+        );
+    }
+
+    private renderExtendedComparisonTable(): JSX.Element {
+        return (
+            <div/>
         );
     }
 }

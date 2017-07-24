@@ -28,7 +28,7 @@ export class DicomExtendedTable extends React.Component<DicomExtendedTableProps,
 
     render() {
         let moduleArray: TableData[] = [];
-        // let keyCounter = 0;
+        
         if (this.props.data) {
 
             for (var moduleName in this.props.data) {

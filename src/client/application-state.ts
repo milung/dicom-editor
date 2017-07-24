@@ -3,11 +3,17 @@ import { HeavyweightFile, LightweightFile } from './model/file-interfaces';
 import { Observable } from 'rxjs/Observable';
 import { BehaviorSubject } from 'rxjs/BehaviorSubject';
 
+export interface SelectedFile {
+    fileIndex: number;
+    colourIndex: number;
+}
+
 export interface ApplicationState {
     recentFiles: LightweightFile[];
     loadedFiles: HeavyweightFile[];
     currentFile?: HeavyweightFile;
     currentIndex?: number;
+    selectedFiles: SelectedFile[];
 }
 
 export class ApplicationStateReducer {
@@ -23,7 +29,8 @@ export class ApplicationStateReducer {
             recentFiles: [],
             loadedFiles: [],
             currentFile: undefined,
-            currentIndex: undefined
+            currentIndex: undefined,
+            selectedFiles: []
         };
 
         this.stateSubject$ = new BehaviorSubject(this.currentState);

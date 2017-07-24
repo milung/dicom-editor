@@ -1,0 +1,6 @@
+export enum TableType {
+    SIMPLE,
+    EXTENDED,
+    SIMPLE_COMPARISON,
+    EXTENDED_COMPARISON
+}
