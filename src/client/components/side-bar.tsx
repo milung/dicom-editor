@@ -51,7 +51,7 @@ export default class SideBar extends React.Component<SideBarProps, SideBarState>
                          <List > 
                             {this.state.loadedFiles.map((item, index) => (
                                 <ElementOfSelectableList
-                                    index={index}
+                                    key={index}
                                     item={item}
                                     selectFunction={this.selectCurrentFile}
                                 />
@@ -65,7 +65,7 @@ export default class SideBar extends React.Component<SideBarProps, SideBarState>
                         <List>
                             {this.state.recentFiles.map((item, index) => (
                                 <ElementOfSelectableList
-                                    index={index}
+                                    key={index}
                                     item={item}
                                     selectFunction={this.selectCurrentFileFromRecentFile}
                                 />

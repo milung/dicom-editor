@@ -6,7 +6,6 @@ import './element-selectable-list.css';
 interface ElementOfSelectableListProps {
     selectFunction: Function;
     item: FileInterface;
-    index: number;
 }
 
 interface ElementOfSelectableListState {

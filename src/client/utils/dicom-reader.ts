@@ -36,8 +36,6 @@ export class DicomReader {
         try {
             dataset = dicomParser.parseDicom(bytes);
 
-            console.log(dataset);
-
             for (var tag in dataset.elements) {
                 if (tag) {
                     const tagElement = dataset.elements[tag];
