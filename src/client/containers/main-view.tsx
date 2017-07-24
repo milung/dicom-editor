@@ -2,11 +2,12 @@ import * as React from 'react';
 import { Tabs, Tab } from 'material-ui/Tabs';
 import TagViewer from '../components/tag-viewer';
 import ImageViewer from '../components/image-viewer';
-
 import './main-view.css';
 import { ApplicationStateReducer } from '../application-state';
 import { DicomSimpleData } from '../model/dicom-entry';
-import { convertSimpleDicomToExtended } from '../utils/dicom-entry-converter';
+
+export const TABLE_MODE_EXTENDED = 'extended';
+export const TABLE_MODE_SIMPLE = 'simple';
 
 interface MainViewProps {
   reducer: ApplicationStateReducer;
@@ -14,6 +15,7 @@ interface MainViewProps {
 
 interface MainViewState {
   dicomData: DicomSimpleData;
+  tableMode: string;
 }
 
 export default class MainView extends React.Component<MainViewProps, MainViewState> {
@@ -23,14 +25,15 @@ export default class MainView extends React.Component<MainViewProps, MainViewSta
     this.state = {
       dicomData: {
         entries: []
-      }
+      },
+      tableMode: TABLE_MODE_SIMPLE
     };
   }
 
   public componentDidMount() {
     this.props.reducer.state$.subscribe(state => {
       this.setState({
-        dicomData: state.currentFile ? state.currentFile.dicomData : { entries: []}
+        dicomData: state.currentFile ? state.currentFile.dicomData : { entries: [] }
       });
     });
   }
@@ -42,15 +45,25 @@ export default class MainView extends React.Component<MainViewProps, MainViewSta
           label="Image viewer"
         >
           <div className="container">
-            <ImageViewer/>
+            <ImageViewer />
           </div>
         </Tab>
-
         <Tab
           label="Tags"
         >
+          <div>
+            <div id="simpleOrHierarchical">
+              <Tabs>
+                <Tab label="Simple" onClick={() => this.setState({tableMode: TABLE_MODE_SIMPLE})}></Tab>
+                <Tab label="Hierarchical" onClick={() => this.setState({tableMode: TABLE_MODE_EXTENDED})}></Tab>
+              </Tabs>
+            </div>
+          </div>
+
           <div className="container">
-            <TagViewer data={convertSimpleDicomToExtended(this.state.dicomData)} />
+            <TagViewer
+              data={(this.state.dicomData)}
+              tableMode={this.state.tableMode} />
           </div>
         </Tab>
       </Tabs>
