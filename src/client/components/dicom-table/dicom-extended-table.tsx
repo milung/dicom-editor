@@ -40,6 +40,10 @@ export class DicomExtendedTable extends React.Component<DicomExtendedTableProps,
                     moduleArray.push(data);
                 }
             }
+
+            moduleArray.sort((elementA: TableData, elementB: TableData) => {
+                return elementA.moduleName.localeCompare(elementB.moduleName);
+            });
             return (
                 <List>
                     {/* iterates over modules */}
