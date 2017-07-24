@@ -6,6 +6,7 @@ import {
 import { DicomExtendedData, DicomEntry } from '../../model/dicom-entry';
 import './dicom-table.css';
 import { DicomSimpleTable } from './dicom-simple-table';
+import { sortDicomEntries } from "../../utils/dicom-entry-converter";
 
 interface TableData {
     entries: DicomEntry[];
@@ -33,7 +34,7 @@ export class DicomExtendedTable extends React.Component<DicomExtendedTableProps,
             for (var moduleName in this.props.data) {
                 if (moduleName) {
                     let data: TableData = {
-                        entries: this.props.data[moduleName],
+                        entries: sortDicomEntries(this.props.data[moduleName]),
                         moduleName: moduleName
                     };
                     moduleArray.push(data);

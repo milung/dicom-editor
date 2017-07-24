@@ -1,4 +1,4 @@
-import { DicomExtendedData, DicomSimpleData } from './../model/dicom-entry';
+import { DicomExtendedData, DicomSimpleData, DicomEntry } from './../model/dicom-entry';
 import { getModuleNamesForTag } from './module-name-translator';
 
 export function convertSimpleDicomToExtended(simpleDicom: DicomSimpleData): DicomExtendedData {
@@ -18,6 +18,22 @@ export function convertSimpleDicomToExtended(simpleDicom: DicomSimpleData): Dico
         }
     }
 
-    // sort here
+    // data is sorted in table
     return result;
+}
+
+export function sortDicomEntries(entries: DicomEntry[]): DicomEntry[] {
+    return entries.sort((elementA, elemenetB) => {
+        let groupResult = elementA.tagGroup.localeCompare(elemenetB.tagGroup);
+
+        // if tag groupes are different
+        if (groupResult !== 0) {
+            return groupResult;
+        }
+
+        // if groups equal, sort by tag element
+        let groupElement = elementA.tagElement.localeCompare(elemenetB.tagElement);
+
+        return groupElement;
+    });
 }

@@ -1,6 +1,6 @@
-import { DicomSimpleData, DicomExtendedData } from './../../src/client/model/dicom-entry';
+import { DicomSimpleData, DicomExtendedData, DicomEntry } from './../../src/client/model/dicom-entry';
 import { expect } from 'chai';
-import { convertSimpleDicomToExtended } from '../../src/client/utils/dicom-entry-converter';
+import { convertSimpleDicomToExtended, sortDicomEntries } from '../../src/client/utils/dicom-entry-converter';
 import { getModuleNamesForTag } from '../../src/client/utils/module-name-translator';
 
 // convertSimpleDicomToExtended
@@ -112,5 +112,122 @@ describe('module-name-translator', () => {
     it('should get group name for tag', () => {
         let moduleName = getModuleNamesForTag('00070016');
         expect(moduleName).to.deep.equal(['SevenModule']);
+    })
+});
+
+describe('dicom-entry-converter-sortDicomEntries', () => {
+    it('should sort Dicom entries', () => {
+
+        let originalEntries: DicomEntry[] = [
+            {
+                tagGroup: '0008',
+                tagElement: '0002',
+                tagName: 'TAG-NAME',
+                tagValue: 'TAG-VALUE',
+                tagVR: 'VM',
+                tagVM: '2',
+
+            },
+            {
+                tagGroup: '0008',
+                tagElement: '0004',
+                tagName: 'TAG-NAME',
+                tagValue: 'TAG-VALUE',
+                tagVR: 'VM',
+                tagVM: '2',
+
+            },
+            {
+                tagGroup: '0008',
+                tagElement: '0001',
+                tagName: 'TAG-NAME',
+                tagValue: 'TAG-VALUE',
+                tagVR: 'VM',
+                tagVM: '2',
+
+            },
+            {
+                tagGroup: '0002',
+                tagElement: '0004',
+                tagName: 'TAG-NAME',
+                tagValue: 'TAG-VALUE',
+                tagVR: 'VM',
+                tagVM: '2',
+
+            },
+            {
+                tagGroup: '0003',
+                tagElement: '0006',
+                tagName: 'TAG-NAME',
+                tagValue: 'TAG-VALUE',
+                tagVR: 'VM',
+                tagVM: '2',
+
+            }
+        ];
+
+        let expectedEntries: DicomEntry[] = [
+            {
+                tagGroup: '0002',
+                tagElement: '0004',
+                tagName: 'TAG-NAME',
+                tagValue: 'TAG-VALUE',
+                tagVR: 'VM',
+                tagVM: '2',
+
+            },
+            {
+                tagGroup: '0003',
+                tagElement: '0006',
+                tagName: 'TAG-NAME',
+                tagValue: 'TAG-VALUE',
+                tagVR: 'VM',
+                tagVM: '2',
+
+            },
+            {
+                tagGroup: '0008',
+                tagElement: '0001',
+                tagName: 'TAG-NAME',
+                tagValue: 'TAG-VALUE',
+                tagVR: 'VM',
+                tagVM: '2',
+
+            },
+            {
+                tagGroup: '0008',
+                tagElement: '0002',
+                tagName: 'TAG-NAME',
+                tagValue: 'TAG-VALUE',
+                tagVR: 'VM',
+                tagVM: '2',
+
+            },
+            {
+                tagGroup: '0008',
+                tagElement: '0004',
+                tagName: 'TAG-NAME',
+                tagValue: 'TAG-VALUE',
+                tagVR: 'VM',
+                tagVM: '2',
+
+            }
+        ];
+
+        let sortedEntries = sortDicomEntries(originalEntries);
+        expect(sortedEntries).to.deep.equal(expectedEntries);
+    })
+
+    it('should sort empty array to empty array', () => {
+        let originalEntries: DicomEntry[] = [
+
+        ];
+
+        let expectedEntries: DicomEntry[] = [
+
+        ];
+
+        let sortedEntries = sortDicomEntries(originalEntries);
+        expect(sortedEntries).to.deep.equal(expectedEntries);
     })
 });
