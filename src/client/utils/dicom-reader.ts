@@ -36,8 +36,12 @@ export class DicomReader {
         try {
             dataset = dicomParser.parseDicom(bytes);
 
+            console.log(dataset);
+
             for (var tag in dataset.elements) {
                 if (tag) {
+                    const tagElement = dataset.elements[tag];
+
                     const value = dataset.string(tag, undefined);
                     const VM = this.getValueMultiplicity(value);
 
@@ -47,7 +51,7 @@ export class DicomReader {
                     const fullTag = `${firstHalf}${latterHalf}`;
 
                     const name = dicomDictionary[fullTag];
-                    const VR = undefined; // TODO get VR from tag
+                    const VR = tagElement.vr;
 
                     let entry: DicomEntry = {
                         tagGroup: firstHalf,
