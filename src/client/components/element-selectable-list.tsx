@@ -21,19 +21,17 @@ export class ElementOfSelectableList extends
 
     render() {
         return (
-            <tr>
-                <td className="checkbox">
-                    <Checkbox />
-                </td>
-                <td className="td">
+            <div className="containera">
+                <div className="checkbox">
+                    <Checkbox/>
+                </div>
+                <div className="td">
                     <ListItem
                         onClick={() => this.props.selectFunction(this.props.item)}
-                        key={this.props.index}
-                        value={this.props.item}
                         primaryText={this.props.item.fileName}
                     />
-                </td>
-            </tr>
+                </div>
+            </div>
         );
     }
 }

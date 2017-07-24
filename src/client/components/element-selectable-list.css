@@ -1,8 +1,12 @@
 .td {
-    text-align: left;
+   
 }
 
 .checkbox {
-    text-align: center;
-    vertical-align: middle;
+   padding-left: 1.5em;
+}
+
+.containera {
+    display: flex;
+    align-items: center;
 }
