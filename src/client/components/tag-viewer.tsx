@@ -1,6 +1,6 @@
 import * as React from 'react';
 import './tag-viewer.css';
-import { DicomTable } from './dicom-table/dicom-table';
+import { DicomExtendedTable } from './dicom-table/dicom-extended-table';
 import { DicomExtendedData } from '../model/dicom-entry';
 
 interface TagViewerProps {
@@ -21,7 +21,7 @@ export default class TagViewer extends React.Component<TagViewerProps, TagViewer
         return (
             <div>
                 <h1>TagViewer</h1>
-                <DicomTable data={this.props.data} />
+                <DicomExtendedTable data={this.props.data} />
             </div>
         );
     }

@@ -2,8 +2,9 @@ import * as React from 'react';
 import { shallow } from 'enzyme';
 import { expect } from 'chai';
 import { DicomTableRow } from "../../src/client/components/dicom-table/dicom-table-row";
-import { DicomTable } from "../../src/client/components/dicom-table/dicom-table";
+import { DicomExtendedTable } from "../../src/client/components/dicom-table/dicom-extended-table";
 import { DicomTableHeader } from "../../src/client/components/dicom-table/dicom-table-header";
+import { DicomSimpleTable } from "../../src/client/components/dicom-table/dicom-simple-table";
 
 const arrayTest = {
     'Module 1': 
@@ -57,6 +58,42 @@ const dicomTestEntry = {
     tagVM: '2'
 }
 
+const dicomTestEntries =
+    [
+        {
+            tagGroup: '0152',
+            tagElement: '0145',
+            tagName: 'PatientName',
+            tagValue: 'Michal Mrkvicka',
+            tagVR: 'PN',
+            tagVM: '2'
+        },
+        {
+            tagGroup: '0010',
+            tagElement: '1548',
+            tagName: 'PatientAge',
+            tagValue: '18',
+            tagVR: 'PA',
+            tagVM: '1'
+        },
+        {
+            tagGroup: '0152',
+            tagElement: '0145',
+            tagName: 'PatientName',
+            tagValue: 'Michal Mrkvicka',
+            tagVR: 'PN',
+            tagVM: '2'
+        },
+        {
+            tagGroup: '0010',
+            tagElement: '1548',
+            tagName: 'PatientAge',
+            tagValue: '18',
+            tagVR: 'PA',
+            tagVM: '1'
+        }
+    ]
+
 
 describe('dicom-table', () => {
     it('Render one row with DICOM entry', () => {
@@ -65,7 +102,7 @@ describe('dicom-table', () => {
     });
 
     it('Render DicomTable with the correct amount of expandable lists', () => {
-        const div = shallow(<DicomTable data={arrayTest} />);
+        const div = shallow(<DicomExtendedTable data={arrayTest} />);
         expect(div.find('List').find('ListItem').length).to.equal(2);
     });
 
@@ -84,13 +121,18 @@ describe('dicom-table', () => {
    });
 
    it('Render DicomTable with List containing data', () => {
-       const div = shallow(<DicomTable data={arrayTest} />);
+       const div = shallow(<DicomExtendedTable data={arrayTest} />);
        expect(div.find('List').children('ListItem').length).to.equal(2);
    });
 
    it('Render DicomTable with List without data', () => {
-       const div = shallow(<DicomTable data={{}} />);
+       const div = shallow(<DicomExtendedTable data={{}} />);
        expect(div.find('List').children('ListItem').length).to.equal(0);
+   });
+
+   it('Render the correct amount of rows in the table of entries within a single module', () => {
+       const div = shallow(<DicomSimpleTable entries={dicomTestEntries} />);
+       expect(div.find('Table').find('TableBody').children('DicomTableRow').length).to.equal(4);
    });
 
 // describe('dicom-table', () => {
