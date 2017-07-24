@@ -44,24 +44,31 @@ export class DicomReader {
                     var firstHalf: string = tag.slice(1, 5);
                     var latterHalf: string = tag.slice(5, 9);
 
-                    let subdict = dicomDictionary[firstHalf];
-                    if (subdict === undefined) {
-                        continue;
-                    }
-
-                    let dictResult: string = subdict[latterHalf];
-                    if (dictResult === undefined) {
-                        continue;
-                    }
                     let entry: DicomEntry = {
                         tagGroup: firstHalf,
                         tagElement: latterHalf,
                         // need to get second item, because of dicom dictionary structure
-                        tagName: dictResult[1],
+                        tagName: 'Unknown name',
                         tagValue: value,
-                        tagVR: dictResult[0],
+                        tagVR: 'Unknown VR',
                         tagVM: VM.toString()
                     };
+
+                    let subdict = dicomDictionary[firstHalf];
+                    if (subdict !== undefined) {
+                        let dictResult: string = subdict[latterHalf];
+                        if (dictResult !== undefined) {
+                            entry = {
+                                tagGroup: firstHalf,
+                                tagElement: latterHalf,
+                                // need to get second item, because of dicom dictionary structure
+                                tagName: dictResult[1],
+                                tagValue: value,
+                                tagVR: dictResult[0],
+                                tagVM: VM.toString()
+                            };
+                        }
+                    }
 
                     data.entries.push(entry);
 
