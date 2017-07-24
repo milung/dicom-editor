@@ -22,3 +22,8 @@ export interface DicomExtendedData {
 export interface DicomSimpleData {
     entries: DicomEntry[];
 }
+
+export interface DicomComparisonEntry {
+    entry: DicomEntry;
+    colour: string;
+}
