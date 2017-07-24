@@ -45,7 +45,7 @@ describe('dicom-entry-converter', () => {
         };
 
         let expectedDicomExtended: DicomExtendedData = {
-            'EightModule': [
+            'SOP COMMON MODULE ATTRIBUTES': [
                 {
                     tagGroup: '0008',
                     tagElement: '0012',
@@ -56,26 +56,7 @@ describe('dicom-entry-converter', () => {
                 }
             ],
 
-            'ExtendedEightModule': [
-                {
-                    tagGroup: '0008',
-                    tagElement: '0012',
-                    tagName: 'MY TAG',
-                    tagValue: 'TAG VALUE',
-                    tagVR: 'AA',
-                    tagVM: '2'
-                },
-                {
-                    tagGroup: '0012',
-                    tagElement: '0012',
-                    tagName: 'MY TAG',
-                    tagValue: 'TAG VALUE',
-                    tagVR: 'AA',
-                    tagVM: '2'
-                }
-            ],
-
-            'SevenModule': [
+            'Undefined module group': [
                 {
                     tagGroup: '0007',
                     tagElement: '0016',
@@ -83,10 +64,7 @@ describe('dicom-entry-converter', () => {
                     tagValue: 'TAG VALUE',
                     tagVR: 'AA',
                     tagVM: '2'
-                }
-            ],
-
-            'TwelveModule': [
+                },
                 {
                     tagGroup: '0012',
                     tagElement: '0012',
@@ -104,17 +82,24 @@ describe('dicom-entry-converter', () => {
 
 // getModuleNamesForTag
 describe('module-name-translator', () => {
-    it('should get group name for tag', () => {
+    it('should get single module name for tag', () => {
         let moduleName = getModuleNamesForTag('00080012');
-        expect(moduleName).to.deep.equal(['EightModule', 'ExtendedEightModule']);
+        expect(moduleName).to.deep.equal(['SOP COMMON MODULE ATTRIBUTES']);
     })
 
-    it('should get group name for tag', () => {
+    it('should get undefined module name for tag', () => {
         let moduleName = getModuleNamesForTag('00070016');
-        expect(moduleName).to.deep.equal(['SevenModule']);
+        expect(moduleName).to.deep.equal(['Undefined module group']);
+    })
+
+    it('should get multiple module names for tag', () => {
+        let moduleName = getModuleNamesForTag('0040a0b0');
+        expect(moduleName).to.deep.equal([
+            'Waveform Annotation Module Attributes',
+            'Waveform Module Attributes'
+        ]);
     })
 });
-
 describe('dicom-entry-converter-sortDicomEntries', () => {
     it('should sort Dicom entries', () => {
 

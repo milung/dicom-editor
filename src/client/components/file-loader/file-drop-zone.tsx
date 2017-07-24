@@ -2,7 +2,7 @@ import * as React from 'react';
 import * as Dropzone from 'react-dropzone';
 
 import { ApplicationStateReducer } from '../../application-state';
-import FileService from './file-service';
+import { FileService } from './file-service';
 
 import './file-drop-zone.css';
 

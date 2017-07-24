@@ -5,13 +5,13 @@ import { convertFileToArrayBuffer } from '../../utils/file-converter';
 import { DicomReader } from '../../utils/dicom-reader';
 import { FileStorage } from '../../utils/file-storage';
 
-interface FileContent {
+export interface FileContent {
     buffer: Uint8Array;
     fileName: string;
     fileSize: number;
 }
 
-export default class FileService {
+export class FileService {
 
     private fileStorage: FileStorage;
     private dicomReader: DicomReader;

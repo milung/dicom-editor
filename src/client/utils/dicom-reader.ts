@@ -32,43 +32,32 @@ export class DicomReader {
         let data: DicomSimpleData = {
             entries: []
         };
-        var dataset;
+        let dataset;
         try {
             dataset = dicomParser.parseDicom(bytes);
 
             for (var tag in dataset.elements) {
                 if (tag) {
-                    var value = dataset.string(tag, undefined);
-                    let VM = this.getValueMultiplicity(value);
+                    const value = dataset.string(tag, undefined);
+                    const VM = this.getValueMultiplicity(value);
 
-                    var firstHalf: string = tag.slice(1, 5);
-                    var latterHalf: string = tag.slice(5, 9);
+                    const firstHalf: string = tag.slice(1, 5);
+                    const latterHalf: string = tag.slice(5, 9);
+
+                    const fullTag = `${firstHalf}${latterHalf}`;
+
+                    const name = dicomDictionary[fullTag];
+                    const VR = undefined; // TODO get VR from tag
 
                     let entry: DicomEntry = {
                         tagGroup: firstHalf,
                         tagElement: latterHalf,
                         // need to get second item, because of dicom dictionary structure
-                        tagName: 'Unknown name',
+                        tagName: name || 'Unknown name',
                         tagValue: value,
-                        tagVR: 'Unknown VR',
+                        tagVR: VR || 'Unknown VR',
                         tagVM: VM.toString()
                     };
-
-                    let subdict = dicomDictionary[firstHalf];
-                    if (subdict !== undefined) {
-                        let dictResult: string = subdict[latterHalf];
-                        if (dictResult !== undefined) {
-                            entry = {
-                                tagGroup: firstHalf,
-                                tagElement: latterHalf,
-                                // need to get second item, because of dicom dictionary structure
-                                tagName: dictResult[1],
-                                tagValue: value,
-                                tagVR: dictResult[0],
-                                tagVM: VM.toString()
-                            };
-                        }
-                    }
 
                     data.entries.push(entry);
 
