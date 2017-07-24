@@ -1,15 +1,16 @@
 import { DicomSimpleData } from './dicom-entry';
 
-export interface LightweightFile {
+export interface FileInterface {
     fileName: string;
-    dbKey: string;
     timestamp: number;
 }
 
-export interface HeavyweightFile {
-    fileName: string;
+export interface LightweightFile extends FileInterface {
+    dbKey: string;
+}
+
+export interface HeavyweightFile extends FileInterface {
     fileSize: number;
     bufferedData: Uint8Array;
     dicomData: DicomSimpleData;
-    timestamp: number;
 }
