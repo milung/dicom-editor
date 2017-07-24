@@ -6,10 +6,8 @@ import { DicomTable } from "../../src/client/components/dicom-table/dicom-table"
 import { DicomTableHeader } from "../../src/client/components/dicom-table/dicom-table-header";
 
 const arrayTest = {
-    '0008': {
-        groupNumber: '0008',
-        groupName: '0111',
-        entries: [
+    'Module 1': 
+         [
             {
                 tagGroup: '0008',
                 tagElement: '0145',
@@ -27,11 +25,9 @@ const arrayTest = {
                 tagVM: '1'
             }
         ]
-    },
-    '0010': {
-        groupNumber: '0010',
-        groupName: '0111',
-        entries: [
+    ,
+    'Module 2': 
+     [
             {
                 tagGroup: '0010',
                 tagElement: '0145',
@@ -49,8 +45,8 @@ const arrayTest = {
                 tagVM: '1'
             }
         ]
-    }
 }
+
 
 const dicomTestEntry = {
     tagGroup: '0152',
