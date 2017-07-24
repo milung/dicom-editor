@@ -1,23 +1,23 @@
 import * as React from 'react';
-import { Tabs, Tab, RaisedButton, List, makeSelectable, Paper } from 'material-ui';
+
+import Paper from 'material-ui/Paper';
+import { List } from 'material-ui/List';
+import { Tabs, Tab } from 'material-ui/Tabs';
+import RaisedButton from 'material-ui/RaisedButton';
+
 import { ApplicationStateReducer } from '../application-state';
 import { HeavyweightFile, LightweightFile } from '../model/file-interfaces';
 import { ElementOfSelectableList } from './element-selectable-list';
 import './side-bar.css';
-import './compare-button.css';
 
 export interface SideBarProps {
     reducer: ApplicationStateReducer;
-    // loadedFiles: File[],
-    // recentFiles: File[]
 }
 
 export interface SideBarState {
     loadedFiles: HeavyweightFile[];
     recentFiles: LightweightFile[];
 }
-
-const SelectableList = makeSelectable(List);
 
 export default class SideBar extends React.Component<SideBarProps, SideBarState> {
 
@@ -44,35 +44,33 @@ export default class SideBar extends React.Component<SideBarProps, SideBarState>
     render() {
         return (
             <Paper className="side-bar">
-                <Tabs>
-                    <Tab label="Loaded files" className="header">
-                        <SelectableList>
-                            {
-                                this.state.loadedFiles.map((item, index) => (
-                                    <ElementOfSelectableList
-                                        key={index}
-                                        index={index}
-                                        item={item}
-                                        selectFunction={this.selectCurrentFile}
-                                    />
-                                ))
-                            }
-                        </SelectableList>
+                <Tabs className="tabs-container" contentContainerClassName="scrollable-y" tabItemContainerStyle={{display: 'block'}}>
+                    <Tab
+                        label="Loaded files"
+                    >
+                         <List > 
+                            {this.state.loadedFiles.map((item, index) => (
+                                <ElementOfSelectableList
+                                    index={index}
+                                    item={item}
+                                    selectFunction={this.selectCurrentFile}
+                                />
+                            ))}
+                        </List>
                     </Tab>
 
-                    <Tab label="Recent files" className="header">
-                        <SelectableList>
-                            {
-                                this.state.recentFiles.map((item, index) => (
-                                    <ElementOfSelectableList
-                                        key={index}
-                                        index={index}
-                                        item={item}
-                                        selectFunction={this.selectCurrentFileFromRecentFile}
-                                    />
-                                ))
-                            }
-                        </SelectableList>
+                    <Tab
+                        label="Recent files"
+                    >
+                        <List>
+                            {this.state.recentFiles.map((item, index) => (
+                                <ElementOfSelectableList
+                                    index={index}
+                                    item={item}
+                                    selectFunction={this.selectCurrentFileFromRecentFile}
+                                />
+                            ))}
+                        </List>
                     </Tab>
                 </Tabs>
                 <RaisedButton

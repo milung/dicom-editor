@@ -3,8 +3,8 @@ import './tag-viewer.css';
 import { DicomExtendedTable } from './dicom-table/dicom-extended-table';
 import { DicomSimpleTable } from './dicom-table/dicom-simple-table';
 import { DicomSimpleData } from '../model/dicom-entry';
-import { convertSimpleDicomToExtended } from "../utils/dicom-entry-converter";
-import { TABLE_MODE_EXTENDED, TABLE_MODE_SIMPLE } from "../containers/main-view";
+import { convertSimpleDicomToExtended } from '../utils/dicom-entry-converter';
+import { TABLE_MODE_EXTENDED, TABLE_MODE_SIMPLE } from '../containers/main-view';
 
 interface TagViewerProps {
     data: DicomSimpleData;
