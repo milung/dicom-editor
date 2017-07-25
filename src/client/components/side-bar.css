@@ -15,11 +15,20 @@
   overflow-x: hidden;
 }
 
+.content-tab {
+  display: flex;
+  flex-direction: column;
+  flex-grow: 1;
+  overflow-y: auto; 
+  overflow-x: hidden;
+}
+
 .tabs-container {
   display: flex;
   flex-direction: column; 
+  flex-grow: 1;
 }
 
 .compare-button {
-  margin-top: auto;  
+  margin-top: auto;
 }

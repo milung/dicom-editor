@@ -9,6 +9,8 @@ import { ApplicationStateReducer } from '../application-state';
 import { HeavyweightFile, LightweightFile } from '../model/file-interfaces';
 import { ElementOfSelectableList } from './element-selectable-list';
 import './side-bar.css';
+import { ListItem } from "material-ui";
+import TabTemplate from './tab-template';
 
 export interface SideBarProps {
     reducer: ApplicationStateReducer;
@@ -46,43 +48,42 @@ export default class SideBar extends React.Component<SideBarProps, SideBarState>
             <Paper className="side-bar">
                 <Tabs
                     className="tabs-container"
-                    contentContainerClassName="scrollable-y"
+                    contentContainerClassName="content-tab"
                     tabItemContainerStyle={{ display: 'block' }}
+                    tabTemplate={TabTemplate}
+                    tabTemplateStyle={{display: 'flex', flexDirection: 'column', flexGrow: 1}}
                 >
-                    <Tab
-                        label="Loaded files"
-                    >
-                        <List >
-                            {this.state.loadedFiles.map((item, index) => (
-                                <ElementOfSelectableList
-                                    key={index}
-                                    item={item}
-                                    selectFunction={this.selectCurrentFile}
-                                />
-                            ))}
-                        </List>
+                    <Tab label="Loaded files">
+                        {/*<div className="scrollable-y">*/}
+                            <List style={{overflowX: 'hidden', overflowY: 'auto'}}>
+                                {this.state.loadedFiles.map((item, index) => (
+                                    <ElementOfSelectableList
+                                        key={index}
+                                        item={item}
+                                        selectFunction={this.selectCurrentFile}
+                                    />
+                                ))}
+                            </List>
+                        
+                            <RaisedButton
+                                className="compare-button"
+                                label="Compare files"
+                                onClick={this.test}
+                                primary={true}
+                            />
+                        {/*</div>*/}
                     </Tab>
-
-                    <Tab
-                        label="Recent files"
-                    >
+                    <Tab label="Recent files">
                         <List>
                             {this.state.recentFiles.map((item, index) => (
-                                <ElementOfSelectableList
-                                    key={index}
-                                    item={item}
-                                    selectFunction={this.selectCurrentFileFromRecentFile}
+                                <ListItem
+                                    onClick={() => this.selectCurrentFileFromRecentFile(item)}
+                                    primaryText={item.fileName}
                                 />
                             ))}
                         </List>
                     </Tab>
                 </Tabs>
-                <RaisedButton
-                    className="compare-button"
-                    label="Compare files"
-                    onClick={this.test}
-                    primary={true}
-                />
             </Paper>
         );
     }
