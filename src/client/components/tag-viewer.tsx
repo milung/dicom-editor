@@ -1,12 +1,12 @@
 import * as React from 'react';
 import './tag-viewer.css';
 import { DicomSimpleTable } from "./dicom-table/dicom-simple-table";
-import { TableType } from "../model/table-enum";
+import { TableMode } from "../model/table-enum";
 import { HeavyweightFile } from "../model/file-interfaces";
 import { DicomExtendedTable } from "./dicom-table/dicom-extended-table";
 
 interface TagViewerProps {
-    tableType: TableType;
+    tableType: TableMode;
     files: HeavyweightFile[];
 
 }
@@ -21,15 +21,17 @@ export default class TagViewer extends React.Component<TagViewerProps, TagViewer
         super(props);
     }
 
+
+
     render() {
         switch (this.props.tableType) {
-            case TableType.SIMPLE:
+            case TableMode.SIMPLE:
                 return this.renderSimpleTable();
-            case TableType.EXTENDED:
+            case TableMode.EXTENDED:
                 return this.renderExtendedTable();
-            case TableType.SIMPLE_COMPARISON:
+            case TableMode.SIMPLE_COMPARISON:
                 return this.renderSimpleComparisonTable();
-            case TableType.EXTENDED_COMPARISON:
+            case TableMode.EXTENDED_COMPARISON:
                 return this.renderExtendedComparisonTable();
             default:
                 return (

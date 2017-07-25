@@ -6,8 +6,20 @@
   
 
   background-color: #30426a;
-  
-  overflow-y: auto;
 
   width: 300px;
+}
+
+.scrollable-y {
+  overflow-y: auto; 
+  overflow-x: hidden;
+}
+
+.tabs-container {
+  display: flex;
+  flex-direction: column; 
+}
+
+.compare-button {
+  margin-top: auto;  
 }

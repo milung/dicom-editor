@@ -6,7 +6,7 @@ import {
 import { DicomExtendedData, DicomEntry } from '../../model/dicom-entry';
 import './dicom-table.css';
 import { DicomSimpleTable } from './dicom-simple-table';
-import { sortDicomEntries } from "../../utils/dicom-entry-converter";
+import { sortDicomEntries } from '../../utils/dicom-entry-converter';
 
 interface TableData {
     entries: DicomEntry[];

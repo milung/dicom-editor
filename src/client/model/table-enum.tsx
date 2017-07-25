@@ -1,4 +1,4 @@
-export enum TableType {
+export enum TableMode {
     SIMPLE,
     EXTENDED,
     SIMPLE_COMPARISON,

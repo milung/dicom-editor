@@ -6,6 +6,7 @@ import { TableHeader, Table, TableBody } from 'material-ui';
 
 export interface DicomSimpleTableProps {
     entries: DicomEntry[];
+    
 }
 
 export interface DicomSimpleTableState {

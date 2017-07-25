@@ -12,7 +12,7 @@
     "start": "webpack-dev-server --config config/webpack.config.js --inline",
     "build": "npm run build:client && npm run build:server",
     "build:server": "tsc -p src/server",
-    "build:client": "webpack --config config/webpack.config.js"
+    "build:client": "webpack --config config/webpack-prod.config.js"
   },
   "repository": {
     "type": "git",

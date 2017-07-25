@@ -6,3 +6,9 @@
     margin-left: 10px;
     margin-right: 10px;
 }
+
+#simpleOrHierarchical{
+    width: 50%;
+    float: right;
+    margin-top: -1.34em !important;
+}

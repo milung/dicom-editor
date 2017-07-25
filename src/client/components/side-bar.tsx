@@ -1,28 +1,23 @@
 import * as React from 'react';
 
 import Paper from 'material-ui/Paper';
-import { List, ListItem, makeSelectable } from 'material-ui/List';
+import { List } from 'material-ui/List';
 import { Tabs, Tab } from 'material-ui/Tabs';
+import RaisedButton from 'material-ui/RaisedButton';
 
-// import FontIcon from 'material-ui/FontIcon';
-// icon={<FontIcon className="material-icons">restore</FontIcon>}
-
-import './side-bar.css';
 import { ApplicationStateReducer } from '../application-state';
 import { HeavyweightFile, LightweightFile } from '../model/file-interfaces';
+import { ElementOfSelectableList } from './element-selectable-list';
+import './side-bar.css';
 
 export interface SideBarProps {
     reducer: ApplicationStateReducer;
-    // loadedFiles: File[],
-    // recentFiles: File[]
 }
 
 export interface SideBarState {
     loadedFiles: HeavyweightFile[];
     recentFiles: LightweightFile[];
 }
-
-const SelectableList = makeSelectable(List);
 
 export default class SideBar extends React.Component<SideBarProps, SideBarState> {
 
@@ -49,44 +44,48 @@ export default class SideBar extends React.Component<SideBarProps, SideBarState>
     render() {
         return (
             <Paper className="side-bar">
-                <Tabs>
+                <Tabs className="tabs-container" contentContainerClassName="scrollable-y" tabItemContainerStyle={{display: 'block'}}>
                     <Tab
                         label="Loaded files"
                     >
-                        <SelectableList>
-                            {
-                                this.state.loadedFiles.map((item, index) => (
-                                    <ListItem
-                                        onClick={() => this.selectCurrentFile(item)}
-                                        key={index}
-                                        value={item}
-                                        primaryText={item.fileName}
-                                    />
-                                ))
-                            }
-                        </SelectableList>
+                         <List > 
+                            {this.state.loadedFiles.map((item, index) => (
+                                <ElementOfSelectableList
+                                    key={index}
+                                    item={item}
+                                    selectFunction={this.selectCurrentFile}
+                                />
+                            ))}
+                        </List>
                     </Tab>
 
                     <Tab
                         label="Recent files"
                     >
-                        <SelectableList>
-                            {
-                                this.state.recentFiles.map((item, index) => (
-                                    <ListItem
-                                        onClick={() => this.selectCurrentFileFromRecentFile(item)}
-                                        key={index}
-                                        value={item}
-                                        primaryText={item.fileName}
-                                    />
-                                ))
-                            }
-                        </SelectableList>
+                        <List>
+                            {this.state.recentFiles.map((item, index) => (
+                                <ElementOfSelectableList
+                                    key={index}
+                                    item={item}
+                                    selectFunction={this.selectCurrentFileFromRecentFile}
+                                />
+                            ))}
+                        </List>
                     </Tab>
                 </Tabs>
-
+                <RaisedButton
+                    className="compare-button"
+                    label="Compare files"
+                    onClick={this.test}
+                    primary={true}
+                />
             </Paper>
         );
+    }
+    
+    // remove when file comparator will be implemented and change onCLick on raised button
+    public test() {
+        process.stdout.write('TEST');
     }
 
     private selectCurrentFile(file: HeavyweightFile) {
