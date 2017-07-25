@@ -36,11 +36,23 @@ export class ApplicationStateReducer {
         this.stateSubject$ = new BehaviorSubject(this.currentState);
     }
 
+
     public addLoadedFiles(files: HeavyweightFile[]) {
-        this.currentState.loadedFiles = files.concat(this.currentState.loadedFiles);
+        files.forEach(element => {
+            this.addOneLoadedFile(element);
+        });
         this.currentState.currentFile = files[0];
         this.currentState.currentIndex = this.currentState.loadedFiles.indexOf(files[0]);
         this.stateSubject$.next(this.currentState);
+    }
+
+    private addOneLoadedFile(file: HeavyweightFile) {
+        this.currentState.loadedFiles.forEach((e, index) => {
+            if (e.fileName === file.fileName) {
+                this.currentState.loadedFiles.splice(index, 1);
+            }
+        });
+        this.currentState.loadedFiles.unshift(file);
     }
 
     public getState(): ApplicationState {
@@ -61,7 +73,7 @@ export class ApplicationStateReducer {
     public updateCurrentFromRecentFile(file: LightweightFile) {
         let fileStorage = new FileStorage(this);
         fileStorage.getData(file).then(data => {
-                this.addLoadedFiles([data]);
-            });
+            this.addLoadedFiles([data]);
+        });
     }
 }

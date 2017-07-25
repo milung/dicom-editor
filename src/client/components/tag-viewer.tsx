@@ -21,8 +21,6 @@ export default class TagViewer extends React.Component<TagViewerProps, TagViewer
         super(props);
     }
 
-
-
     render() {
         switch (this.props.tableType) {
             case TableMode.SIMPLE:
@@ -60,13 +58,13 @@ export default class TagViewer extends React.Component<TagViewerProps, TagViewer
 
     private renderSimpleComparisonTable(): JSX.Element {
         return (
-            <div/>
+            <div />
         );
     }
 
     private renderExtendedComparisonTable(): JSX.Element {
         return (
-            <div/>
+            <div />
         );
     }
 }

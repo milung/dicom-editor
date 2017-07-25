@@ -26,6 +26,7 @@ export class FileService {
      * @param {Promise<FileContent>[]} promises 
      * @returns {Promise<HeavyweightFile[]>} 
      */
+    
     public async processLoadedFiles(promises: Promise<FileContent>[]): Promise<HeavyweightFile[]> {
         let bumps: FileContent[];
         try {
