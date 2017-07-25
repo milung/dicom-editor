@@ -1,6 +1,6 @@
 import * as React from 'react';
 import './image-viewer.css';
-import ImageCanvas  from './image-viewer/image-canvas';
+import { ImageCanvas } from './image-viewer/image-canvas';
 
 interface ImageViewerProps  {
     data: Uint8Array;

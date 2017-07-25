@@ -7,7 +7,7 @@ interface ImageCanvasProps {
   data: Uint8Array;
 }
 
-export default class App extends React.Component<ImageCanvasProps, {}> {
+export class ImageCanvas extends React.Component<ImageCanvasProps, {}> {
 
   constructor(props: ImageCanvasProps) {
     super(props);
@@ -20,8 +20,8 @@ export default class App extends React.Component<ImageCanvasProps, {}> {
 
     var imageId = cornerstoneWADOImageLoader.wadouri.fileManager.add(fileNew);
     cornerstone.loadImage(imageId).then(function (image: Object) {
-    var viewport = cornerstone.getDefaultViewport(imageElement.children[0], image);
-    cornerstone.displayImage(imageElement, image, viewport);
+      var viewport = cornerstone.getDefaultViewport(imageElement.children[0], image);
+      cornerstone.displayImage(imageElement, image, viewport);
     });
   }
 
