@@ -57,11 +57,6 @@ export default class MainView extends React.Component<MainViewProps, MainViewSta
   }
 
   render() {
-    let files: HeavyweightFile[] = [];
-    this.state.selectedFiles.forEach(selectedFile => {
-      files.push(this.state.loadedFiles[selectedFile.fileIndex]);
-    });
-
     return (
       <Tabs className="tabs" initialSelectedIndex={1}>
         <Tab
@@ -85,7 +80,6 @@ export default class MainView extends React.Component<MainViewProps, MainViewSta
           </div>
 
           <div className="container">
-            {/* !!!!!!!!!!!!!!! CHANGE {THIS.STATE.LOADEDFILES} TO {FILES} !!!!!!!!!!!!!!!*/}
             <TagViewer files={this.state.loadedFiles} tableType={this.state.tableMode} currentFile={this.state.currentFile} />
           </div>
         </Tab>

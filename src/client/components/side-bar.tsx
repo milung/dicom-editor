@@ -33,6 +33,7 @@ export default class SideBar extends React.Component<SideBarProps, SideBarState>
 
         this.selectCurrentFile = this.selectCurrentFile.bind(this);
         this.selectCurrentFileFromRecentFile = this.selectCurrentFileFromRecentFile.bind(this);
+        this.handleCompareClick = this.handleCompareClick.bind(this);
     }
 
     public componentDidMount() {
@@ -51,32 +52,31 @@ export default class SideBar extends React.Component<SideBarProps, SideBarState>
                     contentContainerClassName="content-tab"
                     tabItemContainerStyle={{ display: 'block' }}
                     tabTemplate={TabTemplate}
-                    tabTemplateStyle={{display: 'flex', flexDirection: 'column', flexGrow: 1}}
+                    tabTemplateStyle={{ display: 'flex', flexDirection: 'column', flexGrow: 1 }}
                 >
                     <Tab label="Loaded files">
-                        {/*<div className="scrollable-y">*/}
-                            <List style={{overflowX: 'hidden', overflowY: 'auto'}}>
-                                {this.state.loadedFiles.map((item, index) => (
-                                    <ElementOfSelectableList
-                                        key={index}
-                                        item={item}
-                                        selectFunction={this.selectCurrentFile}
-                                    />
-                                ))}
-                            </List>
-                        
-                            <RaisedButton
-                                className="compare-button"
-                                label="Compare files"
-                                onClick={this.test}
-                                primary={true}
-                            />
-                        {/*</div>*/}
+                        <List style={{ overflowX: 'hidden', overflowY: 'auto' }}>
+                            {this.state.loadedFiles.map((item, index) => (
+                                <ElementOfSelectableList
+                                    reducer={this.props.reducer}
+                                    key={index}
+                                    item={item}
+                                    selectFunction={this.selectCurrentFile}
+                                />
+                            ))}
+                        </List>
+                        <RaisedButton
+                            className="compare-button"
+                            label="Compare files"
+                            onClick={this.handleCompareClick}
+                            primary={true}
+                        />
                     </Tab>
                     <Tab label="Recent files">
                         <List>
                             {this.state.recentFiles.map((item, index) => (
                                 <ListItem
+                                    key={index}
                                     onClick={() => this.selectCurrentFileFromRecentFile(item)}
                                     primaryText={item.fileName}
                                 />
@@ -89,8 +89,12 @@ export default class SideBar extends React.Component<SideBarProps, SideBarState>
     }
 
     // remove when file comparator will be implemented and change onCLick on raised button
-    public test() {
-        process.stdout.write('TEST');
+    public handleCompareClick(event: object) {
+        // console.log("CLICK!");
+        this.props.reducer.getState().selectedFiles.forEach(selection => {
+            // console.log('File ' + selection.selectedFile.fileName);
+            // console.log('Color index' + selection.colourIndex);
+        });
     }
 
     private selectCurrentFile(file: HeavyweightFile) {

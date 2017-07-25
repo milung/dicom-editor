@@ -4,7 +4,7 @@ import { Observable } from 'rxjs/Observable';
 import { BehaviorSubject } from 'rxjs/BehaviorSubject';
 
 export interface SelectedFile {
-    fileIndex: number;
+    selectedFile: HeavyweightFile;
     colourIndex: number;
 }
 
@@ -67,7 +67,42 @@ export class ApplicationStateReducer {
         });
     }
 
-     private addOneLoadedFile(file: HeavyweightFile) {
+    public addSelectedFile(fileName: string) {
+        let file = this.findLoadedFileByName(fileName);
+        if (file) {
+            this.currentState.selectedFiles.push({ selectedFile: file, colourIndex: 1 });
+            this.stateSubject$.next(this.currentState);
+        }
+    }
+
+    public removeSelectedFile(fileName: string) {
+        let indexToRemove = this.findSelectedFileIndexByName(fileName);
+
+        this.currentState.selectedFiles.splice(indexToRemove, 1);
+        this.stateSubject$.next(this.currentState);
+    }
+
+    private findLoadedFileByName(fileName: string): (HeavyweightFile | undefined) {
+        for (var index = 0; index < this.currentState.loadedFiles.length; index++) {
+            if (this.currentState.loadedFiles[index].fileName === fileName) {
+                return this.currentState.loadedFiles[index];
+            }
+        }
+
+        return undefined;
+    }
+
+    private findSelectedFileIndexByName(fileName: string): number {
+        for (var index = 0; index < this.currentState.selectedFiles.length; index++) {
+            if (this.currentState.selectedFiles[index].selectedFile.fileName === fileName) {
+                return index;
+            }
+        }
+
+        return -1;
+    }
+
+    private addOneLoadedFile(file: HeavyweightFile) {
         this.currentState.loadedFiles.forEach((e, index) => {
             if (e.fileName === file.fileName) {
                 this.currentState.loadedFiles.splice(index, 1);
