@@ -9,7 +9,7 @@ import { ApplicationStateReducer } from '../application-state';
 import { HeavyweightFile, LightweightFile } from '../model/file-interfaces';
 import { ElementOfSelectableList } from './element-selectable-list';
 import './side-bar.css';
-import { ListItem } from "material-ui";
+import { ListItem } from 'material-ui';
 import TabTemplate from './tab-template';
 
 export interface SideBarProps {
@@ -46,11 +46,7 @@ export default class SideBar extends React.Component<SideBarProps, SideBarState>
     render() {
         return (
             <Paper className="side-bar">
-<<<<<<< HEAD
                 <Tabs
-=======
-                <Tabs 
->>>>>>> tiny syntax changes (aby lint nepistal)
                     className="tabs-container"
                     contentContainerClassName="content-tab"
                     tabItemContainerStyle={{ display: 'block' }}
