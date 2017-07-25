@@ -4,16 +4,15 @@ import TagViewer from '../components/tag-viewer';
 import ImageViewer from '../components/image-viewer';
 import './main-view.css';
 import { ApplicationStateReducer, SelectedFile } from '../application-state';
-import { DicomSimpleData } from '../model/dicom-entry';
-import { HeavyweightFile } from '../model/file-interfaces';
-import { TableMode } from '../model/table-enum';
+import { HeavyweightFile } from "../model/file-interfaces";
+import { TableMode } from "../model/table-enum";
 
 interface MainViewProps {
   reducer: ApplicationStateReducer;
 }
 
 interface MainViewState {
-  dicomData: DicomSimpleData;
+  currentFile: HeavyweightFile;
   loadedFiles: HeavyweightFile[];
   selectedFiles: SelectedFile[];
   tableMode: TableMode;
@@ -25,9 +24,12 @@ export default class MainView extends React.Component<MainViewProps, MainViewSta
   public constructor(props: MainViewProps) {
     super(props);
     this.state = {
-      dicomData: {
-        entries: [],
-        
+      currentFile: {
+        fileSize: 0,
+        bufferedData: new Uint8Array(0),
+        dicomData: { entries: [] },
+        fileName: "",
+        timestamp: 0
       },
       selectedFiles: [],
       loadedFiles: [],
@@ -39,7 +41,14 @@ export default class MainView extends React.Component<MainViewProps, MainViewSta
   public componentDidMount() {
     this.props.reducer.state$.subscribe(state => {
       this.setState({
-        dicomData: state.currentFile ? state.currentFile.dicomData : { entries: []},
+        currentFile: state.currentFile ? state.currentFile :           
+          {
+            fileSize: 0,
+            bufferedData: new Uint8Array(0),
+            dicomData: { entries: [] },
+            fileName: "",
+            timestamp: 0
+          },
         selectedFiles: state.selectedFiles ? state.selectedFiles : [],
         loadedFiles: state.loadedFiles ? state.loadedFiles : [],
         actualBufferData: state.currentFile ? state.currentFile.bufferedData : new Uint8Array(0)      
@@ -76,7 +85,8 @@ export default class MainView extends React.Component<MainViewProps, MainViewSta
           </div>
 
           <div className="container">
-            <TagViewer files = {files} tableType = {this.state.tableMode} />
+            {/* !!!!!!!!!!!!!!! CHANGE {THIS.STATE.LOADEDFILES} TO {FILES} !!!!!!!!!!!!!!!*/}
+            <TagViewer files={this.state.loadedFiles} tableType={this.state.tableMode} currentFile={this.state.currentFile} />
           </div>
         </Tab>
       </Tabs>

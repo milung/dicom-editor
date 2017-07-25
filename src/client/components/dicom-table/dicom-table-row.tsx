@@ -1,6 +1,7 @@
 import * as React from 'react';
 import { TableRow, TableRowColumn } from 'material-ui';
 import { DicomEntry } from '../../model/dicom-entry';
+import { colourDictionary } from '../../utils/colour-dictionary';
 
 export interface DicomTableRowProps {
     entry: DicomEntry;
@@ -16,8 +17,9 @@ export class DicomTableRow extends React.Component<DicomTableRowProps, DicomTabl
     }
 
     public render() {
+        let tableRowStyle = { color: colourDictionary[this.props.entry.colourIndex] };
         return (
-                <TableRow>
+                <TableRow style={tableRowStyle}>
                     <TableRowColumn>
                         {this.props.entry.tagGroup}{', '}{this.props.entry.tagElement}
                     </TableRowColumn>

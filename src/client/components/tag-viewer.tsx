@@ -1,14 +1,15 @@
 import * as React from 'react';
 import './tag-viewer.css';
-import { DicomSimpleTable } from './dicom-table/dicom-simple-table';
-import { TableMode } from '../model/table-enum';
-import { HeavyweightFile } from '../model/file-interfaces';
-import { DicomExtendedTable } from './dicom-table/dicom-extended-table';
+import { DicomSimpleTable } from "./dicom-table/dicom-simple-table";
+import { TableMode } from "../model/table-enum";
+import { HeavyweightFile } from "../model/file-interfaces";
+import { DicomExtendedTable } from "./dicom-table/dicom-extended-table";
+import { convertSimpleDicomToExtended } from "../utils/dicom-entry-converter";
 
 interface TagViewerProps {
     tableType: TableMode;
     files: HeavyweightFile[];
-
+    currentFile: HeavyweightFile;
 }
 
 interface TagViewerState {
@@ -22,6 +23,11 @@ export default class TagViewer extends React.Component<TagViewerProps, TagViewer
     }
 
     render() {
+        // let data: DicomSimpleData = {entries: []};
+        // if(this.props.files[0] && this.props.files[1]){
+        //     data = compareTwoFiles(this.props.files[0].dicomData.entries, 3, this.props.files[1].dicomData.entries, 4);
+        // }
+        
         switch (this.props.tableType) {
             case TableMode.SIMPLE:
                 return this.renderSimpleTable();
@@ -40,13 +46,19 @@ export default class TagViewer extends React.Component<TagViewerProps, TagViewer
 
     private renderSimpleTable(): JSX.Element {
         return (
-            <DicomSimpleTable entries={[]} />
+            <div>
+                <h1>TagViewer</h1>
+                <DicomSimpleTable entries={this.props.currentFile.dicomData.entries} />
+            </div>
         );
     }
 
     private renderExtendedTable(): JSX.Element {
         return (
-            <DicomExtendedTable data={{}} />
+            <div>
+                <h1>TagViewer</h1>
+                <DicomExtendedTable data={convertSimpleDicomToExtended(this.props.currentFile.dicomData)} />
+            </div>
         );
     }
 

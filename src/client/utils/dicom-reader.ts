@@ -58,7 +58,8 @@ export class DicomReader {
                         tagName: name || 'Unknown name',
                         tagValue: value,
                         tagVR: VR || 'Unknown VR',
-                        tagVM: VM.toString()
+                        tagVM: VM.toString(),
+                        colourIndex: 0
                     };
 
                     data.entries.push(entry);

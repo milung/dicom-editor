@@ -15,7 +15,8 @@ const arrayTest = {
                 tagName: 'PatientName',
                 tagValue: 'Michal Mrkvicka',
                 tagVR: 'PN',
-                tagVM: '2'
+                tagVM: '2',
+                colourIndex: 0
             },
             {
                 tagGroup: '0008',
@@ -23,7 +24,8 @@ const arrayTest = {
                 tagName: 'PatientAge',
                 tagValue: '18',
                 tagVR: 'PA',
-                tagVM: '1'
+                tagVM: '1',
+                colourIndex: 0
             }
         ]
     ,
@@ -35,7 +37,8 @@ const arrayTest = {
                 tagName: 'PatientName',
                 tagValue: 'Michal Mrkvicka',
                 tagVR: 'PN',
-                tagVM: '2'
+                tagVM: '2',
+                colourIndex: 0
             },
             {
                 tagGroup: '0010',
@@ -43,7 +46,8 @@ const arrayTest = {
                 tagName: 'PatientAge',
                 tagValue: '18',
                 tagVR: 'PA',
-                tagVM: '1'
+                tagVM: '1',
+                colourIndex: 0
             }
         ]
 }
@@ -55,7 +59,8 @@ const dicomTestEntry = {
     tagName: 'PatientName',
     tagValue: 'Michal Mrkvicka',
     tagVR: 'PN',
-    tagVM: '2'
+    tagVM: '2',
+    colourIndex: 0
 }
 
 const dicomTestEntries =
@@ -66,7 +71,8 @@ const dicomTestEntries =
             tagName: 'PatientName',
             tagValue: 'Michal Mrkvicka',
             tagVR: 'PN',
-            tagVM: '2'
+            tagVM: '2',
+            colourIndex: 0
         },
         {
             tagGroup: '0010',
@@ -74,7 +80,8 @@ const dicomTestEntries =
             tagName: 'PatientAge',
             tagValue: '18',
             tagVR: 'PA',
-            tagVM: '1'
+            tagVM: '1',
+            colourIndex: 0
         },
         {
             tagGroup: '0152',
@@ -82,7 +89,8 @@ const dicomTestEntries =
             tagName: 'PatientName',
             tagValue: 'Michal Mrkvicka',
             tagVR: 'PN',
-            tagVM: '2'
+            tagVM: '2',
+            colourIndex: 0
         },
         {
             tagGroup: '0010',
@@ -90,7 +98,8 @@ const dicomTestEntries =
             tagName: 'PatientAge',
             tagValue: '18',
             tagVR: 'PA',
-            tagVM: '1'
+            tagVM: '1',
+            colourIndex: 0
         }
     ]
 

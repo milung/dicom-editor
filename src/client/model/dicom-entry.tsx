@@ -5,6 +5,7 @@ export interface DicomEntry {
     tagValue: string;
     tagVR: string;
     tagVM: string;
+    colourIndex: number;
 }
 
 /**
@@ -21,12 +22,4 @@ export interface DicomExtendedData {
  */
 export interface DicomSimpleData {
     entries: DicomEntry[];
-}
-
-/**
- * @description Data used for comparison of entries from different files
- */
-export interface DicomComparisonEntry {
-    entry: DicomEntry;
-    colour: string;
 }
