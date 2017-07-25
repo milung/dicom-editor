@@ -44,11 +44,15 @@ export default class SideBar extends React.Component<SideBarProps, SideBarState>
     render() {
         return (
             <Paper className="side-bar">
-                <Tabs className="tabs-container" contentContainerClassName="scrollable-y" tabItemContainerStyle={{display: 'block'}}>
+                <Tabs
+                    className="tabs-container"
+                    contentContainerClassName="scrollable-y"
+                    tabItemContainerStyle={{ display: 'block' }}
+                >
                     <Tab
                         label="Loaded files"
                     >
-                         <List > 
+                        <List >
                             {this.state.loadedFiles.map((item, index) => (
                                 <ElementOfSelectableList
                                     key={index}
@@ -82,7 +86,7 @@ export default class SideBar extends React.Component<SideBarProps, SideBarState>
             </Paper>
         );
     }
-    
+
     // remove when file comparator will be implemented and change onCLick on raised button
     public test() {
         process.stdout.write('TEST');

@@ -5,8 +5,8 @@ import ImageViewer from '../components/image-viewer';
 import './main-view.css';
 import { ApplicationStateReducer, SelectedFile } from '../application-state';
 import { DicomSimpleData } from '../model/dicom-entry';
-import { HeavyweightFile } from "../model/file-interfaces";
-import { TableMode } from "../model/table-enum";
+import { HeavyweightFile } from '../model/file-interfaces';
+import { TableMode } from '../model/table-enum';
 
 interface MainViewProps {
   reducer: ApplicationStateReducer;
@@ -17,6 +17,7 @@ interface MainViewState {
   loadedFiles: HeavyweightFile[];
   selectedFiles: SelectedFile[];
   tableMode: TableMode;
+  actualBufferData: Uint8Array;
 }
 
 export default class MainView extends React.Component<MainViewProps, MainViewState> {
@@ -30,6 +31,7 @@ export default class MainView extends React.Component<MainViewProps, MainViewSta
       },
       selectedFiles: [],
       loadedFiles: [],
+      actualBufferData: new Uint8Array(0),
       tableMode: TableMode.SIMPLE
     };
   }
@@ -39,7 +41,8 @@ export default class MainView extends React.Component<MainViewProps, MainViewSta
       this.setState({
         dicomData: state.currentFile ? state.currentFile.dicomData : { entries: []},
         selectedFiles: state.selectedFiles ? state.selectedFiles : [],
-        loadedFiles: state.loadedFiles ? state.loadedFiles : []
+        loadedFiles: state.loadedFiles ? state.loadedFiles : [],
+        actualBufferData: state.currentFile ? state.currentFile.bufferedData : new Uint8Array(0)      
       });
     });
   }
@@ -47,8 +50,8 @@ export default class MainView extends React.Component<MainViewProps, MainViewSta
   render() {
     let files: HeavyweightFile[] = [];
     this.state.selectedFiles.forEach(selectedFile => {
-      files.push(this.state.loadedFiles[selectedFile.fileIndex])
-    })
+      files.push(this.state.loadedFiles[selectedFile.fileIndex]);
+    });
 
     return (
       <Tabs className="tabs" initialSelectedIndex={1}>
@@ -56,7 +59,7 @@ export default class MainView extends React.Component<MainViewProps, MainViewSta
           label="Image viewer"
         >
           <div className="container">
-            <ImageViewer />
+            <ImageViewer data={this.state.actualBufferData}/>
           </div>
         </Tab>
         <Tab
@@ -66,8 +69,8 @@ export default class MainView extends React.Component<MainViewProps, MainViewSta
             <h1>TagViewer</h1>
             <div id="simpleOrHierarchical">
               <Tabs>
-                <Tab label="Simple" onClick={() => this.setState({tableMode: TableMode.SIMPLE})}></Tab>
-                <Tab label="Hierarchical" onClick={() => this.setState({tableMode: TableMode.EXTENDED})}></Tab>
+                <Tab label="Simple" onClick={() => this.setState({tableMode: TableMode.SIMPLE})} />
+                <Tab label="Hierarchical" onClick={() => this.setState({tableMode: TableMode.EXTENDED})} />
               </Tabs>
             </div>
           </div>
