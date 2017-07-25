@@ -62,7 +62,8 @@ export default class MainView extends React.Component<MainViewProps, MainViewSta
         <Tab
           label="Tags"
         >
-          <div>
+          <div className="container">
+            <h1>TagViewer</h1>
             <div id="simpleOrHierarchical">
               <Tabs>
                 <Tab label="Simple" onClick={() => this.setState({tableMode: TableMode.SIMPLE})}></Tab>
