@@ -40,19 +40,13 @@ export default class TagViewer extends React.Component<TagViewerProps, TagViewer
 
     private renderSimpleTable(): JSX.Element {
         return (
-            <div>
-                <h1>TagViewer</h1>
-                <DicomSimpleTable entries={[]} />
-            </div>
+            <DicomSimpleTable entries={[]} />
         );
     }
 
     private renderExtendedTable(): JSX.Element {
         return (
-            <div>
-                <h1>TagViewer</h1>
-                <DicomExtendedTable data={{}} />
-            </div>
+            <DicomExtendedTable data={{}} />
         );
     }
 
