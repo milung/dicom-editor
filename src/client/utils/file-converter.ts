@@ -27,13 +27,21 @@ export function convertFileToArrayBuffer(file: File): Promise<Uint8Array> {
 export function buffersEqual(buf1: Uint8Array, buf2: Uint8Array) {
     if (buf1.byteLength !== buf2.byteLength) {
         return false;
+<<<<<<< HEAD
     } 
+=======
+    }
+>>>>>>> tiny syntax changes (aby lint nepistal)
     var dv1 = new Int8Array(buf1);
     var dv2 = new Int8Array(buf2);
     for (var i = 0; i !== buf1.byteLength; i++) {
         if (dv1[i] !== dv2[i]) {
             return false;
+<<<<<<< HEAD
         } 
+=======
+        }
+>>>>>>> tiny syntax changes (aby lint nepistal)
     }
     return true;
 }

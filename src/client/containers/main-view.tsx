@@ -69,8 +69,13 @@ export default class MainView extends React.Component<MainViewProps, MainViewSta
             <h1>TagViewer</h1>
             <div id="simpleOrHierarchical">
               <Tabs>
+<<<<<<< HEAD
                 <Tab label="Simple" onClick={() => this.setState({tableMode: TableMode.SIMPLE})} />
                 <Tab label="Hierarchical" onClick={() => this.setState({tableMode: TableMode.EXTENDED})} />
+=======
+                <Tab label="Simple" onClick={() => this.setState({tableMode: TableMode.SIMPLE})}/>
+                <Tab label="Hierarchical" onClick={() => this.setState({tableMode: TableMode.EXTENDED})}/>
+>>>>>>> tiny syntax changes (aby lint nepistal)
               </Tabs>
             </div>
           </div>

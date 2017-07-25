@@ -46,7 +46,11 @@ export default class SideBar extends React.Component<SideBarProps, SideBarState>
     render() {
         return (
             <Paper className="side-bar">
+<<<<<<< HEAD
                 <Tabs
+=======
+                <Tabs 
+>>>>>>> tiny syntax changes (aby lint nepistal)
                     className="tabs-container"
                     contentContainerClassName="content-tab"
                     tabItemContainerStyle={{ display: 'block' }}

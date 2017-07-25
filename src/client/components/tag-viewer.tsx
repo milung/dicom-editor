@@ -1,9 +1,9 @@
 import * as React from 'react';
 import './tag-viewer.css';
-import { DicomSimpleTable } from "./dicom-table/dicom-simple-table";
-import { TableMode } from "../model/table-enum";
-import { HeavyweightFile } from "../model/file-interfaces";
-import { DicomExtendedTable } from "./dicom-table/dicom-extended-table";
+import { DicomSimpleTable } from './dicom-table/dicom-simple-table';
+import { TableMode } from '../model/table-enum';
+import { HeavyweightFile } from '../model/file-interfaces';
+import { DicomExtendedTable } from './dicom-table/dicom-extended-table';
 
 interface TagViewerProps {
     tableType: TableMode;
