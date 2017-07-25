@@ -4,8 +4,8 @@ import TagViewer from '../components/tag-viewer';
 import ImageViewer from '../components/image-viewer';
 import './main-view.css';
 import { ApplicationStateReducer, SelectedFile } from '../application-state';
-import { HeavyweightFile } from "../model/file-interfaces";
-import { TableMode } from "../model/table-enum";
+import { HeavyweightFile } from '../model/file-interfaces';
+import { TableMode } from '../model/table-enum';
 
 interface MainViewProps {
   reducer: ApplicationStateReducer;
@@ -28,7 +28,7 @@ export default class MainView extends React.Component<MainViewProps, MainViewSta
         fileSize: 0,
         bufferedData: new Uint8Array(0),
         dicomData: { entries: [] },
-        fileName: "",
+        fileName: '',
         timestamp: 0
       },
       selectedFiles: [],
@@ -46,7 +46,7 @@ export default class MainView extends React.Component<MainViewProps, MainViewSta
             fileSize: 0,
             bufferedData: new Uint8Array(0),
             dicomData: { entries: [] },
-            fileName: "",
+            fileName: '',
             timestamp: 0
           },
         selectedFiles: state.selectedFiles ? state.selectedFiles : [],
@@ -80,7 +80,11 @@ export default class MainView extends React.Component<MainViewProps, MainViewSta
           </div>
 
           <div className="container">
-            <TagViewer files={this.state.loadedFiles} tableType={this.state.tableMode} currentFile={this.state.currentFile} />
+            <TagViewer 
+                files={this.state.loadedFiles} 
+                tableType={this.state.tableMode} 
+                currentFile={this.state.currentFile} 
+            />
           </div>
         </Tab>
       </Tabs>

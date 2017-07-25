@@ -32,7 +32,6 @@ export class ElementOfSelectableList extends
         }
     }
 
-
     render() {
         return (
             <div className="containera">
