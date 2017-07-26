@@ -3,15 +3,17 @@ import { FileInterface } from '../model/file-interfaces';
 import { ListItem, Checkbox } from 'material-ui';
 import { ApplicationStateReducer } from '../application-state';
 import './element-selectable-list.css';
+import { ColorDictionary } from '../utils/colour-dictionary';
 
 interface ElementOfSelectableListProps {
     reducer: ApplicationStateReducer;
     selectFunction: Function;
     item: FileInterface;
+    colorDictionary: ColorDictionary;
 }
 
 interface ElementOfSelectableListState {
-    activeCheckboxes: number[];
+    currentColor: string;
 }
 
 export class ElementOfSelectableList extends
@@ -20,13 +22,18 @@ export class ElementOfSelectableList extends
     constructor(props: ElementOfSelectableListProps) {
         super(props);
         this.handleCheck = this.handleCheck.bind(this);
+        this.state = {currentColor: 'black'};
     }
 
     handleCheck(e: object, isInputChecked: boolean) {
         if (isInputChecked) {
-            this.props.reducer.addSelectedFile(this.props.item.fileName);
+            let newColor = this.props.colorDictionary.getFirstFreeColor();
+            this.props.reducer.addSelectedFile(this.props.item.fileName, newColor);
+            this.setState({currentColor: newColor});
         } else {
-            this.props.reducer.removeSelectedFile(this.props.item.fileName);
+            let freeColor = this.props.reducer.removeSelectedFile(this.props.item.fileName);
+            this.props.colorDictionary.freeColor(freeColor);
+            this.setState({currentColor: 'black'});
         }
     }
 
@@ -42,6 +49,7 @@ export class ElementOfSelectableList extends
                     <ListItem
                         onClick={() => this.props.selectFunction(this.props.item)}
                         primaryText={this.props.item.fileName}
+                        style={{color: this.state.currentColor}}
                     />
                 </div>
             </div>

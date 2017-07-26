@@ -1,12 +1,11 @@
 import { FileStorage } from './utils/file-storage';
 import { HeavyweightFile, LightweightFile } from './model/file-interfaces';
-import { ColourDictionary } from './utils/colour-dictionary';
 import { Observable } from 'rxjs/Observable';
 import { BehaviorSubject } from 'rxjs/BehaviorSubject';
 
 export interface SelectedFile {
     selectedFile: HeavyweightFile;
-    colourIndex: number;
+    colour: string;
 }
 
 export interface ApplicationState {
@@ -20,7 +19,6 @@ export interface ApplicationState {
 export class ApplicationStateReducer {
     private currentState: ApplicationState;
     private stateSubject$: BehaviorSubject<ApplicationState>;
-    private colourDictionary: ColourDictionary;
 
     public get state$(): Observable<ApplicationState> {
         return this.stateSubject$;
@@ -36,7 +34,6 @@ export class ApplicationStateReducer {
         };
 
         this.stateSubject$ = new BehaviorSubject(this.currentState);
-        this.colourDictionary = new ColourDictionary();
     }
 
     public addLoadedFiles(files: HeavyweightFile[]) {
@@ -70,23 +67,25 @@ export class ApplicationStateReducer {
         });
     }
 
-    public addSelectedFile(fileName: string) {
+    public addSelectedFile(fileName: string, newColour: string) {
         let file = this.findLoadedFileByName(fileName);
         if (file) {
             this.currentState.selectedFiles.push({ 
                 selectedFile: file, 
-                colourIndex: this.colourDictionary.getFirstFreeColor()
+                colour: newColour
             });
             this.stateSubject$.next(this.currentState);
         }
     }
 
-    public removeSelectedFile(fileName: string) {
+    public removeSelectedFile(fileName: string): string {
         let indexToRemove = this.findSelectedFileIndexByName(fileName);
-
-        this.colourDictionary.freeColor(this.currentState.selectedFiles[indexToRemove].colourIndex);
+        let freeColor = this.currentState.selectedFiles[indexToRemove].colour;
+        
         this.currentState.selectedFiles.splice(indexToRemove, 1);
         this.stateSubject$.next(this.currentState);
+
+        return freeColor;
     }
 
     private findLoadedFileByName(fileName: string): (HeavyweightFile | undefined) {

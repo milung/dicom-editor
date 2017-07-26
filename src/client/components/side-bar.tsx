@@ -8,6 +8,7 @@ import RaisedButton from 'material-ui/RaisedButton';
 import { ApplicationStateReducer } from '../application-state';
 import { HeavyweightFile, LightweightFile } from '../model/file-interfaces';
 import { ElementOfSelectableList } from './element-selectable-list';
+import { ColorDictionary } from '../utils/colour-dictionary';
 import './side-bar.css';
 import { ListItem } from 'material-ui';
 import TabTemplate from './tab-template';
@@ -22,6 +23,7 @@ export interface SideBarState {
 }
 
 export default class SideBar extends React.Component<SideBarProps, SideBarState> {
+    private colorDictionary: ColorDictionary;
 
     public constructor(props: SideBarProps) {
         super(props);
@@ -31,6 +33,7 @@ export default class SideBar extends React.Component<SideBarProps, SideBarState>
             recentFiles: [],
         };
 
+        this.colorDictionary = new ColorDictionary(); 
         this.selectCurrentFile = this.selectCurrentFile.bind(this);
         this.selectCurrentFileFromRecentFile = this.selectCurrentFileFromRecentFile.bind(this);
         this.handleCompareClick = this.handleCompareClick.bind(this);
@@ -62,6 +65,7 @@ export default class SideBar extends React.Component<SideBarProps, SideBarState>
                                     key={index}
                                     item={item}
                                     selectFunction={this.selectCurrentFile}
+                                    colorDictionary={this.colorDictionary}
                                 />
                             ))}
                         </List>
@@ -91,8 +95,8 @@ export default class SideBar extends React.Component<SideBarProps, SideBarState>
     // update when file comparator will be implemented
     public handleCompareClick(event: object) {
         this.props.reducer.getState().selectedFiles.forEach(selection => {
-            // console.log('File ' + selection.selectedFile.fileName);
-            // console.log('Color index ' + selection.colourIndex);
+            console.log('File ' + selection.selectedFile.fileName);
+            console.log('Color index ' + selection.colour);
         });
     }
 
