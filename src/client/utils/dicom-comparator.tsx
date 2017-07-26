@@ -1,6 +1,19 @@
 import { DicomSimpleData, DicomEntry } from '../model/dicom-entry';
 import { SelectedFile } from '../application-state';
 
+function createEntryCopy( entry: DicomEntry ): DicomEntry {
+     let entryCopy: DicomEntry = {
+                tagGroup: entry.tagGroup,
+                tagElement: entry.tagElement,
+                tagName: entry.tagName,
+                tagValue: entry.tagValue,
+                tagVR: entry.tagVR,
+                tagVM: entry.tagVM,
+                colour: entry.colour
+            };
+     return entryCopy;
+}
+
 export function compareTwoFiles(file1: SelectedFile, file2: SelectedFile): DicomSimpleData {
     let comparisonEntries: DicomSimpleData = { entries: [] };
 
@@ -12,34 +25,25 @@ export function compareTwoFiles(file1: SelectedFile, file2: SelectedFile): Dicom
 
     let commonMap = {};
     file1.selectedFile.dicomData.entries.map((entry, index) => {
+        // If one tag from first file is in the second file
         if (fileMap2[entry.tagGroup + entry.tagElement]) {
+
+            // create copies of both entries
             let entry2: DicomEntry = fileMap2[entry.tagGroup + entry.tagElement];
-            let tempEntry1: DicomEntry = {
-                tagGroup: entry.tagGroup,
-                tagElement: entry.tagElement,
-                tagName: entry.tagName,
-                tagValue: entry.tagValue,
-                tagVR: entry.tagVR,
-                tagVM: entry.tagVM,
-                colour: entry.colour
-            };
 
-            let tempEntry2: DicomEntry = {
-                tagGroup: entry2.tagGroup,
-                tagElement: entry2.tagElement,
-                tagName: entry2.tagName,
-                tagValue: entry2.tagValue,
-                tagVR: entry2.tagVR,
-                tagVM: entry2.tagVM,
-                colour: entry2.colour
-            };
+            let tempEntry1 = createEntryCopy(entry);         
 
+            let tempEntry2 = createEntryCopy(entry2);
+           
+            // check if they contain the same value
             if (tempEntry1.tagValue !== tempEntry2.tagValue) {
                 tempEntry1.colour = file1.colour;
                 tempEntry2.colour = file2.colour;
                 // shorterEntry.tagGroup = shorterEntry.tagElement = "";
 
                 commonMap[tempEntry1.tagGroup + tempEntry1.tagElement] = [tempEntry1, tempEntry2];
+            }else {
+                commonMap[tempEntry1.tagGroup + tempEntry1.tagElement] = [tempEntry1];
             }
         }
     });
@@ -54,7 +58,16 @@ export function compareTwoFiles(file1: SelectedFile, file2: SelectedFile): Dicom
                     tagValue: entry.tagValue,
                     tagVR: entry.tagVR,
                     tagVM: entry.tagVM,
-                    colour: entry.colour
+                    colour: file2.colour
+                },
+                {
+                    tagGroup: entry.tagGroup,
+                    tagElement: entry.tagElement,
+                    tagName: 'Missing name',
+                    tagValue: 'Missing value',
+                    tagVR: '',
+                    tagVM: '',
+                    colour: file1.colour
                 }
             ];
         }
@@ -70,7 +83,16 @@ export function compareTwoFiles(file1: SelectedFile, file2: SelectedFile): Dicom
                     tagValue: entry.tagValue,
                     tagVR: entry.tagVR,
                     tagVM: entry.tagVM,
-                    colour: entry.colour
+                    colour: file1.colour
+                },
+                {
+                    tagGroup: entry.tagGroup,
+                    tagElement: entry.tagElement,
+                    tagName: 'Missing name',
+                    tagValue: 'Missing value',
+                    tagVR: '',
+                    tagVM: '',
+                    colour: file2.colour
                 }
             ];
         }
