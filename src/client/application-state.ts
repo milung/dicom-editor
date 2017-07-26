@@ -14,6 +14,7 @@ export interface ApplicationState {
     currentFile?: HeavyweightFile;
     currentIndex?: number;
     selectedFiles: SelectedFile[];
+    comparisonActive: boolean;
 }
 
 export class ApplicationStateReducer {
@@ -30,7 +31,8 @@ export class ApplicationStateReducer {
             loadedFiles: [],
             currentFile: undefined,
             currentIndex: undefined,
-            selectedFiles: []
+            selectedFiles: [],
+            comparisonActive: false
         };
 
         this.stateSubject$ = new BehaviorSubject(this.currentState);
@@ -86,6 +88,11 @@ export class ApplicationStateReducer {
         this.stateSubject$.next(this.currentState);
 
         return freeColor;
+    }
+
+    public setComparisonActive(value: boolean) {
+        this.currentState.comparisonActive = value;
+        this.stateSubject$.next(this.currentState);
     }
 
     private findLoadedFileByName(fileName: string): (HeavyweightFile | undefined) {

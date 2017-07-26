@@ -17,6 +17,7 @@ interface MainViewState {
   selectedFiles: SelectedFile[];
   tableMode: TableMode;
   actualBufferData: Uint8Array;
+  comparisonActive: boolean;
 }
 
 export default class MainView extends React.Component<MainViewProps, MainViewState> {
@@ -34,7 +35,8 @@ export default class MainView extends React.Component<MainViewProps, MainViewSta
       selectedFiles: [],
       loadedFiles: [],
       actualBufferData: new Uint8Array(0),
-      tableMode: TableMode.SIMPLE
+      tableMode: TableMode.SIMPLE,
+      comparisonActive: false
     };
   }
 
@@ -51,7 +53,8 @@ export default class MainView extends React.Component<MainViewProps, MainViewSta
           },
         selectedFiles: state.selectedFiles ? state.selectedFiles : [],
         loadedFiles: state.loadedFiles ? state.loadedFiles : [],
-        actualBufferData: state.currentFile ? state.currentFile.bufferedData : new Uint8Array(0)      
+        actualBufferData: state.currentFile ? state.currentFile.bufferedData : new Uint8Array(0),   
+        comparisonActive: this.props.reducer.getState().comparisonActive 
       });
     });
   }
@@ -81,9 +84,10 @@ export default class MainView extends React.Component<MainViewProps, MainViewSta
 
           <div className="container">
             <TagViewer 
-                files={this.state.loadedFiles} 
-                tableType={this.state.tableMode} 
-                currentFile={this.state.currentFile} 
+                files={this.state.selectedFiles} 
+                tableMode={this.state.tableMode} 
+                currentFile={this.state.currentFile}
+                comparisonActive={this.state.comparisonActive} 
             />
           </div>
         </Tab>

@@ -14,22 +14,83 @@ export function compareTwoFiles(file1: DicomEntry[], colour1: number,
     },
                                             {});
 
+    let commonMap = {};
     longerFile.map((entry, index) => {
         if (shorterFileMap[entry.tagGroup + entry.tagElement]) {
             let entry2: DicomEntry = shorterFileMap[entry.tagGroup + entry.tagElement];
+            let longerEntry: DicomEntry = {
+                tagGroup: entry.tagGroup,
+                tagElement: entry.tagElement,
+                tagName: entry.tagName,
+                tagValue: entry.tagValue,
+                tagVR: entry.tagVR,
+                tagVM: entry.tagVM,
+                colourIndex: entry.colourIndex
+            };
 
-            if (entry.tagValue === entry2.tagValue) {
-                comparisonEntries.entries.push(entry);
-            } else {
-                entry.colourIndex = longerColour;
-                entry2.colourIndex = shorterColour;
-                entry2.tagGroup = entry2.tagElement = '';
+            let shorterEntry: DicomEntry = {
+                tagGroup: entry2.tagGroup,
+                tagElement: entry2.tagElement,
+                tagName: entry2.tagName,
+                tagValue: entry2.tagValue,
+                tagVR: entry2.tagVR,
+                tagVM: entry2.tagVM,
+                colourIndex: entry2.colourIndex
+            };
 
-                comparisonEntries.entries.push(entry);
-                comparisonEntries.entries.push(entry2);
+            if (longerEntry.tagValue !== shorterEntry.tagValue) {
+                longerEntry.colourIndex = longerColour;
+                shorterEntry.colourIndex = shorterColour;
+                // shorterEntry.tagGroup = shorterEntry.tagElement = "";
+
+                commonMap[longerEntry.tagGroup + longerEntry.tagElement] = [longerEntry, shorterEntry];
             }
         }
     });
+
+    longerFile.forEach(entry => {
+        if (commonMap[entry.tagGroup + entry.tagElement] === undefined) {
+            commonMap[entry.tagGroup + entry.tagElement] = [
+                {
+                    tagGroup: entry.tagGroup,
+                    tagElement: entry.tagElement,
+                    tagName: entry.tagName,
+                    tagValue: entry.tagValue,
+                    tagVR: entry.tagVR,
+                    tagVM: entry.tagVM,
+                    colourIndex: entry.colourIndex
+                }
+            ];
+        }
+    });
+
+    shorterFile.forEach(entry => {
+        if (commonMap[entry.tagGroup + entry.tagElement] === undefined) {
+            commonMap[entry.tagGroup + entry.tagElement] = [
+                {
+                    tagGroup: entry.tagGroup,
+                    tagElement: entry.tagElement,
+                    tagName: entry.tagName,
+                    tagValue: entry.tagValue,
+                    tagVR: entry.tagVR,
+                    tagVM: entry.tagVM,
+                    colourIndex: entry.colourIndex
+                }
+            ];
+        }
+    });
+
+    for (var key in commonMap) {
+        if (key) {
+            var entries: DicomEntry[];
+            entries = commonMap[key];
+            if (entries) {
+                entries.forEach(entry => {
+                    comparisonEntries.entries.push(entry);
+                });
+            }
+        }
+    }
 
     return comparisonEntries;
 } 

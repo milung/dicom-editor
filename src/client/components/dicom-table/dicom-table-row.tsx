@@ -20,16 +20,25 @@ export class DicomTableRow extends React.Component<DicomTableRowProps, DicomTabl
     }
 
     public render() {
+        let tableRowStyle = { color: this.colorDict.getFirstFreeColor()};
+        let tableRowColumnStyle = {
+            whiteSpace: 'normal',
+            wordWrap: 'break-word'
+        };
+        let tag = this.props.entry.tagGroup + ', ' + this.props.entry.tagElement;
+        // if(this.props.entry.colourIndex > 1) {
+        //     tag = '';
+        // }
         return (
-            <TableRow>
-                <TableRowColumn>
-                    {this.props.entry.tagGroup}{', '}{this.props.entry.tagElement}
-                </TableRowColumn>
-                <TableRowColumn>{this.props.entry.tagName}</TableRowColumn>
-                <TableRowColumn>{this.props.entry.tagValue}</TableRowColumn>
-                <TableRowColumn>{this.props.entry.tagVR}</TableRowColumn>
-                <TableRowColumn>{this.props.entry.tagVM}</TableRowColumn>
-            </TableRow>
+                <TableRow style={tableRowStyle}>
+                    <TableRowColumn>
+                        {tag}
+                    </TableRowColumn>
+                    <TableRowColumn style={tableRowColumnStyle}>{this.props.entry.tagName}</TableRowColumn>
+                    <TableRowColumn style={tableRowColumnStyle}>{this.props.entry.tagValue}</TableRowColumn>
+                    <TableRowColumn>{this.props.entry.tagVR}</TableRowColumn>
+                    <TableRowColumn>{this.props.entry.tagVM}</TableRowColumn>
+                </TableRow>
         );
     }
 }

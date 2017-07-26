@@ -92,12 +92,8 @@ export default class SideBar extends React.Component<SideBarProps, SideBarState>
         );
     }
 
-    // update when file comparator will be implemented
     public handleCompareClick(event: object) {
-        this.props.reducer.getState().selectedFiles.forEach(selection => {
-            console.log('File ' + selection.selectedFile.fileName);
-            console.log('Color index ' + selection.colour);
-        });
+        this.props.reducer.setComparisonActive(true);
     }
 
     private selectCurrentFile(file: HeavyweightFile) {
