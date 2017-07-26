@@ -97,10 +97,12 @@ export default class SideBar extends React.Component<SideBarProps, SideBarState>
     }
 
     private selectCurrentFile(file: HeavyweightFile) {
+        this.props.reducer.setComparisonActive(false);
         this.props.reducer.updateCurrentFile(file);
     }
 
     private selectCurrentFileFromRecentFile(file: LightweightFile) {
+        this.props.reducer.setComparisonActive(false);
         this.props.reducer.updateCurrentFromRecentFile(file);
     }
 }

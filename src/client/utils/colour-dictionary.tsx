@@ -1,12 +1,12 @@
 export class ColorDictionary {
     private colorDictionary = [
-        { color: '#000000', usage: 0 },
-        { color: '#00FF00', usage: 0 },
-        { color: '#FF0000', usage: 0 },
-        { color: '#0000FF', usage: 0 },
-        { color: '#FF00FF', usage: 0 },
-        { color: '#FFFF00', usage: 0 },
-        { color: '#00FFFF', usage: 0 }
+        { color: '#00BB00', usage: 0 },
+        { color: '#BB0000', usage: 0 },
+        { color: '#0000BB', usage: 0 },
+        { color: '#BB00BB', usage: 0 },
+        { color: '#BBBB00', usage: 0 },
+        { color: '#00BBBB', usage: 0 },
+        { color: '#000000', usage: 0 }
     ];
 
     public getColorByIndex(index: number) {

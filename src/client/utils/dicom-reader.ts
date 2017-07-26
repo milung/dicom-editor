@@ -59,7 +59,7 @@ export class DicomReader {
                         tagValue: value,
                         tagVR: VR || 'Unknown VR',
                         tagVM: VM.toString(),
-                        colourIndex: 0
+                        colour: '#000000'
                     };
 
                     data.entries.push(entry);

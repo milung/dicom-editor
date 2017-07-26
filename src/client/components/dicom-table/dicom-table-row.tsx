@@ -20,15 +20,13 @@ export class DicomTableRow extends React.Component<DicomTableRowProps, DicomTabl
     }
 
     public render() {
-        let tableRowStyle = { color: this.colorDict.getFirstFreeColor()};
+        let tableRowStyle = { color: this.props.entry.colour};
         let tableRowColumnStyle = {
             whiteSpace: 'normal',
             wordWrap: 'break-word'
         };
         let tag = this.props.entry.tagGroup + ', ' + this.props.entry.tagElement;
-        // if(this.props.entry.colourIndex > 1) {
-        //     tag = '';
-        // }
+        
         return (
                 <TableRow style={tableRowStyle}>
                     <TableRowColumn>

@@ -16,7 +16,7 @@ const arrayTest = {
                 tagValue: 'Michal Mrkvicka',
                 tagVR: 'PN',
                 tagVM: '2',
-                colourIndex: 0
+                colour: '#000000'
             },
             {
                 tagGroup: '0008',
@@ -25,7 +25,7 @@ const arrayTest = {
                 tagValue: '18',
                 tagVR: 'PA',
                 tagVM: '1',
-                colourIndex: 0
+                colour: '#000000'
             }
         ]
     ,
@@ -38,7 +38,7 @@ const arrayTest = {
                 tagValue: 'Michal Mrkvicka',
                 tagVR: 'PN',
                 tagVM: '2',
-                colourIndex: 0
+                colour: '#000000'
             },
             {
                 tagGroup: '0010',
@@ -47,7 +47,7 @@ const arrayTest = {
                 tagValue: '18',
                 tagVR: 'PA',
                 tagVM: '1',
-                colourIndex: 0
+                colour: '#000000'
             }
         ]
 }
@@ -60,7 +60,7 @@ const dicomTestEntry = {
     tagValue: 'Michal Mrkvicka',
     tagVR: 'PN',
     tagVM: '2',
-    colourIndex: 0
+    colour: '#000000'
 }
 
 const dicomTestEntries =
@@ -72,7 +72,7 @@ const dicomTestEntries =
             tagValue: 'Michal Mrkvicka',
             tagVR: 'PN',
             tagVM: '2',
-            colourIndex: 0
+            colour: '#000000'
         },
         {
             tagGroup: '0010',
@@ -81,7 +81,7 @@ const dicomTestEntries =
             tagValue: '18',
             tagVR: 'PA',
             tagVM: '1',
-            colourIndex: 0
+            colour: '#000000'
         },
         {
             tagGroup: '0152',
@@ -90,7 +90,7 @@ const dicomTestEntries =
             tagValue: 'Michal Mrkvicka',
             tagVR: 'PN',
             tagVM: '2',
-            colourIndex: 0
+            colour: '#000000'
         },
         {
             tagGroup: '0010',
@@ -99,7 +99,7 @@ const dicomTestEntries =
             tagValue: '18',
             tagVR: 'PA',
             tagVM: '1',
-            colourIndex: 0
+            colour: '#000000'
         }
     ]
 

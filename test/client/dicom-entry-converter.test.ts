@@ -24,7 +24,7 @@ describe('dicom-entry-converter', () => {
                     tagValue: 'TAG VALUE',
                     tagVR: 'AA',
                     tagVM: '2',
-                    colourIndex: 0
+                    colour: '#000000'
                 },
                 {
                     tagGroup: '0007',
@@ -33,7 +33,7 @@ describe('dicom-entry-converter', () => {
                     tagValue: 'TAG VALUE',
                     tagVR: 'AA',
                     tagVM: '2',
-                    colourIndex: 0
+                    colour: '#000000'
                 },
                 {
                     tagGroup: '0012',
@@ -42,7 +42,7 @@ describe('dicom-entry-converter', () => {
                     tagValue: 'TAG VALUE',
                     tagVR: 'AA',
                     tagVM: '2',
-                    colourIndex: 0
+                    colour: '#000000'
                 }
             ]
         };
@@ -56,7 +56,7 @@ describe('dicom-entry-converter', () => {
                     tagValue: 'TAG VALUE',
                     tagVR: 'AA',
                     tagVM: '2',
-                    colourIndex: 0
+                    colour: '#000000'
                 }
             ],
 
@@ -68,7 +68,7 @@ describe('dicom-entry-converter', () => {
                     tagValue: 'TAG VALUE',
                     tagVR: 'AA',
                     tagVM: '2',
-                    colourIndex: 0
+                    colour: '#000000'
                 },
                 {
                     tagGroup: '0012',
@@ -77,7 +77,7 @@ describe('dicom-entry-converter', () => {
                     tagValue: 'TAG VALUE',
                     tagVR: 'AA',
                     tagVM: '2',
-                    colourIndex: 0
+                    colour: '#000000'
                 }
             ]
         };
@@ -117,7 +117,7 @@ describe('dicom-entry-converter-sortDicomEntries', () => {
                 tagValue: 'TAG-VALUE',
                 tagVR: 'VM',
                 tagVM: '2',
-                colourIndex: 0
+                colour: '#000000'
 
             },
             {
@@ -127,7 +127,7 @@ describe('dicom-entry-converter-sortDicomEntries', () => {
                 tagValue: 'TAG-VALUE',
                 tagVR: 'VM',
                 tagVM: '2',
-                colourIndex: 0
+                colour: '#000000'
 
             },
             {
@@ -137,7 +137,7 @@ describe('dicom-entry-converter-sortDicomEntries', () => {
                 tagValue: 'TAG-VALUE',
                 tagVR: 'VM',
                 tagVM: '2',
-                colourIndex: 0
+                colour: '#000000'
 
             },
             {
@@ -147,7 +147,7 @@ describe('dicom-entry-converter-sortDicomEntries', () => {
                 tagValue: 'TAG-VALUE',
                 tagVR: 'VM',
                 tagVM: '2',
-                colourIndex: 0
+                colour: '#000000'
 
             },
             {
@@ -157,7 +157,7 @@ describe('dicom-entry-converter-sortDicomEntries', () => {
                 tagValue: 'TAG-VALUE',
                 tagVR: 'VM',
                 tagVM: '2',
-                colourIndex: 0
+                colour: '#000000'
 
             }
         ];
@@ -170,7 +170,7 @@ describe('dicom-entry-converter-sortDicomEntries', () => {
                 tagValue: 'TAG-VALUE',
                 tagVR: 'VM',
                 tagVM: '2',
-                colourIndex: 0
+                colour: '#000000'
 
             },
             {
@@ -180,7 +180,7 @@ describe('dicom-entry-converter-sortDicomEntries', () => {
                 tagValue: 'TAG-VALUE',
                 tagVR: 'VM',
                 tagVM: '2',
-                colourIndex: 0
+                colour: '#000000'
 
             },
             {
@@ -190,7 +190,7 @@ describe('dicom-entry-converter-sortDicomEntries', () => {
                 tagValue: 'TAG-VALUE',
                 tagVR: 'VM',
                 tagVM: '2',
-                colourIndex: 0
+                colour: '#000000'
 
             },
             {
@@ -200,7 +200,7 @@ describe('dicom-entry-converter-sortDicomEntries', () => {
                 tagValue: 'TAG-VALUE',
                 tagVR: 'VM',
                 tagVM: '2',
-                colourIndex: 0
+                colour: '#000000'
 
             },
             {
@@ -210,7 +210,7 @@ describe('dicom-entry-converter-sortDicomEntries', () => {
                 tagValue: 'TAG-VALUE',
                 tagVR: 'VM',
                 tagVM: '2',
-                colourIndex: 0
+                colour: '#000000'
 
             }
         ];

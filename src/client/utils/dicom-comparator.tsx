@@ -1,54 +1,50 @@
 import { DicomSimpleData, DicomEntry } from '../model/dicom-entry';
+import { SelectedFile } from '../application-state';
 
-export function compareTwoFiles(file1: DicomEntry[], colour1: number,
-                                file2: DicomEntry[], colour2: number): DicomSimpleData {
+export function compareTwoFiles(file1: SelectedFile, file2: SelectedFile): DicomSimpleData {
     let comparisonEntries: DicomSimpleData = { entries: [] };
-    let longerFile = file1.length > file2.length ? file1 : file2;
-    let shorterFile = file1.length > file2.length ? file2 : file1;
-    let longerColour = file1.length > file2.length ? colour1 : colour2;
-    let shorterColour = file1.length > file2.length ? colour2 : colour1;
 
-    let shorterFileMap = shorterFile.reduce(function (map: {}, obj: DicomEntry) {
+    let fileMap2 = file2.selectedFile.dicomData.entries.reduce(function (map: {}, obj: DicomEntry) {
         map[obj.tagGroup + obj.tagElement] = obj;
         return map;
     },
-                                            {});
+                                                               {});
 
     let commonMap = {};
-    longerFile.map((entry, index) => {
-        if (shorterFileMap[entry.tagGroup + entry.tagElement]) {
-            let entry2: DicomEntry = shorterFileMap[entry.tagGroup + entry.tagElement];
-            let longerEntry: DicomEntry = {
+    file1.selectedFile.dicomData.entries.map((entry, index) => {
+        if (fileMap2[entry.tagGroup + entry.tagElement]) {
+            let entry2: DicomEntry = fileMap2[entry.tagGroup + entry.tagElement];
+            let tempEntry1: DicomEntry = {
                 tagGroup: entry.tagGroup,
                 tagElement: entry.tagElement,
                 tagName: entry.tagName,
                 tagValue: entry.tagValue,
                 tagVR: entry.tagVR,
                 tagVM: entry.tagVM,
-                colourIndex: entry.colourIndex
+                colour: entry.colour
             };
 
-            let shorterEntry: DicomEntry = {
+            let tempEntry2: DicomEntry = {
                 tagGroup: entry2.tagGroup,
                 tagElement: entry2.tagElement,
                 tagName: entry2.tagName,
                 tagValue: entry2.tagValue,
                 tagVR: entry2.tagVR,
                 tagVM: entry2.tagVM,
-                colourIndex: entry2.colourIndex
+                colour: entry2.colour
             };
 
-            if (longerEntry.tagValue !== shorterEntry.tagValue) {
-                longerEntry.colourIndex = longerColour;
-                shorterEntry.colourIndex = shorterColour;
+            if (tempEntry1.tagValue !== tempEntry2.tagValue) {
+                tempEntry1.colour = file1.colour;
+                tempEntry2.colour = file2.colour;
                 // shorterEntry.tagGroup = shorterEntry.tagElement = "";
 
-                commonMap[longerEntry.tagGroup + longerEntry.tagElement] = [longerEntry, shorterEntry];
+                commonMap[tempEntry1.tagGroup + tempEntry1.tagElement] = [tempEntry1, tempEntry2];
             }
         }
     });
 
-    longerFile.forEach(entry => {
+    file2.selectedFile.dicomData.entries.forEach(entry => {
         if (commonMap[entry.tagGroup + entry.tagElement] === undefined) {
             commonMap[entry.tagGroup + entry.tagElement] = [
                 {
@@ -58,13 +54,13 @@ export function compareTwoFiles(file1: DicomEntry[], colour1: number,
                     tagValue: entry.tagValue,
                     tagVR: entry.tagVR,
                     tagVM: entry.tagVM,
-                    colourIndex: entry.colourIndex
+                    colour: entry.colour
                 }
             ];
         }
     });
 
-    shorterFile.forEach(entry => {
+    file1.selectedFile.dicomData.entries.forEach(entry => {
         if (commonMap[entry.tagGroup + entry.tagElement] === undefined) {
             commonMap[entry.tagGroup + entry.tagElement] = [
                 {
@@ -74,7 +70,7 @@ export function compareTwoFiles(file1: DicomEntry[], colour1: number,
                     tagValue: entry.tagValue,
                     tagVR: entry.tagVR,
                     tagVM: entry.tagVM,
-                    colourIndex: entry.colourIndex
+                    colour: entry.colour
                 }
             ];
         }

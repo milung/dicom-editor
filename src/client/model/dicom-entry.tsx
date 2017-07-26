@@ -5,7 +5,7 @@ export interface DicomEntry {
     tagValue: string;
     tagVR: string;
     tagVM: string;
-    colourIndex: number;
+    colour: string;
 }
 
 /**

@@ -31,8 +31,7 @@ export default class TagViewer extends React.Component<TagViewerProps, TagViewer
 
         if (this.props.comparisonActive) {
             if (this.props.files[0] && this.props.files[1]) {
-                data = compareTwoFiles(this.props.files[0].selectedFile.dicomData.entries, 1,
-                                       this.props.files[1].selectedFile.dicomData.entries, 2);
+                data = compareTwoFiles(this.props.files[0], this.props.files[1]);
             }
         } else {
             data = this.props.currentFile.dicomData;
