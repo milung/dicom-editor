@@ -1,7 +1,6 @@
 import * as React from 'react';
 import { ImageCanvas } from './image-canvas';
 import { Slider } from 'material-ui';
-import 'material-design-icons';
 
 export interface ImageMultiCanvasProps {
     data: Uint8Array;
