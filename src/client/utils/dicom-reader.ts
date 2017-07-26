@@ -75,4 +75,19 @@ export class DicomReader {
         }
         return data;
     }
+
+    /**
+     * @description Computes number of frames in Dicom
+     * @param {Uint8Array} data data to find frames in
+     * @returns {number} number of frames in Dicom data, or 0 if data is empty
+     */
+    public getNumberOfFrames(data: Uint8Array): number {
+        if (data.length === 0) {
+            return 0;
+        }
+        let dataset;
+        dataset = dicomParser.parseDicom(data);
+        let numFrames = dataset.intString('x00280008');
+        return numFrames;
+    }
 }

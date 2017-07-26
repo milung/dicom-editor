@@ -5,6 +5,7 @@ var cornerstoneWADOImageLoader = require('./cornerstone-library/DCMLoader');
 
 interface ImageCanvasProps {
   data: Uint8Array;
+  frameIndex: number;
 }
 
 export class ImageCanvas extends React.Component<ImageCanvasProps, {}> {
@@ -19,6 +20,8 @@ export class ImageCanvas extends React.Component<ImageCanvasProps, {}> {
     var fileNew = new Blob([data], { type: 'File' });
 
     var imageId = cornerstoneWADOImageLoader.wadouri.fileManager.add(fileNew);
+    imageId = imageId + '?frame=' + this.props.frameIndex;
+
     cornerstone.loadImage(imageId).then(function (image: Object) {
       var viewport = cornerstone.getDefaultViewport(imageElement.children[0], image);
       cornerstone.displayImage(imageElement, image, viewport);
@@ -36,7 +39,8 @@ export class ImageCanvas extends React.Component<ImageCanvasProps, {}> {
   }
 
   shouldComponentUpdate(nextProps: ImageCanvasProps) {
-    return (!buffersEqual(nextProps.data, this.props.data));
+    // component should update if data has changed or frame index has changed
+    return (!buffersEqual(nextProps.data, this.props.data) || this.props.frameIndex !== nextProps.frameIndex);
   }
 
   render() {

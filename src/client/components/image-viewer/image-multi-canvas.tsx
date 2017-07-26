@@ -4,12 +4,11 @@ import { Slider } from 'material-ui';
 import 'material-design-icons';
 
 export interface ImageMultiCanvasProps {
-    dataImages: Uint8Array[];
+    data: Uint8Array;
+    numberOfFrames: number;
 }
 
 export interface ImageMultiCanvasState {
-    dataImages: Uint8Array[];
-    actualData: Uint8Array;
     sliderActualIndex: number;
 }
 
@@ -18,8 +17,6 @@ export class ImageMultiCanvas extends React.Component<ImageMultiCanvasProps, Ima
         super(props);
 
         this.state = {
-            dataImages: this.props.dataImages,
-            actualData: this.props.dataImages[0],
             sliderActualIndex: 0
         };
 
@@ -28,35 +25,30 @@ export class ImageMultiCanvas extends React.Component<ImageMultiCanvasProps, Ima
 
     public componentWillReceiveProps(nextProps: ImageMultiCanvasProps) {
         this.setState({
-            dataImages: nextProps.dataImages,
-            actualData: nextProps.dataImages[0]
+            sliderActualIndex: 0
         });
     }
 
     public render() {
         return (
             <div>
-                <h4>Image {this.state.sliderActualIndex + 1} of {this.state.dataImages.length}</h4>
-                <ImageCanvas data={this.state.actualData} />
+                <h4>Image {this.state.sliderActualIndex + 1} of {this.props.numberOfFrames}</h4>
+                <ImageCanvas data={this.props.data} frameIndex={this.state.sliderActualIndex}/>
                 <Slider
-                    disabled={this.state.dataImages.length <= 1 ? true : false}
+                    disabled={this.props.numberOfFrames <= 1 ? true : false}
                     onChange={(event, newValue) => { this.handleChange(event, newValue); }}
-                    step={(1 / this.state.dataImages.length)}
-                    value={this.state.sliderActualIndex + 1}
+                    step={1}
+                    value={this.state.sliderActualIndex}
+                    max={this.props.numberOfFrames === 0 ? 1 : this.props.numberOfFrames - 1}
                 />
             </div>
         );
     }
 
     private handleChange(event: React.MouseEvent<{}>, newValue: number) {
-        let actIndex = this.getIndexFromSliderValue(newValue) - 1;
         this.setState({
-            sliderActualIndex: actIndex,
-            actualData: this.state.dataImages[actIndex]
+            sliderActualIndex: newValue
         });
     }
 
-    private getIndexFromSliderValue(sliderValue: number): number {
-        return this.state.dataImages.length * sliderValue;
-    }
 }
