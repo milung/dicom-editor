@@ -17,8 +17,6 @@ export class ImageMultiCanvas extends React.Component<ImageMultiCanvasProps, Ima
     public constructor(props: ImageMultiCanvasProps) {
         super(props);
 
-        console.log(this.props);
-
         this.state = {
             dataImages: this.props.dataImages,
             actualData: this.props.dataImages[0],
@@ -40,7 +38,12 @@ export class ImageMultiCanvas extends React.Component<ImageMultiCanvasProps, Ima
             <div>
                 <h4>Image {this.state.sliderActualIndex + 1} of {this.state.dataImages.length}</h4>
                 <ImageCanvas data={this.state.actualData} />
-                <Slider disabled={this.state.dataImages.length <= 1 ? true : false} onChange={(event, newValue) => {this.handleChange(event, newValue)}} step={(1 / this.state.dataImages.length)} value={this.state.sliderActualIndex + 1} />
+                <Slider
+                    disabled={this.state.dataImages.length <= 1 ? true : false}
+                    onChange={(event, newValue) => { this.handleChange(event, newValue); }}
+                    step={(1 / this.state.dataImages.length)}
+                    value={this.state.sliderActualIndex + 1}
+                />
             </div>
         );
     }
