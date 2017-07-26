@@ -2,6 +2,7 @@ import * as React from 'react';
 import * as cornerstone from './cornerstone-library/cornerstone.js';
 import { buffersEqual } from '../../utils/file-converter';
 var cornerstoneWADOImageLoader = require('./cornerstone-library/DCMLoader');
+import './image-canvas.css';
 
 interface ImageCanvasProps {
   data: Uint8Array;
@@ -46,7 +47,7 @@ export class ImageCanvas extends React.Component<ImageCanvasProps, {}> {
   render() {
     return (
       <div>
-        <div id="dicomImage" style={{ width: '512px', height: '512px' }} />
+        <div className="center" id="dicomImage" style={{ width: '512px', height: '512px' }} />
       </div>
     );
   }
