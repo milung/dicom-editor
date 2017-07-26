@@ -28,27 +28,29 @@ export default class TagViewer extends React.Component<TagViewerProps, TagViewer
         //     data = 
         // compareTwoFiles(this.props.files[0].dicomData.entries, 3, this.props.files[1].dicomData.entries, 4);
         // }
-        
-        switch (this.props.tableType) {
-            case TableMode.SIMPLE:
-                return this.renderSimpleTable();
-            case TableMode.EXTENDED:
-                return this.renderExtendedTable();
-            case TableMode.SIMPLE_COMPARISON:
-                return this.renderSimpleComparisonTable();
-            case TableMode.EXTENDED_COMPARISON:
-                return this.renderExtendedComparisonTable();
-            default:
-                return (
-                    <div />
-                );
+        if (this.props.files.length > 0) {
+            switch (this.props.tableType) {
+                case TableMode.SIMPLE:
+                    return this.renderSimpleTable();
+                case TableMode.EXTENDED:
+                    return this.renderExtendedTable();
+                case TableMode.SIMPLE_COMPARISON:
+                    return this.renderSimpleComparisonTable();
+                case TableMode.EXTENDED_COMPARISON:
+                    return this.renderExtendedComparisonTable();
+                default:
+                    return (
+                        <div />
+                    );
+            }
+        } else {
+            return <div/>;
         }
     }
 
     private renderSimpleTable(): JSX.Element {
         return (
             <div>
-                <h1>TagViewer</h1>
                 <DicomSimpleTable entries={this.props.currentFile.dicomData.entries} />
             </div>
         );
@@ -57,7 +59,6 @@ export default class TagViewer extends React.Component<TagViewerProps, TagViewer
     private renderExtendedTable(): JSX.Element {
         return (
             <div>
-                <h1>TagViewer</h1>
                 <DicomExtendedTable data={convertSimpleDicomToExtended(this.props.currentFile.dicomData)} />
             </div>
         );
