@@ -25,10 +25,8 @@ export class ElementOfSelectableList extends
     handleCheck(e: object, isInputChecked: boolean) {
         if (isInputChecked) {
             this.props.reducer.addSelectedFile(this.props.item.fileName);
-            // console.log('Checked ' + this.props.item.fileName);
         } else {
             this.props.reducer.removeSelectedFile(this.props.item.fileName);
-            // console.log('Unchecked ' + this.props.item.fileName)
         }
     }
 

@@ -1,5 +1,6 @@
 import { FileStorage } from './utils/file-storage';
 import { HeavyweightFile, LightweightFile } from './model/file-interfaces';
+import { ColourDictionary } from './utils/colour-dictionary';
 import { Observable } from 'rxjs/Observable';
 import { BehaviorSubject } from 'rxjs/BehaviorSubject';
 
@@ -19,6 +20,7 @@ export interface ApplicationState {
 export class ApplicationStateReducer {
     private currentState: ApplicationState;
     private stateSubject$: BehaviorSubject<ApplicationState>;
+    private colourDictionary: ColourDictionary;
 
     public get state$(): Observable<ApplicationState> {
         return this.stateSubject$;
@@ -34,6 +36,7 @@ export class ApplicationStateReducer {
         };
 
         this.stateSubject$ = new BehaviorSubject(this.currentState);
+        this.colourDictionary = new ColourDictionary();
     }
 
     public addLoadedFiles(files: HeavyweightFile[]) {
@@ -70,7 +73,10 @@ export class ApplicationStateReducer {
     public addSelectedFile(fileName: string) {
         let file = this.findLoadedFileByName(fileName);
         if (file) {
-            this.currentState.selectedFiles.push({ selectedFile: file, colourIndex: 1 });
+            this.currentState.selectedFiles.push({ 
+                selectedFile: file, 
+                colourIndex: this.colourDictionary.getFirstFreeColor()
+            });
             this.stateSubject$.next(this.currentState);
         }
     }
@@ -78,6 +84,7 @@ export class ApplicationStateReducer {
     public removeSelectedFile(fileName: string) {
         let indexToRemove = this.findSelectedFileIndexByName(fileName);
 
+        this.colourDictionary.freeColor(this.currentState.selectedFiles[indexToRemove].colourIndex);
         this.currentState.selectedFiles.splice(indexToRemove, 1);
         this.stateSubject$.next(this.currentState);
     }

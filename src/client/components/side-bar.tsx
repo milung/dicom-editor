@@ -88,12 +88,11 @@ export default class SideBar extends React.Component<SideBarProps, SideBarState>
         );
     }
 
-    // remove when file comparator will be implemented and change onCLick on raised button
+    // update when file comparator will be implemented
     public handleCompareClick(event: object) {
-        // console.log("CLICK!");
         this.props.reducer.getState().selectedFiles.forEach(selection => {
             // console.log('File ' + selection.selectedFile.fileName);
-            // console.log('Color index' + selection.colourIndex);
+            // console.log('Color index ' + selection.colourIndex);
         });
     }
 
