@@ -10,6 +10,10 @@ interface ElementOfSelectableListProps {
     selectFunction: Function;
     item: FileInterface;
     colorDictionary: ColorDictionary;
+    checked: boolean;
+    color: string;
+    checkInform: Function;
+    checkBoxDisabled: boolean;
 }
 
 interface ElementOfSelectableListState {
@@ -30,10 +34,13 @@ export class ElementOfSelectableList extends
             let newColor = this.props.colorDictionary.getFirstFreeColor();
             this.props.reducer.addSelectedFile(this.props.item.fileName, newColor);
             this.setState({currentColor: newColor});
+            this.props.checkInform(true);
         } else {
             let freeColor = this.props.reducer.removeSelectedFile(this.props.item.fileName);
+            this.props.reducer.setComparisonActive(false);
             this.props.colorDictionary.freeColor(freeColor);
             this.setState({currentColor: 'black'});
+            this.props.checkInform(false);
         }
     }
 
@@ -43,13 +50,15 @@ export class ElementOfSelectableList extends
                 <div className="checkbox">
                     <Checkbox
                         onCheck={this.handleCheck}
+                        checked={this.props.checked}
+                        disabled={this.props.checked ? false : this.props.checkBoxDisabled}
                     />
                 </div>
                 <div className="td">
                     <ListItem
                         onClick={() => this.props.selectFunction(this.props.item)}
                         primaryText={this.props.item.fileName}
-                        style={{color: this.state.currentColor}}
+                        style={{color: this.props.color || this.state.currentColor}}
                     />
                 </div>
             </div>

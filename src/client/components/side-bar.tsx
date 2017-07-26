@@ -5,7 +5,7 @@ import { List } from 'material-ui/List';
 import { Tabs, Tab } from 'material-ui/Tabs';
 import RaisedButton from 'material-ui/RaisedButton';
 
-import { ApplicationStateReducer } from '../application-state';
+import { ApplicationStateReducer, SelectedFile } from '../application-state';
 import { HeavyweightFile, LightweightFile } from '../model/file-interfaces';
 import { ElementOfSelectableList } from './element-selectable-list';
 import { ColorDictionary } from '../utils/colour-dictionary';
@@ -20,10 +20,12 @@ export interface SideBarProps {
 export interface SideBarState {
     loadedFiles: HeavyweightFile[];
     recentFiles: LightweightFile[];
+    selectedFiles: SelectedFile[];
 }
 
 export default class SideBar extends React.Component<SideBarProps, SideBarState> {
     private colorDictionary: ColorDictionary;
+    private checkedCheckboxes: number;
 
     public constructor(props: SideBarProps) {
         super(props);
@@ -31,18 +33,21 @@ export default class SideBar extends React.Component<SideBarProps, SideBarState>
         this.state = {
             loadedFiles: [],
             recentFiles: [],
+            selectedFiles: [],
         };
 
-        this.colorDictionary = new ColorDictionary(); 
+        this.checkedCheckboxes = 0;
+        this.colorDictionary = new ColorDictionary();
         this.selectCurrentFile = this.selectCurrentFile.bind(this);
         this.selectCurrentFileFromRecentFile = this.selectCurrentFileFromRecentFile.bind(this);
         this.handleCompareClick = this.handleCompareClick.bind(this);
+        this.changeNumberOfCheckedBoxes = this.changeNumberOfCheckedBoxes.bind(this);
     }
 
     public componentDidMount() {
         this.props.reducer.state$.subscribe(state => {
             this.setState({
-                loadedFiles: state.loadedFiles, recentFiles: state.recentFiles
+                loadedFiles: state.loadedFiles, recentFiles: state.recentFiles, selectedFiles: state.selectedFiles
             });
         });
     }
@@ -59,21 +64,31 @@ export default class SideBar extends React.Component<SideBarProps, SideBarState>
                 >
                     <Tab label="Loaded files">
                         <List style={{ overflowX: 'hidden', overflowY: 'auto' }}>
-                            {this.state.loadedFiles.map((item, index) => (
-                                <ElementOfSelectableList
-                                    reducer={this.props.reducer}
-                                    key={index}
-                                    item={item}
-                                    selectFunction={this.selectCurrentFile}
-                                    colorDictionary={this.colorDictionary}
-                                />
-                            ))}
+                            {this.state.loadedFiles.map((item, index) => {
+                                const checked = this.isChecked(item);
+                                const color = this.getColor(item);
+
+                                return (
+                                    <ElementOfSelectableList
+                                        reducer={this.props.reducer}
+                                        key={index}
+                                        item={item}
+                                        selectFunction={this.selectCurrentFile}
+                                        colorDictionary={this.colorDictionary}
+                                        checked={checked}
+                                        color={color}
+                                        checkInform={this.changeNumberOfCheckedBoxes}
+                                        checkBoxDisabled={this.checkedCheckboxes === 2 ? true : false}
+                                    />
+                                );
+                            })}
                         </List>
                         <RaisedButton
                             className="compare-button"
                             label="Compare files"
                             onClick={this.handleCompareClick}
                             primary={true}
+                            disabled={this.state.selectedFiles.length === 2 ? false : true}
                         />
                     </Tab>
                     <Tab label="Recent files">
@@ -104,5 +119,37 @@ export default class SideBar extends React.Component<SideBarProps, SideBarState>
     private selectCurrentFileFromRecentFile(file: LightweightFile) {
         this.props.reducer.setComparisonActive(false);
         this.props.reducer.updateCurrentFromRecentFile(file);
+    }
+
+    private isChecked(file: HeavyweightFile) {
+        const ll = this.state.selectedFiles.length;
+        for (let i = 0; i < ll; i++) {
+            const item = this.state.selectedFiles[i];
+            if (item.selectedFile.fileName === file.fileName) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    private getColor(file: HeavyweightFile) {
+        const ll = this.state.selectedFiles.length;
+        for (let i = 0; i < ll; i++) {
+            const item = this.state.selectedFiles[i];
+            if (item.selectedFile.fileName === file.fileName) {
+                return item.colour;
+            }
+        }
+
+        return 'black';
+    }
+
+    private changeNumberOfCheckedBoxes(addition: boolean) {
+        if (addition) {
+            this.checkedCheckboxes += 1;
+        } else {
+            this.checkedCheckboxes -= 1;
+        }
     }
 }
