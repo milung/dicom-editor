@@ -1,0 +1,18 @@
+ .arrow_style {
+    font-size: 42px;
+    margin-left: 32px;
+    margin-right: 32px;
+} 
+
+.image_viewer_container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    align-content: center;
+}
+
+.image_control {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+}
