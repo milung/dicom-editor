@@ -95,6 +95,10 @@ export class ApplicationStateReducer {
         this.stateSubject$.next(this.currentState);
     }
 
+    public removeAllSelectedFiles() {
+        this.currentState.selectedFiles.length = 0;
+    }
+ 
     private findLoadedFileByName(fileName: string): (HeavyweightFile | undefined) {
         for (var index = 0; index < this.currentState.loadedFiles.length; index++) {
             if (this.currentState.loadedFiles[index].fileName === fileName) {

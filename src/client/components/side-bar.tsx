@@ -21,11 +21,11 @@ export interface SideBarState {
     loadedFiles: HeavyweightFile[];
     recentFiles: LightweightFile[];
     selectedFiles: SelectedFile[];
+    checkedCheckboxes: number;
 }
 
 export default class SideBar extends React.Component<SideBarProps, SideBarState> {
     private colorDictionary: ColorDictionary;
-    private checkedCheckboxes: number;
 
     public constructor(props: SideBarProps) {
         super(props);
@@ -34,9 +34,9 @@ export default class SideBar extends React.Component<SideBarProps, SideBarState>
             loadedFiles: [],
             recentFiles: [],
             selectedFiles: [],
+            checkedCheckboxes: 0,
         };
 
-        this.checkedCheckboxes = 0;
         this.colorDictionary = new ColorDictionary();
         this.selectCurrentFile = this.selectCurrentFile.bind(this);
         this.selectCurrentFileFromRecentFile = this.selectCurrentFileFromRecentFile.bind(this);
@@ -47,7 +47,10 @@ export default class SideBar extends React.Component<SideBarProps, SideBarState>
     public componentDidMount() {
         this.props.reducer.state$.subscribe(state => {
             this.setState({
-                loadedFiles: state.loadedFiles, recentFiles: state.recentFiles, selectedFiles: state.selectedFiles
+                loadedFiles: state.loadedFiles,
+                recentFiles: state.recentFiles,
+                selectedFiles: state.selectedFiles,
+                checkedCheckboxes: state.selectedFiles.length === 0 ? 0 : this.state.checkedCheckboxes
             });
         });
     }
@@ -78,7 +81,7 @@ export default class SideBar extends React.Component<SideBarProps, SideBarState>
                                         checked={checked}
                                         color={color}
                                         checkInform={this.changeNumberOfCheckedBoxes}
-                                        checkBoxDisabled={this.checkedCheckboxes === 2 ? true : false}
+                                        checkBoxDisabled={this.state.checkedCheckboxes === 2 ? true : false}
                                     />
                                 );
                             })}
@@ -112,12 +115,16 @@ export default class SideBar extends React.Component<SideBarProps, SideBarState>
     }
 
     private selectCurrentFile(file: HeavyweightFile) {
+        this.props.reducer.removeAllSelectedFiles();
         this.props.reducer.setComparisonActive(false);
+        this.colorDictionary.reset();
         this.props.reducer.updateCurrentFile(file);
     }
 
     private selectCurrentFileFromRecentFile(file: LightweightFile) {
+        this.props.reducer.removeAllSelectedFiles();
         this.props.reducer.setComparisonActive(false);
+        this.colorDictionary.reset();
         this.props.reducer.updateCurrentFromRecentFile(file);
     }
 
@@ -147,9 +154,9 @@ export default class SideBar extends React.Component<SideBarProps, SideBarState>
 
     private changeNumberOfCheckedBoxes(addition: boolean) {
         if (addition) {
-            this.checkedCheckboxes += 1;
+            this.setState({ checkedCheckboxes: this.state.checkedCheckboxes + 1 });
         } else {
-            this.checkedCheckboxes -= 1;
+            this.setState({ checkedCheckboxes: this.state.checkedCheckboxes - 1 });
         }
     }
 }

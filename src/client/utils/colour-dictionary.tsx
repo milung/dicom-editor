@@ -31,4 +31,10 @@ export class ColorDictionary {
             }
         }
     }
+
+    public reset() {
+        for (var index = 0; index < this.colorDictionary.length; index++) {
+            this.colorDictionary[index].usage = 0;
+        }
+    }
 }
