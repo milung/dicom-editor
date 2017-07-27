@@ -66,7 +66,7 @@ export default class DbService {
         });
         return Promise.all(promises)
             .then(() => {
-                
+               return; 
             });
     }
 }

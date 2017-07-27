@@ -58,7 +58,7 @@ export class FileStorage {
     public async storeDataToDatabase(entriesToStore: DatabaseEntry[]): Promise<void> {
         const reducerRecentFiles = this.reducer.getState().recentFiles;
         const currentKeys = reducerRecentFiles.map(file => file.dbKey);
-        
+
         const sameLoadedFiles = entriesToStore.filter(entry => {
             return includes(currentKeys, entry.fileInterface.dbKey);
         });
@@ -67,18 +67,25 @@ export class FileStorage {
         const uniqueLoadedFiles = entriesToStore.filter(entry => {
             return !includes(currentKeys, entry.fileInterface.dbKey);
         });
-        const uniqueSameKeys = uniqueLoadedFiles.map(file => file.fileInterface.dbKey); 
+        const uniqueSameKeys = uniqueLoadedFiles.map(file => file.fileInterface.dbKey);
 
         const uniqueFiles = reducerRecentFiles.filter(file => {
             return !includes(sameKeys, file.dbKey);
         });
 
-        const { left: mostRecent, right: toDelete } = this.getLastFiles(uniqueFiles, MAX_RECENT_FILES - uniqueSameKeys.length - sameKeys.length, true);
+        const splitArray = this.getLastFiles(
+            uniqueFiles, 
+            MAX_RECENT_FILES - uniqueSameKeys.length - sameKeys.length, 
+            true
+        );
+
+        const mostRecent = splitArray.left;
+        const toDelete = splitArray.right;
 
         const recentFiles = sameLoadedFiles.map(file => {
             return this.prepareLightweightFile(file);
-        }).concat(uniqueLoadedFiles.map(file=> {
-            return this.prepareLightweightFile(file)
+        }).concat(uniqueLoadedFiles.map(file => {
+            return this.prepareLightweightFile(file);
         })).concat(mostRecent);
 
         await this.dbService.removeItems(toDelete.map(entry => entry.dbKey));
@@ -97,8 +104,8 @@ export class FileStorage {
 
     public getLastFiles(
         files: LightweightFile[],
-        count: number, 
-        asc: boolean = false, 
+        count: number,
+        asc: boolean = false,
         fromStart: boolean = true
     ): { left: LightweightFile[], right: LightweightFile[] } {
         const sorted = files.sort((eA, eB) => eB.timestamp - eA.timestamp);
@@ -125,7 +132,7 @@ export class FileStorage {
     public async getData(fileObject: LightweightFile): Promise<HeavyweightFile> {
 
         const entry = await this.dbService.getItem<DatabaseEntry>(fileObject.dbKey);
-        
+
         return {
             fileName: entry.fileInterface.fileName,
             fileSize: this.getFileSizeFromDbKey(entry.fileInterface.dbKey),

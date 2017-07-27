@@ -32,6 +32,18 @@ module.exports = {
                     { loader: 'style-loader' },
                     { loader: 'css-loader' }
                 ]
+            },
+            {
+                test: /\.tsx?$/,
+                enforce: 'pre',
+                loader: 'tslint-loader',
+                options: { 
+                    configFile: './tslint.json',
+                    tsConfigFile: './tsconfig.json',
+                    emitErrors: true,
+                    failOnHint: true,
+                    typeCheck: true
+                }
             }
         ]
     },

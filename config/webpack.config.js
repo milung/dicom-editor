@@ -26,18 +26,6 @@ module.exports = {
                 use: "source-map-loader"
             },
             {
-                test: /\.tsx?$/,
-                enforce: 'pre',
-                loader: 'tslint-loader',
-                options: { 
-                    configFile: './tslint.json',
-                    tsConfigFile: './tsconfig.json',
-                    emitErrors: true,
-                    failOnHint: true,
-                    typeCheck: true
-                }
-            },
-            {
                 test: /\.css$/,
                 use: [
                     { loader: 'style-loader' },
