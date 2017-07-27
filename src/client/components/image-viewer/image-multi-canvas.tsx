@@ -3,6 +3,9 @@ import { ImageCanvas } from './image-canvas';
 import { Slider } from 'material-ui';
 import './image-canvas.css';
 
+var ArrowRight = require('react-icons/lib/md/arrow-forward');
+var ArrowLeft = require('react-icons/lib/md/arrow-back');
+
 export interface ImageMultiCanvasProps {
     data: Uint8Array;
     numberOfFrames: number;
@@ -34,6 +37,14 @@ export class ImageMultiCanvas extends React.Component<ImageMultiCanvasProps, Ima
             <div>
                 <div className="center">
                     <h3>Image {this.state.sliderActualIndex + 1} of {this.props.numberOfFrames}</h3>
+                </div>
+
+                <div className="arrow-style">
+                    <ArrowLeft style={{cursor: 'pointer'}}/>
+                </div>
+
+                <div className="arrow-style">
+                    <ArrowRight style={{cursor: 'pointer'}}/>
                 </div>
 
                 <div className="center" style={{ width: '512px' }}>
