@@ -324,8 +324,6 @@ if(typeof cornerstoneWADOImageLoader.internal === 'undefined'){
 
   function convertColorSpace(imageFrame, imageData) {
     var rgbaBuffer = imageData.data;
-    console.time('convertColorSpace');
-    // convert based on the photometric interpretation
     if (imageFrame.photometricInterpretation === "RGB" )
     {
       convertRGB(imageFrame, rgbaBuffer);
@@ -354,7 +352,6 @@ if(typeof cornerstoneWADOImageLoader.internal === 'undefined'){
     {
       throw "no color space conversion for photometric interpretation " + imageFrame.photometricInterpretation;
     }
-    console.timeEnd('convertColorSpace');
   }
 
   // module exports
@@ -1266,7 +1263,6 @@ module.exports = cornerstoneWADOImageLoader.wadors.metaDataManager = {
 
     // if we are currently loading this uri, return its promise
     if(promises[uri]) {
-      //console.log('returning existing load promise for ' + uri);
       return promises[uri];
     }
 
@@ -1300,11 +1296,9 @@ module.exports = cornerstoneWADOImageLoader.wadors.metaDataManager = {
 
   // remove the cached/loaded dicom dataset for the specified wadouri to free up memory
   function unload(uri) {
-    //console.log('unload for ' + uri);
     if(loadedDataSets[uri]) {
       loadedDataSets[uri].cacheCount--;
       if(loadedDataSets[uri].cacheCount === 0) {
-        //console.log('removing loaded dataset for ' + uri);
         delete loadedDataSets[uri];
       }
     }
@@ -1556,7 +1550,6 @@ module.exports = cornerstoneWADOImageLoader.wadors.metaDataManager = {
       firstValueMapped = lutDataSet.int16('x00283002', 1);
     }
     var numBitsPerEntry = lutDataSet.uint16('x00283002', 2);
-    //console.log('LUT(', numLUTEntries, ',', firstValueMapped, ',', numBitsPerEntry, ')');
     var lut = {
       id : '1',
       firstValueMapped: firstValueMapped,
@@ -1564,7 +1557,6 @@ module.exports = cornerstoneWADOImageLoader.wadors.metaDataManager = {
       lut : []
     };
 
-    console.log("minValue=", minValue, "; maxValue=", maxValue);
     for (var i = 0; i < numLUTEntries; i++) {
       if(pixelRepresentation === 0) {
         lut.lut[i] = lutDataSet.uint16('x00283006', i);
@@ -2124,7 +2116,6 @@ module.exports = cornerstoneWADOImageLoader.wadors.metaDataManager = {
     return deferred;
     };
     //xhr.onprogress = function (oProgress) {
-      // console.log('progress:',oProgress)
 
     //   if (oProgress.lengthComputable) {  //evt.loaded the bytes browser receive
     //     //evt.total the total bytes seted by the header

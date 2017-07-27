@@ -23,7 +23,6 @@ cornerstoneWADOImageLoaderWebWorker = {
    * @param data
    */
   function initialize(data) {
-    //console.log('web worker initialize ', data.workerIndex);
     // prevent initialization from happening more than once
     if(initialized) {
       return;
@@ -62,7 +61,6 @@ cornerstoneWADOImageLoaderWebWorker = {
    */
   cornerstoneWADOImageLoaderWebWorker.registerTaskHandler = function(taskHandler) {
     if(taskHandlers[taskHandler.taskType]) {
-      console.log('attempt to register duplicate task handler "', taskHandler.taskType, '"');
       return false;
     }
     taskHandlers[taskHandler.taskType] = taskHandler;
@@ -85,7 +83,6 @@ cornerstoneWADOImageLoaderWebWorker = {
    * @param msg
    */
   self.onmessage = function(msg) {
-    //console.log('web worker onmessage', msg.data);
 
     // handle initialize message
     if(msg.data.taskType === 'initialize') {
@@ -113,8 +110,6 @@ cornerstoneWADOImageLoaderWebWorker = {
     }
 
     // not task handler registered - send a failure message back to ui thread
-    console.log('no task handler for ', msg.data.taskType);
-    console.log(taskHandlers);
     self.postMessage({
       taskType: msg.data.taskType,
       status: 'failed - no task handler registered',
@@ -145,17 +140,13 @@ cornerstoneWADOImageLoader =  {};
     }
 
     // Load the codecs
-    console.time('loadCodecs');
     self.importScripts(config.decodeTask.codecsPath);
     codecsLoaded = true;
-    console.timeEnd('loadCodecs');
 
     // Initialize the codecs
     if (config.decodeTask.initializeCodecsOnStartup) {
-      console.time('initializeCodecs');
       cornerstoneWADOImageLoader.initializeJPEG2000(config.decodeTask);
       cornerstoneWADOImageLoader.initializeJPEGLS(config.decodeTask);
-      console.timeEnd('initializeCodecs');
     }
   }
 
@@ -392,7 +383,6 @@ cornerstoneWADOImageLoader =  {};
       [dataPtr, data.length, imagePtrPtr, imageSizePtr, imageSizeXPtr, imageSizeYPtr, imageSizeCompPtr]);
     // add num vomp..etc
     if(ret !== 0){
-      console.log('[opj_decode] decoding failed!');
       openJPEG._free(dataPtr);
       openJPEG._free(openJPEG.getValue(imagePtrPtr, '*'));
       openJPEG._free(imageSizeXPtr);
@@ -501,11 +491,9 @@ cornerstoneWADOImageLoader =  {};
 
     if(options.usePDFJS || decodeConfig.usePDFJS) {
       // OHIF image-JPEG2000 https://github.com/OHIF/image-JPEG2000
-      //console.log('PDFJS')
       return decodeJpx(imageFrame, pixelData);
     } else {
       // OpenJPEG2000 https://github.com/jpambrun/openjpeg
-      //console.log('OpenJPEG')
       return decodeOpenJpeg2000(imageFrame, pixelData);
     }
   }
@@ -548,11 +536,9 @@ cornerstoneWADOImageLoader =  {};
     }
 
     var byteOutput = imageFrame.bitsAllocated <= 8 ? 1 : 2;
-    //console.time('jpeglossless');
     var buffer = pixelData.buffer;
     var decoder = new jpeg.lossless.Decoder();
     var decompressedData = decoder.decode(buffer, buffer.byteOffset, buffer.length, byteOutput);
-    //console.timeEnd('jpeglossless');
     if (imageFrame.pixelRepresentation === 0) {
       if (imageFrame.bitsAllocated === 16) {
         imageFrame.pixelData = new Uint16Array(decompressedData.buffer);
@@ -668,7 +654,6 @@ cornerstoneWADOImageLoader =  {};
     initializeJPEGLS();
 
     var image = jpegLSDecode(pixelData, imageFrame.pixelRepresentation === 1);
-    //console.log(image);
 
     // throw error if not success or too much data
     if(image.result !== 0 && image.result !== 6) {
