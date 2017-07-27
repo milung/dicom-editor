@@ -94,20 +94,21 @@ export class FileService {
             return;
         }
 
-        await this.saveRecentFiles(loadedFiles);
+        await this.fileStorage.storeData(loadedFiles);
+        // await this.saveRecentFiles(loadedFiles);
 
         this.reducer.addLoadedFiles(loadedFiles);
     }
 
-    /**
-     * @description Save loaded files as recent files
-     * @param {HeavyweightFile[]} files 
-     * @returns {Promise<void>} 
-     */
-    public async saveRecentFiles(files: HeavyweightFile[]): Promise<void> {
-        for (let i = 0; i < files.length; i++) {
-            const item = files[i];
-            await this.fileStorage.storeData(item);
-        }
-    }
+    // /**
+    //  * @description Save loaded files as recent files
+    //  * @param {HeavyweightFile[]} files 
+    //  * @returns {Promise<void>} 
+    //  */
+    // public async saveRecentFiles(files: HeavyweightFile[]): Promise<void> {
+    //     for (let i = 0; i < files.length; i++) {
+    //         const item = files[i];
+    //         await this.fileStorage.storeData(item);
+    //     }
+    // }
 }

@@ -2,6 +2,9 @@ import * as localForage from 'localforage';
 import { LightweightFile, HeavyweightFile } from '../model/file-interfaces';
 import { ApplicationStateReducer } from '../application-state';
 import { DicomReader } from './dicom-reader';
+import DbService from './db-service';
+
+import { take, takeRight, includes } from 'lodash';
 
 const MAX_RECENT_FILES = 5;
 const SIZE_DELIMITER = '_';
@@ -12,36 +15,37 @@ export interface DatabaseEntry {
 }
 
 export class FileStorage {
-    private storage: LocalForage;
     private dicomReader: DicomReader;
+    private dbService: DbService;
 
     /**
      * Constructor of fileStorage which create instace of localForage for storing data to IndexedDB.
      * @param reducer is reducer of application.
      */
     public constructor(private reducer: ApplicationStateReducer) {
-        this.storage = localForage.createInstance({
+        this.dbService = new DbService({
             driver: localForage.INDEXEDDB,
             name: 'DICOM viewer',
             version: 1.0,
             storeName: 'recentFilesStore',
             description: 'Storage for last 5 dicom files'
         });
-
         this.dicomReader = new DicomReader();
     }
 
     /**
      * Store new file into recent file database and update application state of recent files.
      * If database already contains file with asociated key then data in database is updated.  
-     * @param {HeavyweightFile} file is interface of file to be stored in recent files. 
+     * @param {HeavyweightFile[]} file is interface of file to be stored in recent files. 
      */
-    public async storeData(file: HeavyweightFile) {
-        let reducerRecentFiles = this.reducer.getState().recentFiles;
+    public async storeData(files: HeavyweightFile[]) {
+        const lastFiles = takeRight(files, MAX_RECENT_FILES);
 
-        let entryToStore = this.prepareDatabaseEntry(file);
-        let indexToModify = this.storeDataToDatabase(entryToStore, reducerRecentFiles);
-        await this.updateRecentFiles(indexToModify, entryToStore.fileInterface, reducerRecentFiles);
+        const entries = lastFiles.map(lastFile => {
+            return this.prepareDatabaseEntry(lastFile);
+        });
+
+        return this.storeDataToDatabase(entries);
     }
 
     /**
@@ -51,34 +55,66 @@ export class FileStorage {
      * @param reducerRecentFiles is array of application recentFiles. 
      * @returns index (in recent files array) of file which was modified.
      */
-    public storeDataToDatabase(entryToStore: DatabaseEntry, reducerRecentFiles: LightweightFile[]): number {
-        let indexToChange = this.findIndexOfFileToUpdate(entryToStore.fileInterface.dbKey, reducerRecentFiles);
+    public async storeDataToDatabase(entriesToStore: DatabaseEntry[]): Promise<void> {
+        const reducerRecentFiles = this.reducer.getState().recentFiles;
+        const currentKeys = reducerRecentFiles.map(file => file.dbKey);
+        
+        const sameLoadedFiles = entriesToStore.filter(entry => {
+            return includes(currentKeys, entry.fileInterface.dbKey);
+        });
+        const sameKeys = sameLoadedFiles.map(file => file.fileInterface.dbKey);
 
-        if (reducerRecentFiles.length === MAX_RECENT_FILES && indexToChange === -1) {
-            indexToChange = this.findOldestFileIndex(reducerRecentFiles);
-            this.storage.removeItem(reducerRecentFiles[indexToChange].dbKey);
-        }
+        const uniqueLoadedFiles = entriesToStore.filter(entry => {
+            return !includes(currentKeys, entry.fileInterface.dbKey);
+        });
+        const uniqueSameKeys = uniqueLoadedFiles.map(file => file.fileInterface.dbKey); 
 
-        this.storage.setItem(entryToStore.fileInterface.dbKey, entryToStore);
-        return indexToChange;
+        const uniqueFiles = reducerRecentFiles.filter(file => {
+            return !includes(sameKeys, file.dbKey);
+        });
+
+        const { left: mostRecent, right: toDelete } = this.getLastFiles(uniqueFiles, MAX_RECENT_FILES - uniqueSameKeys.length - sameKeys.length, true);
+
+        const recentFiles = sameLoadedFiles.map(file => {
+            return this.prepareLightweightFile(file);
+        }).concat(uniqueLoadedFiles.map(file=> {
+            return this.prepareLightweightFile(file)
+        })).concat(mostRecent);
+
+        await this.dbService.removeItems(toDelete.map(entry => entry.dbKey));
+
+        const databaseEntries = sameLoadedFiles.concat(uniqueLoadedFiles).map(file => {
+            return {
+                key: file.fileInterface.dbKey,
+                entry: file
+            };
+        });
+
+        await this.dbService.setItems<DatabaseEntry>(databaseEntries);
+
+        this.reducer.updateRecentFiles(recentFiles);
     }
 
-    /**
-     * Updates recent files in application state reducer.
-     * @param {number} index defines index of element in array of recentFiles to be removed.
-     * @param {LightweighFile} fileInterfaceToStore is file interface to be stored in application state.
-     * @param {LightweighFile[]} reducerRecentFiles is array of application recentFiles.
-     */
-    public updateRecentFiles(index: number, fileInterfaceToStore: LightweightFile, 
-                             reducerRecentFiles: LightweightFile[]) {
-        let newRecentFiles: LightweightFile[] = JSON.parse(JSON.stringify(reducerRecentFiles));
+    public getLastFiles(
+        files: LightweightFile[],
+        count: number, 
+        asc: boolean = false, 
+        fromStart: boolean = true
+    ): { left: LightweightFile[], right: LightweightFile[] } {
+        const sorted = files.sort((eA, eB) => eB.timestamp - eA.timestamp);
+        const length = sorted.length;
 
-        if (!(reducerRecentFiles.length < MAX_RECENT_FILES && index === -1)) {
-            newRecentFiles.splice(index, 1);
+        if (fromStart) {
+            return {
+                left: take(sorted, count),
+                right: takeRight(sorted, length - count)
+            };
+        } else {
+            return {
+                left: take(sorted, length - count),
+                right: takeRight(sorted, count)
+            };
         }
-        newRecentFiles.unshift(fileInterfaceToStore);
-
-        this.reducer.updateRecentFiles(newRecentFiles);
     }
 
     /**
@@ -86,47 +122,36 @@ export class FileStorage {
      * @param {LightweightFile} fileObject represent interface for file to be loaded from indexedDB.
      * @returns {Promise<HeavyWeightFile>} which contains loaded file data from indexedDB.[]
      */
-    public getData(fileObject: LightweightFile): Promise<HeavyweightFile> {
+    public async getData(fileObject: LightweightFile): Promise<HeavyweightFile> {
 
-        let fileSize = this.getFileSizeFromDbKey(fileObject.fileName);
-        var promise = this.storage.getItem<DatabaseEntry>(fileObject.dbKey).then(function (readValue: DatabaseEntry) {
-            let dicomReader = new DicomReader();
-            let toReturn: HeavyweightFile = {
-                fileName: fileObject.fileName,
-                fileSize: fileSize,
-                bufferedData: readValue.data,
-                timestamp: fileObject.timestamp,
-                dicomData: dicomReader.getDicomEntries(readValue.data)
-            };
-
-            return toReturn;
-        });
-
-        return promise;
+        const entry = await this.dbService.getItem<DatabaseEntry>(fileObject.dbKey);
+        
+        return {
+            fileName: entry.fileInterface.fileName,
+            fileSize: this.getFileSizeFromDbKey(entry.fileInterface.dbKey),
+            bufferedData: entry.data,
+            timestamp: entry.fileInterface.timestamp,
+            dicomData: this.dicomReader.getDicomEntries(entry.data)
+        };
     }
 
     /**
      * @description Load all files stored in indexedDB DICOMviewer in table recentFilesStore.
      */
-    public loadRecentFiles() {
-        this.storage.keys().then(keys => {
-            let promises = keys.map(key => {
-                return this.storage.getItem<DatabaseEntry>(key).then(entry => {
-                    let fileInterface: LightweightFile = {
-                        fileName: entry.fileInterface.fileName,
-                        dbKey: entry.fileInterface.dbKey,
-                        timestamp: entry.fileInterface.timestamp
-                    };
+    public async loadRecentFiles(): Promise<void> {
+        const entries: DatabaseEntry[] = await this.dbService.getAll<DatabaseEntry>();
 
-                    return fileInterface;
-                });
-            });
-
-            Promise.all(promises).then(recentFiles => {
-                recentFiles.sort((elementA, elementB) => elementB.timestamp - elementA.timestamp);
-                this.reducer.updateRecentFiles(recentFiles);
-            });
+        let recentFiles: LightweightFile[] = entries.map(entry => {
+            return {
+                fileName: entry.fileInterface.fileName,
+                dbKey: entry.fileInterface.dbKey,
+                timestamp: entry.fileInterface.timestamp
+            };
         });
+
+        recentFiles = recentFiles.sort((elementA, elementB) => elementB.timestamp - elementA.timestamp);
+
+        this.reducer.updateRecentFiles(recentFiles);
     }
 
     /**
@@ -190,5 +215,14 @@ export class FileStorage {
             },
             data: file.bufferedData
         };
+    }
+
+    /**
+     * @description creates LightweightFile entry from {DatabaseEntry} object
+     * @param {DatabaseEntry} file heavy file to convert
+     * @returns {LightweightFile}
+     */
+    public prepareLightweightFile(entry: DatabaseEntry): LightweightFile {
+        return entry.fileInterface;
     }
 }
