@@ -7,7 +7,7 @@ import { ApplicationStateReducer, SelectedFile } from '../application-state';
 import { HeavyweightFile } from '../model/file-interfaces';
 import { TableMode } from '../model/table-enum';
 import Cached from 'material-ui/svg-icons/action/cached';
-import { RaisedButton } from "material-ui";
+import { RaisedButton } from 'material-ui';
 
 interface MainViewProps {
   reducer: ApplicationStateReducer;
@@ -94,14 +94,15 @@ export default class MainView extends React.Component<MainViewProps, MainViewSta
             <h1>{this.state.header + this.state.fileNameOne.split('.')[0] +
               this.state.headerJoin + this.state.fileNameTwo.split('.')[0]}</h1>
             <div id="simpleOrHierarchical">
-                <RaisedButton icon={<Cached className="material-icons"></Cached>}
-                primary = {true}
-                label={this.state.tableMode == TableMode.SIMPLE ? 'Toggle Hierarchical' : 'Toggle Simple'}
-                  onClick={() => this.setState({
-                    tableMode:
-                    this.state.tableMode == TableMode.SIMPLE ?
-                      TableMode.EXTENDED : TableMode.SIMPLE
-                  })} 
+              <RaisedButton 
+                icon={<Cached className="material-icons"/>}
+                primary={true}
+                label={this.state.tableMode === TableMode.SIMPLE ? 'Toggle Hierarchical' : 'Toggle Simple'}
+                onClick={() => this.setState({
+                  tableMode:
+                  this.state.tableMode === TableMode.SIMPLE ?
+                    TableMode.EXTENDED : TableMode.SIMPLE
+                })}
               />
             </div>
           </div>
