@@ -17,7 +17,7 @@ let dbService = new DbService({
  */
 export async function isFileSavedInDb(heavyFile: HeavyweightFile): Promise<boolean> {
     return dbService.getItem(heavyFile.fileName).then(entryFromDb => {
-        return (entryFromDb === undefined);
+        return (!((entryFromDb === undefined) || (entryFromDb === null)));
     });
 }
 
