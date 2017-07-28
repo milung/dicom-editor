@@ -2,6 +2,7 @@ import * as React from 'react';
 import { TableRow, TableRowColumn } from 'material-ui';
 import { DicomEntry } from '../../model/dicom-entry';
 import { ColorDictionary } from '../../utils/colour-dictionary';
+import './dicom-table.css';
 
 export interface DicomTableRowProps {
     entry: DicomEntry;
@@ -28,11 +29,13 @@ export class DicomTableRow extends React.Component<DicomTableRowProps, DicomTabl
             wordWrap: 'break-word'
         };
         let tag = this.props.entry.tagGroup + ', ' + this.props.entry.tagElement;
+        let rowClass = 'tagBorder';
         if (!this.props.shouldShowTag) {
             tag = '';
+            rowClass = '';
         }
         return (
-                <TableRow style={tableRowStyle}>
+                <TableRow style={tableRowStyle} className={rowClass}>
                     <TableRowColumn style={tagColor}>
                         {tag}
                     </TableRowColumn>
