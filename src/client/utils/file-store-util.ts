@@ -34,6 +34,9 @@ export function convertHeavyToLight(heavyFile: HeavyweightFile): LightweightFile
  */
 export function loadSavedFiles(reducer: ApplicationStateReducer) {
     dbService.getAll<LightweightFile>().then(files => {
+        files.forEach(element => {
+            element.dbKey = element.fileName;
+        });
         reducer.updateSavedFiles(files);
     });
 }
@@ -45,4 +48,8 @@ export function loadSavedFiles(reducer: ApplicationStateReducer) {
  */
 export function saveFileIntoSavedDb(heavyFile: HeavyweightFile) {
     dbService.setItem(heavyFile.fileName, heavyFile);
+}
+
+export function deleteFileFromSaved(lightFile: LightweightFile){
+    dbService.removeItem(lightFile.dbKey);
 }

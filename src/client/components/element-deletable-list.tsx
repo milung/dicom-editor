@@ -24,13 +24,13 @@ export class ElementOfDeletableList extends React.Component<ElementOfDeletableLi
             <div className="deletableListItem">
                 <div className="td">
                     <ListItem
-                        onClick={() => this.props.deleteFunction(this.props.lightFile)}
                         primaryText={this.props.lightFile.fileName}
                     />
                 </div>
                 <div>
                     <ClearIcon
                         className="clearIcon"
+                        onClick={() => this.props.deleteFunction(this.props.lightFile)}
                     />
                 </div>
             </div>
