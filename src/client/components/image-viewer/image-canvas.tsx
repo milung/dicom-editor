@@ -32,6 +32,10 @@ export class ImageCanvas extends React.Component<ImageCanvasProps, {}> {
   componentDidMount() {
     var element = document.getElementById('dicomImage') as Element;
     cornerstone.enable(element);
+
+    if (this.props.data.length > 0) {
+      this.renderCanvas(this.props.data);
+    }
   }
   componentDidUpdate() {
     if (this.props.data.length > 0) {
