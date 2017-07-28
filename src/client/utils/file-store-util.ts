@@ -14,8 +14,10 @@ let dbService = new DbService({
  * @param {HeavyweightFile} heavyFile file to check
  * @returns {boolean} TRUE if file is already in DB, FALSE otherwise
  */
-export function isFileSavedInDb(heavyFile: HeavyweightFile): boolean {
-    return false;
+export async function isFileSavedInDb(heavyFile: HeavyweightFile): Promise<boolean> {
+    return dbService.getItem(heavyFile.fileName).then(entryFromDb => {
+        return (entryFromDb === undefined);
+    });
 }
 
 /**
@@ -24,5 +26,5 @@ export function isFileSavedInDb(heavyFile: HeavyweightFile): boolean {
  * @param {HeavyweightFile} heavyFile file to save into DB
  */
 export function saveFileIntoSavedDb(heavyFile: HeavyweightFile) {
-
+    dbService.setItem(heavyFile.fileName, heavyFile);
 }

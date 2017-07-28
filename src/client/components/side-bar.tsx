@@ -13,6 +13,7 @@ import './side-bar.css';
 import { ListItem } from 'material-ui';
 import TabTemplate from './tab-template';
 import { ElementOfDeletableList } from './element-deletable-list';
+import { isFileSavedInDb, saveFileIntoSavedDb } from '../utils/file-store-util';
 
 export interface SideBarProps {
     reducer: ApplicationStateReducer;
@@ -136,8 +137,22 @@ export default class SideBar extends React.Component<SideBarProps, SideBarState>
         );
     }
 
-    public handleSaveClick(event: object) {
-        // todo
+    public async handleSaveClick() {
+        let file = this.props.reducer.getState().currentFile;
+        if (file) {
+            let canSaveToDB = false;
+            let isSaved = await isFileSavedInDb(file);
+            if (isSaved) {
+                canSaveToDB = this.showPopUpOverrideConfirmation();
+            } else {
+                canSaveToDB = true;
+            }
+
+            if (canSaveToDB) {
+                saveFileIntoSavedDb(file);
+            }
+        }
+        
     }
 
     public handleDeleteClick(lightFile: LightweightFile) {
@@ -146,6 +161,14 @@ export default class SideBar extends React.Component<SideBarProps, SideBarState>
 
     public handleCompareClick(event: object) {
         this.props.reducer.setComparisonActive(true);
+    }
+
+    /**
+     * @description Displays pop up window to ask user if file should be overriden.
+     * @returns {boolean} TRUE if file can be overriden, FALSE otherwise
+     */
+    private showPopUpOverrideConfirmation(): boolean {
+        return false;
     }
 
     private selectCurrentFile(file: HeavyweightFile) {
