@@ -26,27 +26,28 @@ export class ElementOfSelectableList extends
     constructor(props: ElementOfSelectableListProps) {
         super(props);
         this.handleCheck = this.handleCheck.bind(this);
-        this.state = {currentColor: 'black'};
+        this.state = { currentColor: 'black' };
     }
 
     handleCheck(e: object, isInputChecked: boolean) {
         if (isInputChecked) {
             let newColor = this.props.colorDictionary.getFirstFreeColor();
             this.props.reducer.addSelectedFile(this.props.item.fileName, newColor);
-            this.setState({currentColor: newColor});
+            this.setState({ currentColor: newColor });
             this.props.checkInform(true);
         } else {
             let freeColor = this.props.reducer.removeSelectedFile(this.props.item.fileName);
             this.props.reducer.setComparisonActive(false);
             this.props.colorDictionary.freeColor(freeColor);
-            this.setState({currentColor: 'black'});
+            this.setState({ currentColor: 'black' });
             this.props.checkInform(false);
         }
     }
 
     render() {
+        let bckgcolor = this.isCurrentFile() ? { backgroundColor: '#c7d5ed'}  : { backgroundColor: 'white' };
         return (
-            <div className="containera">
+            <div className="containera" style={bckgcolor}>
                 <div className="checkbox">
                     <Checkbox
                         onCheck={this.handleCheck}
@@ -58,10 +59,17 @@ export class ElementOfSelectableList extends
                     <ListItem
                         onClick={() => this.props.selectFunction(this.props.item)}
                         primaryText={this.props.item.fileName}
-                        style={{color: this.props.color || this.state.currentColor}}
+                        style={{ color: this.props.color || this.state.currentColor}}
                     />
                 </div>
             </div>
         );
+    }
+
+    private isCurrentFile() {
+        if (this.props.reducer.getState().currentFile === this.props.item) {
+            return true;
+        }
+        else return false;
     }
 }

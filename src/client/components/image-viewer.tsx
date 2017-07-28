@@ -18,7 +18,6 @@ export default class ImageViewer extends React.Component<ImageViewerProps, {}> {
         let num = dicomReader.getNumberOfFrames(this.props.data);
         return (
             <div>
-                <h1>ImageViewer</h1>  
                 <ImageMultiCanvas 
                     data={this.props.data} 
                     numberOfFrames={num}                    

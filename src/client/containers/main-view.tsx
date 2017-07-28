@@ -66,6 +66,7 @@ export default class MainView extends React.Component<MainViewProps, MainViewSta
           label="Image viewer"
         >
           <div className="container">
+            <h1>{this.state.currentFile.fileName}</h1>
             <ImageViewer data={this.state.actualBufferData}/>
           </div>
         </Tab>
@@ -73,7 +74,7 @@ export default class MainView extends React.Component<MainViewProps, MainViewSta
           label="Tags"
         >
           <div className="container">
-            <h1>TagViewer</h1>
+            <h1>{this.state.currentFile.fileName}</h1>
             <div id="simpleOrHierarchical">
               <Tabs>
                 <Tab label="Simple" onClick={() => this.setState({tableMode: TableMode.SIMPLE})}/>
