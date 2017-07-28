@@ -60,13 +60,14 @@ export default class MainView extends React.Component<MainViewProps, MainViewSta
   }
 
   render() {
+    let fileNameArr=this.state.currentFile.fileName.split(".");
     return (
       <Tabs className="tabs" initialSelectedIndex={1}>
         <Tab
           label="Image viewer"
         >
           <div className="container">
-            <h1>{this.state.currentFile.fileName}</h1>
+            <h1>{fileNameArr[0]}</h1>
             <ImageViewer data={this.state.actualBufferData}/>
           </div>
         </Tab>
@@ -74,7 +75,7 @@ export default class MainView extends React.Component<MainViewProps, MainViewSta
           label="Tags"
         >
           <div className="container">
-            <h1>{this.state.currentFile.fileName}</h1>
+            <h1>{fileNameArr[0]}</h1>
             <div id="simpleOrHierarchical">
               <Tabs>
                 <Tab label="Simple" onClick={() => this.setState({tableMode: TableMode.SIMPLE})}/>
