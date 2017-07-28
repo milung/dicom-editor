@@ -6,6 +6,8 @@ import './main-view.css';
 import { ApplicationStateReducer, SelectedFile } from '../application-state';
 import { HeavyweightFile } from '../model/file-interfaces';
 import { TableMode } from '../model/table-enum';
+import Cached from 'material-ui/svg-icons/action/cached';
+import { RaisedButton } from "material-ui";
 
 interface MainViewProps {
   reducer: ApplicationStateReducer;
@@ -51,7 +53,7 @@ export default class MainView extends React.Component<MainViewProps, MainViewSta
   public componentDidMount() {
     this.props.reducer.state$.subscribe(state => {
       this.setState({
-        currentFile: state.currentFile ? state.currentFile :           
+        currentFile: state.currentFile ? state.currentFile :
           {
             fileSize: 0,
             bufferedData: new Uint8Array(0),
@@ -61,15 +63,15 @@ export default class MainView extends React.Component<MainViewProps, MainViewSta
           },
         selectedFiles: state.selectedFiles ? state.selectedFiles : [],
         loadedFiles: state.loadedFiles ? state.loadedFiles : [],
-        actualBufferData: state.currentFile ? state.currentFile.bufferedData : new Uint8Array(0),   
+        actualBufferData: state.currentFile ? state.currentFile.bufferedData : new Uint8Array(0),
         comparisonActive: state.comparisonActive,
         fileNameOne: state.selectedFiles[0] && state.comparisonActive ?
           state.selectedFiles[0].selectedFile.fileName : '',
         fileNameTwo: state.selectedFiles[1] && state.comparisonActive ?
           state.selectedFiles[1].selectedFile.fileName : '',
         header: state.comparisonActive ? 'Compare ' :
-          (state.currentFile ? ('TagViewer of ' + state.currentFile.fileName.split('.')[0]) : 'TagViewer' ),
-        headerJoin: state.comparisonActive ? ' and ' : ''  
+          (state.currentFile ? ('TagViewer of ' + state.currentFile.fileName.split('.')[0]) : 'TagViewer'),
+        headerJoin: state.comparisonActive ? ' and ' : ''
       });
     });
   }
@@ -82,29 +84,34 @@ export default class MainView extends React.Component<MainViewProps, MainViewSta
         >
           <div className="container">
             <h1>{this.state.currentFile.fileName.split('.')[0]}</h1>
-            <ImageViewer data={this.state.actualBufferData}/>
+            <ImageViewer data={this.state.actualBufferData} />
           </div>
         </Tab>
         <Tab
           label="Tags"
         >
           <div className="container">
-            <h1>{this.state.header + this.state.fileNameOne.split('.')[0]  + 
-            this.state.headerJoin + this.state.fileNameTwo.split('.')[0] }</h1>
+            <h1>{this.state.header + this.state.fileNameOne.split('.')[0] +
+              this.state.headerJoin + this.state.fileNameTwo.split('.')[0]}</h1>
             <div id="simpleOrHierarchical">
-              <Tabs>
-                <Tab label="Simple" onClick={() => this.setState({tableMode: TableMode.SIMPLE})}/>
-                <Tab label="Hierarchical" onClick={() => this.setState({tableMode: TableMode.EXTENDED})}/>
-              </Tabs>
+                <RaisedButton icon={<Cached className="material-icons"></Cached>}
+                primary = {true}
+                label={this.state.tableMode == TableMode.SIMPLE ? 'Toggle Hierarchical' : 'Toggle Simple'}
+                  onClick={() => this.setState({
+                    tableMode:
+                    this.state.tableMode == TableMode.SIMPLE ?
+                      TableMode.EXTENDED : TableMode.SIMPLE
+                  })} 
+              />
             </div>
           </div>
 
           <div className="container">
-            <TagViewer 
-                files={this.state.selectedFiles} 
-                tableMode={this.state.tableMode} 
-                currentFile={this.state.currentFile}
-                comparisonActive={this.state.comparisonActive} 
+            <TagViewer
+              files={this.state.selectedFiles}
+              tableMode={this.state.tableMode}
+              currentFile={this.state.currentFile}
+              comparisonActive={this.state.comparisonActive}
             />
           </div>
         </Tab>
