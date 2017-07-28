@@ -48,18 +48,18 @@ export class DicomSimpleComparisonTable extends React.Component<
                                 colour: '#000000'
                             };
                             arr.push(
-                                    <DicomTableRow entry={entryHeader} shouldShowTag={true}/>
+                                    <DicomTableRow entry={entryHeader} shouldShowTag={true} key={groupIndex}/>
                                 );
                             group.group.map((entry, entryIndex) => {
 
                                 arr.push(
-                                    <DicomTableRow entry={entry} shouldShowTag={false}/>
+                                    <DicomTableRow entry={entry} shouldShowTag={false} key={entryIndex + 1000 * (groupIndex + 1)}/>
                                 );
                             });
                             
                         } else if (group.group.length === 1) {
                              arr.push(
-                                <DicomTableRow entry={group.group[0]} shouldShowTag={true}/>
+                                <DicomTableRow entry={group.group[0]} shouldShowTag={true} key={groupIndex}/>
                             );
                         }
 
