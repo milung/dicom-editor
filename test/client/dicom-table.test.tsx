@@ -106,7 +106,7 @@ const dicomTestEntries =
 
 describe('dicom-table', () => {
     it('Render one row with DICOM entry', () => {
-        const div = shallow(<DicomTableRow entry={dicomTestEntry} />);
+        const div = shallow(<DicomTableRow entry={dicomTestEntry} shouldShowTag={true}/>);
         expect(div.find('TableRow').find('TableRowColumn').length).to.equal(5);
     });
 
@@ -116,11 +116,11 @@ describe('dicom-table', () => {
     });
 
     it('Render correct value of second column - tagName', () => {
-       const div = shallow(<DicomTableRow entry={dicomTestEntry} />);
+       const div = shallow(<DicomTableRow entry={dicomTestEntry} shouldShowTag={true}/>);
        expect(div.find('TableRow').childAt(1).getNode().props.children).to.equal(dicomTestEntry.tagName);
     });
     it('Render one row with DICOM entry', () => {
-       const div = shallow(<DicomTableRow entry={dicomTestEntry} />);
+       const div = shallow(<DicomTableRow entry={dicomTestEntry} shouldShowTag={true}/>);
        expect(div.find('TableRow').find('TableRowColumn').length).to.equal(5);
    });
 

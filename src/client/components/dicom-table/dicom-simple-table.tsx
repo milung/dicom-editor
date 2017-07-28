@@ -35,7 +35,7 @@ export class DicomSimpleTable extends React.Component<DicomSimpleTableProps, Dic
                         {this.props.entries.map((entry, entryIndex) => {
                             return (
                                 // single row with single DicomEntry
-                                <DicomTableRow entry={entry} key={entryIndex} />
+                                <DicomTableRow entry={entry} key={entryIndex} shouldShowTag={true}/>
 
                             );
                         })}

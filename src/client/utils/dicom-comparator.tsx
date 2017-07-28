@@ -1,21 +1,22 @@
-import { DicomSimpleData, DicomEntry } from '../model/dicom-entry';
+import { DicomEntry, DicomSimpleComparisonData, DicomComparisonData } from '../model/dicom-entry';
 import { SelectedFile } from '../application-state';
 
-function createEntryCopy( entry: DicomEntry ): DicomEntry {
-     let entryCopy: DicomEntry = {
-                tagGroup: entry.tagGroup,
-                tagElement: entry.tagElement,
-                tagName: entry.tagName,
-                tagValue: entry.tagValue,
-                tagVR: entry.tagVR,
-                tagVM: entry.tagVM,
-                colour: entry.colour
-            };
-     return entryCopy;
+function createEntryCopy(entry: DicomEntry): DicomEntry {
+    let entryCopy: DicomEntry = {
+        tagGroup: entry.tagGroup,
+        tagElement: entry.tagElement,
+        tagName: entry.tagName,
+        tagValue: entry.tagValue,
+        tagVR: entry.tagVR,
+        tagVM: entry.tagVM,
+        colour: entry.colour
+    };
+    return entryCopy;
 }
 
-export function compareTwoFiles(file1: SelectedFile, file2: SelectedFile): DicomSimpleData {
-    let comparisonEntries: DicomSimpleData = { entries: [] };
+export function compareTwoFiles(file1: SelectedFile, file2: SelectedFile): DicomSimpleComparisonData {
+
+    let comparisonEntries: DicomSimpleComparisonData = { dicomComparisonData: [] };
 
     let fileMap2 = file2.selectedFile.dicomData.entries.reduce(function (map: {}, obj: DicomEntry) {
         map[obj.tagGroup + obj.tagElement] = obj;
@@ -31,10 +32,10 @@ export function compareTwoFiles(file1: SelectedFile, file2: SelectedFile): Dicom
             // create copies of both entries
             let entry2: DicomEntry = fileMap2[entry.tagGroup + entry.tagElement];
 
-            let tempEntry1 = createEntryCopy(entry);         
+            let tempEntry1 = createEntryCopy(entry);
 
             let tempEntry2 = createEntryCopy(entry2);
-           
+
             // check if they contain the same value
             if (tempEntry1.tagValue !== tempEntry2.tagValue) {
                 tempEntry1.colour = file1.colour;
@@ -42,7 +43,8 @@ export function compareTwoFiles(file1: SelectedFile, file2: SelectedFile): Dicom
                 // shorterEntry.tagGroup = shorterEntry.tagElement = "";
 
                 commonMap[tempEntry1.tagGroup + tempEntry1.tagElement] = [tempEntry1, tempEntry2];
-            }else {
+
+            } else {
                 commonMap[tempEntry1.tagGroup + tempEntry1.tagElement] = [tempEntry1];
             }
         }
@@ -103,12 +105,15 @@ export function compareTwoFiles(file1: SelectedFile, file2: SelectedFile): Dicom
             var entries: DicomEntry[];
             entries = commonMap[key];
             if (entries) {
-                entries.forEach(entry => {
-                    comparisonEntries.entries.push(entry);
-                });
+                let comparisonEntry: DicomComparisonData = {
+                    tagGroup: entries[0].tagGroup,
+                    tagElement: entries[0].tagElement,
+                    group: entries
+                };
+                comparisonEntries.dicomComparisonData.push(comparisonEntry);
             }
         }
     }
 
     return comparisonEntries;
-} 
+}

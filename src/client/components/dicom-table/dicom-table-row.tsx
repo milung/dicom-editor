@@ -5,6 +5,7 @@ import { ColorDictionary } from '../../utils/colour-dictionary';
 
 export interface DicomTableRowProps {
     entry: DicomEntry;
+    shouldShowTag: boolean; 
 }
 
 export interface DicomTableRowState {
@@ -27,7 +28,9 @@ export class DicomTableRow extends React.Component<DicomTableRowProps, DicomTabl
             wordWrap: 'break-word'
         };
         let tag = this.props.entry.tagGroup + ', ' + this.props.entry.tagElement;
-        
+        if (!this.props.shouldShowTag) {
+            tag = '';
+        }
         return (
                 <TableRow style={tableRowStyle}>
                     <TableRowColumn style={tagColor}>

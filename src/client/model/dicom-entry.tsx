@@ -23,3 +23,26 @@ export interface DicomExtendedData {
 export interface DicomSimpleData {
     entries: DicomEntry[];
 }
+
+/**
+ * @description contains all entries that belong to the same tag group
+ */
+export interface DicomComparisonData {
+    group: DicomEntry[];
+    tagGroup: string;
+    tagElement: string;
+}
+
+/**
+ * @description Simple form of Dicom comparison data, consists only of array of {DicomComparisonData}
+ */
+export interface DicomSimpleComparisonData {
+    dicomComparisonData: DicomComparisonData[];
+}
+
+/**
+ * @description DicomComparisonData grouped by modules, used in hierarchical view
+ */
+export interface DicomExtendedComparisonData {
+    [moduleName: string]: DicomComparisonData[];
+}
