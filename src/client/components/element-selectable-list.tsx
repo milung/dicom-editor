@@ -69,7 +69,8 @@ export class ElementOfSelectableList extends
     private isCurrentFile() {
         if (this.props.reducer.getState().currentFile === this.props.item) {
             return true;
+        } else {
+            return false;
         }
-        else return false;
     }
 }
