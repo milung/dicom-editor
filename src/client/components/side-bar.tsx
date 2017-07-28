@@ -12,6 +12,7 @@ import { ColorDictionary } from '../utils/colour-dictionary';
 import './side-bar.css';
 import { ListItem } from 'material-ui';
 import TabTemplate from './tab-template';
+import { ElementOfDeletableList } from './element-deletable-list';
 
 export interface SideBarProps {
     reducer: ApplicationStateReducer;
@@ -22,6 +23,7 @@ export interface SideBarState {
     recentFiles: LightweightFile[];
     selectedFiles: SelectedFile[];
     checkedCheckboxes: number;
+    savedFiles: LightweightFile[];
 }
 
 export default class SideBar extends React.Component<SideBarProps, SideBarState> {
@@ -35,6 +37,7 @@ export default class SideBar extends React.Component<SideBarProps, SideBarState>
             recentFiles: [],
             selectedFiles: [],
             checkedCheckboxes: 0,
+            savedFiles: []
         };
 
         this.colorDictionary = new ColorDictionary();
@@ -42,6 +45,8 @@ export default class SideBar extends React.Component<SideBarProps, SideBarState>
         this.selectCurrentFileFromRecentFile = this.selectCurrentFileFromRecentFile.bind(this);
         this.handleCompareClick = this.handleCompareClick.bind(this);
         this.changeNumberOfCheckedBoxes = this.changeNumberOfCheckedBoxes.bind(this);
+        this.handleSaveClick = this.handleSaveClick.bind(this);
+        this.handleDeleteClick = this.handleDeleteClick.bind(this);
     }
 
     public componentDidMount() {
@@ -50,7 +55,8 @@ export default class SideBar extends React.Component<SideBarProps, SideBarState>
                 loadedFiles: state.loadedFiles,
                 recentFiles: state.recentFiles,
                 selectedFiles: state.selectedFiles,
-                checkedCheckboxes: state.selectedFiles.length === 0 ? 0 : this.state.checkedCheckboxes
+                checkedCheckboxes: state.selectedFiles.length === 0 ? 0 : this.state.checkedCheckboxes,
+                savedFiles: state.savedFiles
             });
         });
     }
@@ -65,7 +71,7 @@ export default class SideBar extends React.Component<SideBarProps, SideBarState>
                     tabTemplate={TabTemplate}
                     tabTemplateStyle={{ display: 'flex', flexDirection: 'column', flexGrow: 1 }}
                 >
-                    <Tab label="Loaded files">
+                    <Tab label="Loaded">
                         <List style={{ overflowX: 'hidden', overflowY: 'auto' }}>
                             {this.state.loadedFiles.map((item, index) => {
                                 const checked = this.isChecked(item);
@@ -94,7 +100,7 @@ export default class SideBar extends React.Component<SideBarProps, SideBarState>
                             disabled={this.state.selectedFiles.length === 2 ? false : true}
                         />
                     </Tab>
-                    <Tab label="Recent files">
+                    <Tab label="Recent">
                         <List>
                             {this.state.recentFiles.map((item, index) => (
                                 <ListItem
@@ -105,9 +111,37 @@ export default class SideBar extends React.Component<SideBarProps, SideBarState>
                             ))}
                         </List>
                     </Tab>
+                    <Tab label="Saved">
+                        <List style={{ overflowX: 'hidden', overflowY: 'auto' }}>
+                            {this.state.savedFiles.map((item, index) => {
+
+                                return (
+                                    <ElementOfDeletableList 
+                                        lightFile={item}
+                                        deleteFunction={this.handleDeleteClick}
+                                    />
+                                );
+                            })}
+                        </List>
+                        <RaisedButton
+                            className="compare-button"
+                            label="Save current file"
+                            onClick={this.handleSaveClick}
+                            primary={true}
+                            disabled={this.props.reducer.getState().currentFile ? false : true}
+                        />
+                    </Tab>
                 </Tabs>
             </Paper>
         );
+    }
+
+    public handleSaveClick(event: object) {
+        // todo
+    }
+
+    public handleDeleteClick(lightFile: LightweightFile) {
+        // todo
     }
 
     public handleCompareClick(event: object) {

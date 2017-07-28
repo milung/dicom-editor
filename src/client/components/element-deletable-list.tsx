@@ -1,11 +1,12 @@
 import * as React from 'react';
 import { ListItem } from 'material-ui';
 import './element-deletable-list.css';
+import { LightweightFile } from '../model/file-interfaces';
 
 var ClearIcon = require('react-icons/lib/md/clear');
 
 export interface ElementOfDeletableListProps {
-    fileName: string;
+    lightFile: LightweightFile;
     deleteFunction: Function;
 }
 
@@ -23,8 +24,8 @@ export class ElementOfDeletableList extends React.Component<ElementOfDeletableLi
             <div className="deletableListItem">
                 <div className="td">
                     <ListItem
-                       // onClick={() => this.props.selectFunction(this.props.item)}
-                        primaryText={this.props.fileName}
+                        onClick={() => this.props.deleteFunction(this.props.lightFile)}
+                        primaryText={this.props.lightFile.fileName}
                     />
                 </div>
                 <div>

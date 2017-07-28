@@ -15,6 +15,7 @@ export interface ApplicationState {
     currentIndex?: number;
     selectedFiles: SelectedFile[];
     comparisonActive: boolean;
+    savedFiles: LightweightFile[];
 }
 
 export class ApplicationStateReducer {
@@ -32,7 +33,8 @@ export class ApplicationStateReducer {
             currentFile: undefined,
             currentIndex: undefined,
             selectedFiles: [],
-            comparisonActive: false
+            comparisonActive: false,
+            savedFiles: []
         };
 
         this.stateSubject$ = new BehaviorSubject(this.currentState);
