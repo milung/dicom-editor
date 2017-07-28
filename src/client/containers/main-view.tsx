@@ -18,6 +18,10 @@ interface MainViewState {
   tableMode: TableMode;
   actualBufferData: Uint8Array;
   comparisonActive: boolean;
+  fileNameOne: string;
+  fileNameTwo: string;
+  header: string;
+  headerJoin: string;
 }
 
 export default class MainView extends React.Component<MainViewProps, MainViewState> {
@@ -36,7 +40,11 @@ export default class MainView extends React.Component<MainViewProps, MainViewSta
       loadedFiles: [],
       actualBufferData: new Uint8Array(0),
       tableMode: TableMode.SIMPLE,
-      comparisonActive: false
+      comparisonActive: false,
+      fileNameOne: '',
+      fileNameTwo: '',
+      header: '',
+      headerJoin: '',
     };
   }
 
@@ -54,20 +62,26 @@ export default class MainView extends React.Component<MainViewProps, MainViewSta
         selectedFiles: state.selectedFiles ? state.selectedFiles : [],
         loadedFiles: state.loadedFiles ? state.loadedFiles : [],
         actualBufferData: state.currentFile ? state.currentFile.bufferedData : new Uint8Array(0),   
-        comparisonActive: this.props.reducer.getState().comparisonActive 
+        comparisonActive: state.comparisonActive,
+        fileNameOne: state.selectedFiles[0] && state.comparisonActive ?
+          state.selectedFiles[0].selectedFile.fileName : '',
+        fileNameTwo: state.selectedFiles[1] && state.comparisonActive ?
+          state.selectedFiles[1].selectedFile.fileName : '',
+        header: state.comparisonActive ? 'Compare ' :
+          (state.currentFile ? ('TagViewer of ' + state.currentFile.fileName.split('.')[0]) : 'TagViewer' ),
+        headerJoin: state.comparisonActive ? ' and ' : ''  
       });
     });
   }
 
   render() {
-    let fileNameArr = this.state.currentFile.fileName.split('.');
     return (
       <Tabs className="tabs" initialSelectedIndex={1}>
         <Tab
           label="Image viewer"
         >
           <div className="container">
-            <h1>{fileNameArr[0]}</h1>
+            <h1>{this.state.currentFile.fileName.split('.')[0]}</h1>
             <ImageViewer data={this.state.actualBufferData}/>
           </div>
         </Tab>
@@ -75,7 +89,8 @@ export default class MainView extends React.Component<MainViewProps, MainViewSta
           label="Tags"
         >
           <div className="container">
-            <h1>{fileNameArr[0]}</h1>
+            <h1>{this.state.header + this.state.fileNameOne.split('.')[0]  + 
+            this.state.headerJoin + this.state.fileNameTwo.split('.')[0] }</h1>
             <div id="simpleOrHierarchical">
               <Tabs>
                 <Tab label="Simple" onClick={() => this.setState({tableMode: TableMode.SIMPLE})}/>
