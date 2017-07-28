@@ -41,13 +41,27 @@ export class ApplicationStateReducer {
     }
 
     public addSavedFile(lightFile: LightweightFile) {
-        let index = this.currentState.savedFiles.indexOf(lightFile);
-        if (index !== -1) {
+        let isPresent = false;
+        let index: number = 0;
+
+        this.currentState.savedFiles.forEach((item, i) => {
+            if (item.fileName === lightFile.fileName) {
+                isPresent = true;
+                index = i;
+            }
+        });
+
+        if (isPresent) {
             this.currentState.savedFiles[index] = lightFile;
         } else {
             this.currentState.savedFiles.push(lightFile);
         }
 
+        this.stateSubject$.next(this.currentState);
+    }
+
+    public updateSavedFiles(files: LightweightFile[]) {
+        this.currentState.savedFiles = files;
         this.stateSubject$.next(this.currentState);
     }
 
@@ -85,8 +99,8 @@ export class ApplicationStateReducer {
     public addSelectedFile(fileName: string, newColour: string) {
         let file = this.findLoadedFileByName(fileName);
         if (file) {
-            this.currentState.selectedFiles.push({ 
-                selectedFile: file, 
+            this.currentState.selectedFiles.push({
+                selectedFile: file,
                 colour: newColour
             });
             this.stateSubject$.next(this.currentState);
@@ -96,7 +110,7 @@ export class ApplicationStateReducer {
     public removeSelectedFile(fileName: string): string {
         let indexToRemove = this.findSelectedFileIndexByName(fileName);
         let freeColor = this.currentState.selectedFiles[indexToRemove].colour;
-        
+
         this.currentState.selectedFiles.splice(indexToRemove, 1);
         this.stateSubject$.next(this.currentState);
 
@@ -111,7 +125,7 @@ export class ApplicationStateReducer {
     public removeAllSelectedFiles() {
         this.currentState.selectedFiles.length = 0;
     }
- 
+
     private findLoadedFileByName(fileName: string): (HeavyweightFile | undefined) {
         for (var index = 0; index < this.currentState.loadedFiles.length; index++) {
             if (this.currentState.loadedFiles[index].fileName === fileName) {

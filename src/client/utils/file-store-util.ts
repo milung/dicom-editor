@@ -1,3 +1,4 @@
+import { ApplicationStateReducer } from './../application-state';
 import { HeavyweightFile, LightweightFile } from './../model/file-interfaces';
 import * as localForage from 'localforage';
 import DbService from './db-service';
@@ -26,6 +27,15 @@ export function convertHeavyToLight(heavyFile: HeavyweightFile): LightweightFile
         timestamp: heavyFile.timestamp,
         fileName: heavyFile.fileName
     };
+}
+
+/**
+ * @description Loads files from DB into app state
+ */
+export function loadSavedFiles(reducer: ApplicationStateReducer) {
+    dbService.getAll<LightweightFile>().then(files => {
+        reducer.updateSavedFiles(files);
+    });
 }
 
 /**

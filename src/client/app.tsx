@@ -9,10 +9,12 @@ import './app.css';
 import { ApplicationStateReducer } from './application-state';
 
 import { FileStorage } from './utils/file-storage';
+import { loadSavedFiles } from './utils/file-store-util';
 
 let reducer = new ApplicationStateReducer();
 let fileStorage = new FileStorage(reducer);
 fileStorage.loadRecentFiles();
+loadSavedFiles(reducer);
 
 interface AppState {
 }
