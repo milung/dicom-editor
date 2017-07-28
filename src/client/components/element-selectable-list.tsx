@@ -45,7 +45,7 @@ export class ElementOfSelectableList extends
     }
 
     render() {
-        let bckgcolor = this.isCurrentFile() ? { backgroundColor: '#c7d5ed'}  : { backgroundColor: 'white' };
+        let bckgcolor = this.isCurrentFile() ? { backgroundColor: '#c7d5ed' } : { backgroundColor: 'white' };
         return (
             <div className="containera" style={bckgcolor}>
                 <div className="checkbox">
@@ -59,7 +59,7 @@ export class ElementOfSelectableList extends
                     <ListItem
                         onClick={() => this.props.selectFunction(this.props.item)}
                         primaryText={this.props.item.fileName}
-                        style={{ color: this.props.color || this.state.currentColor}}
+                        style={{ color: this.props.color || this.state.currentColor }}
                     />
                 </div>
             </div>

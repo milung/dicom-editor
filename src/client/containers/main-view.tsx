@@ -60,7 +60,7 @@ export default class MainView extends React.Component<MainViewProps, MainViewSta
   }
 
   render() {
-    let fileNameArr=this.state.currentFile.fileName.split(".");
+    let fileNameArr = this.state.currentFile.fileName.split('.');
     return (
       <Tabs className="tabs" initialSelectedIndex={1}>
         <Tab
