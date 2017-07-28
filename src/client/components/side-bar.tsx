@@ -10,7 +10,7 @@ import { HeavyweightFile, LightweightFile } from '../model/file-interfaces';
 import { ElementOfSelectableList } from './element-selectable-list';
 import { ColorDictionary } from '../utils/colour-dictionary';
 import './side-bar.css';
-import { ListItem } from 'material-ui';
+import { ListItem, Dialog, FlatButton } from 'material-ui';
 import TabTemplate from './tab-template';
 import { ElementOfDeletableList } from './element-deletable-list';
 import { isFileSavedInDb, saveFileIntoSavedDb, convertHeavyToLight, deleteFileFromSaved, loadSavedFiles } from '../utils/file-store-util';
@@ -25,10 +25,23 @@ export interface SideBarState {
     selectedFiles: SelectedFile[];
     checkedCheckboxes: number;
     savedFiles: LightweightFile[];
+    openedOverrideDialog: boolean;
 }
 
 export default class SideBar extends React.Component<SideBarProps, SideBarState> {
     private colorDictionary: ColorDictionary;
+    private actions = [
+        <FlatButton
+            label="Cancel"
+            primary={true}
+            onTouchTap={() => {this.handleCloseOverrideDialog(); }}
+        />,
+        <FlatButton
+            label="Override file"
+            primary={true}
+            onTouchTap={() => {this.handleOverrideButton(); }}
+        />,
+    ];
 
     public constructor(props: SideBarProps) {
         super(props);
@@ -38,8 +51,10 @@ export default class SideBar extends React.Component<SideBarProps, SideBarState>
             recentFiles: [],
             selectedFiles: [],
             checkedCheckboxes: 0,
-            savedFiles: []
+            savedFiles: [],
+            openedOverrideDialog: false
         };
+
 
         this.colorDictionary = new ColorDictionary();
         this.selectCurrentFile = this.selectCurrentFile.bind(this);
@@ -48,6 +63,10 @@ export default class SideBar extends React.Component<SideBarProps, SideBarState>
         this.changeNumberOfCheckedBoxes = this.changeNumberOfCheckedBoxes.bind(this);
         this.handleSaveClick = this.handleSaveClick.bind(this);
         this.handleDeleteClick = this.handleDeleteClick.bind(this);
+        this.handleCloseOverrideDialog = this.handleCloseOverrideDialog.bind(this);
+        this.showPopUpOverrideConfirmation = this.showPopUpOverrideConfirmation.bind(this);
+        this.handleOverrideButton = this.handleOverrideButton.bind(this);
+        this.saveFile = this.saveFile.bind(this);
     }
 
     public componentDidMount() {
@@ -134,6 +153,15 @@ export default class SideBar extends React.Component<SideBarProps, SideBarState>
                         />
                     </Tab>
                 </Tabs>
+                <Dialog
+                    title="Override the file?"
+                    actions={this.actions}
+                    modal={false}
+                    open={this.state.openedOverrideDialog}
+                    onRequestClose={this.handleCloseOverrideDialog}
+                >
+                    There is already a file with this name in the database. Do you want to override it?
+                </Dialog>
             </Paper>
         );
     }
@@ -141,18 +169,11 @@ export default class SideBar extends React.Component<SideBarProps, SideBarState>
     public async handleSaveClick() {
         let file = this.props.reducer.getState().currentFile;
         if (file) {
-            let canSaveToDB = false;
             let isSaved = await isFileSavedInDb(file);
-            if (isSaved) {
-                canSaveToDB = this.showPopUpOverrideConfirmation();
+            if (!isSaved) {
+                this.saveFile(file);
             } else {
-                canSaveToDB = true;
-            }
-
-            if (canSaveToDB) {
-                let lightFile = convertHeavyToLight(file);
-                saveFileIntoSavedDb(file);
-                this.props.reducer.addSavedFile(lightFile);
+                this.showPopUpOverrideConfirmation();
             }
         }
 
@@ -169,10 +190,37 @@ export default class SideBar extends React.Component<SideBarProps, SideBarState>
 
     /**
      * @description Displays pop up window to ask user if file should be overriden.
-     * @returns {boolean} TRUE if file can be overriden, FALSE otherwise
      */
-    private showPopUpOverrideConfirmation(): boolean {
-        return false;
+    private showPopUpOverrideConfirmation() {
+        this.setState({
+            openedOverrideDialog: true
+        });
+    }
+
+    /**
+     * @description Saves file into both DB and app state
+     * @param {HeavyweightFile} file file to save
+     */
+    private saveFile(file: HeavyweightFile) {
+        console.log('saving file ' + file.fileName);
+        let lightFile = convertHeavyToLight(file);
+        saveFileIntoSavedDb(file);
+        this.props.reducer.addSavedFile(lightFile);
+    }
+
+    private handleCloseOverrideDialog() {
+        this.setState({
+            openedOverrideDialog: false
+        });
+    }
+
+    private handleOverrideButton() {
+        let file = this.props.reducer.getState().currentFile;
+        if (file) {
+            this.saveFile(file);
+        }
+        
+        this.handleCloseOverrideDialog();
     }
 
     private selectCurrentFile(file: HeavyweightFile) {
