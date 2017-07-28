@@ -40,6 +40,17 @@ export class ApplicationStateReducer {
         this.stateSubject$ = new BehaviorSubject(this.currentState);
     }
 
+    public addSavedFile(lightFile: LightweightFile) {
+        let index = this.currentState.savedFiles.indexOf(lightFile);
+        if (index !== -1) {
+            this.currentState.savedFiles[index] = lightFile;
+        } else {
+            this.currentState.savedFiles.push(lightFile);
+        }
+
+        this.stateSubject$.next(this.currentState);
+    }
+
     public addLoadedFiles(files: HeavyweightFile[]) {
         files.forEach(element => {
             this.addOneLoadedFile(element);

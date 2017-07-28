@@ -1,4 +1,4 @@
-import { HeavyweightFile } from './../model/file-interfaces';
+import { HeavyweightFile, LightweightFile } from './../model/file-interfaces';
 import * as localForage from 'localforage';
 import DbService from './db-service';
 
@@ -18,6 +18,14 @@ export async function isFileSavedInDb(heavyFile: HeavyweightFile): Promise<boole
     return dbService.getItem(heavyFile.fileName).then(entryFromDb => {
         return (entryFromDb === undefined);
     });
+}
+
+export function convertHeavyToLight(heavyFile: HeavyweightFile): LightweightFile {
+    return {
+        dbKey: heavyFile.fileName,
+        timestamp: heavyFile.timestamp,
+        fileName: heavyFile.fileName
+    };
 }
 
 /**

@@ -13,7 +13,7 @@ import './side-bar.css';
 import { ListItem } from 'material-ui';
 import TabTemplate from './tab-template';
 import { ElementOfDeletableList } from './element-deletable-list';
-import { isFileSavedInDb, saveFileIntoSavedDb } from '../utils/file-store-util';
+import { isFileSavedInDb, saveFileIntoSavedDb, convertHeavyToLight } from '../utils/file-store-util';
 
 export interface SideBarProps {
     reducer: ApplicationStateReducer;
@@ -117,7 +117,8 @@ export default class SideBar extends React.Component<SideBarProps, SideBarState>
                             {this.state.savedFiles.map((item, index) => {
 
                                 return (
-                                    <ElementOfDeletableList 
+                                    <ElementOfDeletableList
+                                        key={index}
                                         lightFile={item}
                                         deleteFunction={this.handleDeleteClick}
                                     />
@@ -149,10 +150,12 @@ export default class SideBar extends React.Component<SideBarProps, SideBarState>
             }
 
             if (canSaveToDB) {
+                let lightFile = convertHeavyToLight(file);
                 saveFileIntoSavedDb(file);
+                this.props.reducer.addSavedFile(lightFile);
             }
         }
-        
+
     }
 
     public handleDeleteClick(lightFile: LightweightFile) {
