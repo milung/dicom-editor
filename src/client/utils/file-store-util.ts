@@ -50,6 +50,6 @@ export function saveFileIntoSavedDb(heavyFile: HeavyweightFile) {
     dbService.setItem(heavyFile.fileName, heavyFile);
 }
 
-export function deleteFileFromSaved(lightFile: LightweightFile){
+export function deleteFileFromSaved(lightFile: LightweightFile) {
     dbService.removeItem(lightFile.dbKey);
 }

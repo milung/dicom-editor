@@ -13,7 +13,13 @@ import './side-bar.css';
 import { ListItem, Dialog, FlatButton } from 'material-ui';
 import TabTemplate from './tab-template';
 import { ElementOfDeletableList } from './element-deletable-list';
-import { isFileSavedInDb, saveFileIntoSavedDb, convertHeavyToLight, deleteFileFromSaved, loadSavedFiles } from '../utils/file-store-util';
+import {
+    isFileSavedInDb,
+    saveFileIntoSavedDb,
+    convertHeavyToLight,
+    deleteFileFromSaved,
+    loadSavedFiles
+} from '../utils/file-store-util';
 
 export interface SideBarProps {
     reducer: ApplicationStateReducer;
@@ -31,16 +37,20 @@ export interface SideBarState {
 export default class SideBar extends React.Component<SideBarProps, SideBarState> {
     private colorDictionary: ColorDictionary;
     private actions = [
-        <FlatButton
-            label="Cancel"
-            primary={true}
-            onTouchTap={() => {this.handleCloseOverrideDialog(); }}
-        />,
-        <FlatButton
-            label="Override file"
-            primary={true}
-            onTouchTap={() => {this.handleOverrideButton(); }}
-        />,
+        (
+            <FlatButton
+                label="Cancel"
+                primary={true}
+                onTouchTap={() => { this.handleCloseOverrideDialog(); }}
+            />
+        ),
+        (
+            <FlatButton
+                label="Override file"
+                primary={true}
+                onTouchTap={() => { this.handleOverrideButton(); }}
+            />
+        ),
     ];
 
     public constructor(props: SideBarProps) {
@@ -54,7 +64,6 @@ export default class SideBar extends React.Component<SideBarProps, SideBarState>
             savedFiles: [],
             openedOverrideDialog: false
         };
-
 
         this.colorDictionary = new ColorDictionary();
         this.selectCurrentFile = this.selectCurrentFile.bind(this);
@@ -202,7 +211,6 @@ export default class SideBar extends React.Component<SideBarProps, SideBarState>
      * @param {HeavyweightFile} file file to save
      */
     private saveFile(file: HeavyweightFile) {
-        console.log('saving file ' + file.fileName);
         let lightFile = convertHeavyToLight(file);
         saveFileIntoSavedDb(file);
         this.props.reducer.addSavedFile(lightFile);
@@ -219,7 +227,7 @@ export default class SideBar extends React.Component<SideBarProps, SideBarState>
         if (file) {
             this.saveFile(file);
         }
-        
+
         this.handleCloseOverrideDialog();
     }
 
