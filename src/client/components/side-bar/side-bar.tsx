@@ -10,7 +10,7 @@ import { HeavyweightFile, LightweightFile } from '../../model/file-interfaces';
 import { ElementOfSelectableList } from './element-selectable-list';
 import { ColorDictionary } from '../../utils/colour-dictionary';
 import './side-bar.css';
-import { ListItem, Dialog, FlatButton } from 'material-ui';
+import { ListItem } from 'material-ui';
 import TabTemplate from '.././tab-template';
 import { ElementOfDeletableList } from './element-deletable-list';
 import {
@@ -20,6 +20,7 @@ import {
     deleteFileFromSaved,
     loadSavedFiles
 } from '../../utils/file-store-util';
+import { OverrideDialog } from './override-dialog';
 
 export interface SideBarProps {
     reducer: ApplicationStateReducer;
@@ -36,22 +37,6 @@ export interface SideBarState {
 
 export default class SideBar extends React.Component<SideBarProps, SideBarState> {
     private colorDictionary: ColorDictionary;
-    private actions = [
-        (
-            <FlatButton
-                label="Cancel"
-                primary={true}
-                onTouchTap={() => { this.handleCloseOverrideDialog(); }}
-            />
-        ),
-        (
-            <FlatButton
-                label="Override file"
-                primary={true}
-                onTouchTap={() => { this.handleOverrideButton(); }}
-            />
-        ),
-    ];
 
     public constructor(props: SideBarProps) {
         super(props);
@@ -162,22 +147,19 @@ export default class SideBar extends React.Component<SideBarProps, SideBarState>
                         />
                     </Tab>
                 </Tabs>
-                <Dialog
-                    title="Override the file?"
-                    actions={this.actions}
-                    modal={false}
-                    open={this.state.openedOverrideDialog}
-                    onRequestClose={this.handleCloseOverrideDialog}
-                >
-                    There is already a file with this name in the database. Do you want to override it?
-                </Dialog>
+                <OverrideDialog
+                    handleCloseOverrideDialog={this.handleCloseOverrideDialog}
+                    handleOverrideButton={this.handleOverrideButton}
+                    openedOverrideDialog={this.state.openedOverrideDialog}
+                />
             </Paper>
         );
     }
 
     public async handleSaveClick() {
-        let file = this.props.reducer.getState().currentFile;
+        let file: HeavyweightFile | undefined = this.props.reducer.getState().currentFile;
         if (file) {
+            file.timestamp = (new Date()).getTime();
             let isSaved = await isFileSavedInDb(file);
             if (!isSaved) {
                 this.saveFile(file);
