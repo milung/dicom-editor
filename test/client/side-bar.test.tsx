@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { shallow } from 'enzyme';
 import { expect } from 'chai';
-import SideBar from '../../src/client/components/side-bar';
+import SideBar from '../../src/client/components/side-bar/side-bar';
 import { ApplicationStateReducer } from '../../src/client/application-state';
 
 describe('dicom-table', () => {

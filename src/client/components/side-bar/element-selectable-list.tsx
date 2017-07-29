@@ -1,9 +1,9 @@
 import * as React from 'react';
-import { FileInterface } from '../model/file-interfaces';
+import { FileInterface } from '../../model/file-interfaces';
 import { ListItem, Checkbox } from 'material-ui';
-import { ApplicationStateReducer } from '../application-state';
+import { ApplicationStateReducer } from '../../application-state';
 import './element-selectable-list.css';
-import { ColorDictionary } from '../utils/colour-dictionary';
+import { ColorDictionary } from '../../utils/colour-dictionary';
 
 interface ElementOfSelectableListProps {
     reducer: ApplicationStateReducer;

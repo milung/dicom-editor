@@ -1,7 +1,7 @@
 import * as React from 'react';
 import AppBar from 'material-ui/AppBar';
 
-import SideBar from './components/side-bar';
+import SideBar from './components/side-bar/side-bar';
 import MainView from './containers/main-view';
 import FileDropZone from './components/file-loader/file-drop-zone';
 

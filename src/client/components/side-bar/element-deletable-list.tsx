@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { ListItem } from 'material-ui';
 import './element-deletable-list.css';
-import { LightweightFile } from '../model/file-interfaces';
+import { LightweightFile } from '../../model/file-interfaces';
 
 var ClearIcon = require('react-icons/lib/md/clear');
 

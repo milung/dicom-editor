@@ -5,13 +5,13 @@ import { List } from 'material-ui/List';
 import { Tabs, Tab } from 'material-ui/Tabs';
 import RaisedButton from 'material-ui/RaisedButton';
 
-import { ApplicationStateReducer, SelectedFile } from '../application-state';
-import { HeavyweightFile, LightweightFile } from '../model/file-interfaces';
+import { ApplicationStateReducer, SelectedFile } from '../../application-state';
+import { HeavyweightFile, LightweightFile } from '../../model/file-interfaces';
 import { ElementOfSelectableList } from './element-selectable-list';
-import { ColorDictionary } from '../utils/colour-dictionary';
+import { ColorDictionary } from '../../utils/colour-dictionary';
 import './side-bar.css';
 import { ListItem, Dialog, FlatButton } from 'material-ui';
-import TabTemplate from './tab-template';
+import TabTemplate from '.././tab-template';
 import { ElementOfDeletableList } from './element-deletable-list';
 import {
     isFileSavedInDb,
@@ -19,7 +19,7 @@ import {
     convertHeavyToLight,
     deleteFileFromSaved,
     loadSavedFiles
-} from '../utils/file-store-util';
+} from '../../utils/file-store-util';
 
 export interface SideBarProps {
     reducer: ApplicationStateReducer;
