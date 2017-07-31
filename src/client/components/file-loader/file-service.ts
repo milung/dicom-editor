@@ -3,7 +3,6 @@ import { HeavyweightFile } from './../../model/file-interfaces';
 import { ApplicationStateReducer } from '../../application-state';
 import { convertFileToArrayBuffer } from '../../utils/file-converter';
 import { DicomReader } from '../../utils/dicom-reader';
-import { FileStorage } from '../../utils/file-storage';
 
 export interface FileContent {
     buffer: Uint8Array;
@@ -13,11 +12,9 @@ export interface FileContent {
 
 export class FileService {
 
-    private fileStorage: FileStorage;
     private dicomReader: DicomReader;
 
     public constructor(private reducer: ApplicationStateReducer) {
-        this.fileStorage = new FileStorage(reducer);
         this.dicomReader = new DicomReader();
     }
 
@@ -94,21 +91,7 @@ export class FileService {
             return;
         }
 
-        await this.fileStorage.storeData(loadedFiles);
-        // await this.saveRecentFiles(loadedFiles);
-
         this.reducer.addLoadedFiles(loadedFiles);
     }
 
-    // /**
-    //  * @description Save loaded files as recent files
-    //  * @param {HeavyweightFile[]} files 
-    //  * @returns {Promise<void>} 
-    //  */
-    // public async saveRecentFiles(files: HeavyweightFile[]): Promise<void> {
-    //     for (let i = 0; i < files.length; i++) {
-    //         const item = files[i];
-    //         await this.fileStorage.storeData(item);
-    //     }
-    // }
 }

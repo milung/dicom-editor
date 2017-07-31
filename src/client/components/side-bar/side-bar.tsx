@@ -21,6 +21,7 @@ import {
     loadSavedFiles
 } from '../../utils/file-store-util';
 import { PopUpDialog } from './pop-up-dialog';
+import { RecentFileStoreUtil } from '../../utils/recent-file-store-util';
 
 export interface SideBarProps {
     reducer: ApplicationStateReducer;
@@ -221,12 +222,15 @@ export default class SideBar extends React.Component<SideBarProps, SideBarState>
     }
 
     /**
-     * @description Saves file into both DB and app state
+     * @description Saves file into DB, app state and recent files
      * @param {HeavyweightFile} file file to save
      */
     private saveFile(file: HeavyweightFile) {
         let lightFile = convertHeavyToLight(file);
-        saveFileIntoSavedDb(file);
+        let dbKey = saveFileIntoSavedDb(file);
+        lightFile.dbKey = dbKey;
+        let recentFileUtil: RecentFileStoreUtil = new RecentFileStoreUtil(this.props.reducer);
+        recentFileUtil.handleStoringRecentFile(lightFile);
         this.props.reducer.addSavedFile(lightFile);
     }
 

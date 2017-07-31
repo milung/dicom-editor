@@ -8,11 +8,11 @@ import FileDropZone from './components/file-loader/file-drop-zone';
 import './app.css';
 import { ApplicationStateReducer } from './application-state';
 
-import { FileStorage } from './utils/file-storage';
+import { RecentFileStoreUtil } from './utils/recent-file-store-util';
 import { loadSavedFiles } from './utils/file-store-util';
 
 let reducer = new ApplicationStateReducer();
-let fileStorage = new FileStorage(reducer);
+let fileStorage = new RecentFileStoreUtil(reducer);
 fileStorage.loadRecentFiles();
 loadSavedFiles(reducer);
 

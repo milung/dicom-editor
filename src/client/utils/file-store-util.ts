@@ -52,9 +52,12 @@ export function loadSavedFiles(reducer: ApplicationStateReducer) {
  * @description Saves file into DB in saved files. If file is already in DB,
  * it is overriden
  * @param {HeavyweightFile} heavyFile file to save into DB
+ * @return database key that was used to store file
  */
-export function saveFileIntoSavedDb(heavyFile: HeavyweightFile) {
-    dbService.setItem(heavyFile.fileName, heavyFile);
+export function saveFileIntoSavedDb(heavyFile: HeavyweightFile): string {
+    let dbKey = heavyFile.fileName; 
+    dbService.setItem(dbKey, heavyFile);
+    return dbKey;
 }
 
 /**
