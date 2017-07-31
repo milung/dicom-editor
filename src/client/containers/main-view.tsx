@@ -95,9 +95,10 @@ export default class MainView extends React.Component<MainViewProps, MainViewSta
               this.state.headerJoin + this.state.fileNameTwo.split('.')[0]}</h1>
             <div id="simpleOrHierarchical">
               <RaisedButton 
+                style = {{ width: 170 }}
                 icon={<Cached className="material-icons"/>}
                 primary={true}
-                label={this.state.tableMode === TableMode.SIMPLE ? 'Toggle Hierarchical' : 'Toggle Simple'}
+                label={this.state.tableMode === TableMode.SIMPLE ? 'Hierarchical' : 'Simple'}
                 onClick={() => this.setState({
                   tableMode:
                   this.state.tableMode === TableMode.SIMPLE ?
