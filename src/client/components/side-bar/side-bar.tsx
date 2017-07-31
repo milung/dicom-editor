@@ -20,7 +20,7 @@ import {
     deleteFileFromSaved,
     loadSavedFiles
 } from '../../utils/file-store-util';
-import { OverrideDialog } from './override-dialog';
+import { PopUpDialog } from './pop-up-dialog';
 
 export interface SideBarProps {
     reducer: ApplicationStateReducer;
@@ -33,6 +33,8 @@ export interface SideBarState {
     checkedCheckboxes: number;
     savedFiles: LightweightFile[];
     openedOverrideDialog: boolean;
+    openedDeleteDialog: boolean;
+    fileInPopUp?: LightweightFile;
 }
 
 export default class SideBar extends React.Component<SideBarProps, SideBarState> {
@@ -47,7 +49,9 @@ export default class SideBar extends React.Component<SideBarProps, SideBarState>
             selectedFiles: [],
             checkedCheckboxes: 0,
             savedFiles: [],
-            openedOverrideDialog: false
+            openedOverrideDialog: false,
+            openedDeleteDialog: false,
+            fileInPopUp: undefined
         };
 
         this.colorDictionary = new ColorDictionary();
@@ -58,9 +62,11 @@ export default class SideBar extends React.Component<SideBarProps, SideBarState>
         this.handleSaveClick = this.handleSaveClick.bind(this);
         this.handleDeleteClick = this.handleDeleteClick.bind(this);
         this.handleCloseOverrideDialog = this.handleCloseOverrideDialog.bind(this);
+        this.handleCloseDeleteDialog = this.handleCloseDeleteDialog.bind(this);
         this.showPopUpOverrideConfirmation = this.showPopUpOverrideConfirmation.bind(this);
         this.handleOverrideButton = this.handleOverrideButton.bind(this);
         this.saveFile = this.saveFile.bind(this);
+        this.showPopUpDeleteConfirmation = this.showPopUpDeleteConfirmation.bind(this);
     }
 
     public componentDidMount() {
@@ -133,7 +139,7 @@ export default class SideBar extends React.Component<SideBarProps, SideBarState>
                                     <ElementOfDeletableList
                                         key={index}
                                         lightFile={item}
-                                        deleteFunction={this.handleDeleteClick}
+                                        showPopUpFunction={this.showPopUpDeleteConfirmation}
                                         reducer={this.props.reducer}
                                     />
                                 );
@@ -148,10 +154,19 @@ export default class SideBar extends React.Component<SideBarProps, SideBarState>
                         />
                     </Tab>
                 </Tabs>
-                <OverrideDialog
-                    handleCloseOverrideDialog={this.handleCloseOverrideDialog}
-                    handleOverrideButton={this.handleOverrideButton}
-                    openedOverrideDialog={this.state.openedOverrideDialog}
+                <PopUpDialog
+                    handleClosePopUpDialog={this.handleCloseOverrideDialog}
+                    handleAction={this.handleOverrideButton}
+                    openedPopUpDialog={this.state.openedOverrideDialog}
+                    popUpConfirmText="Override the file"
+                    popUpText="There is already a file with this name in the database. Do you want to override it?"
+                />
+                <PopUpDialog
+                    handleClosePopUpDialog={this.handleCloseDeleteDialog}
+                    handleAction={this.handleDeleteClick}
+                    openedPopUpDialog={this.state.openedDeleteDialog}
+                    popUpConfirmText="Delete the file"
+                    popUpText="Are you sure you want to delete the file?"
                 />
             </Paper>
         );
@@ -172,8 +187,11 @@ export default class SideBar extends React.Component<SideBarProps, SideBarState>
     }
 
     public handleDeleteClick(lightFile: LightweightFile) {
-        deleteFileFromSaved(lightFile);
-        loadSavedFiles(this.props.reducer);
+        if (this.state.fileInPopUp) {
+             deleteFileFromSaved(this.state.fileInPopUp);
+             loadSavedFiles(this.props.reducer);
+             this.handleCloseDeleteDialog();
+        }
     }
 
     public handleCompareClick(event: object) {
@@ -186,6 +204,19 @@ export default class SideBar extends React.Component<SideBarProps, SideBarState>
     private showPopUpOverrideConfirmation() {
         this.setState({
             openedOverrideDialog: true
+        });
+    }
+
+    private handleCloseDeleteDialog() {
+        this.setState({
+            openedDeleteDialog: false
+        });
+    }
+
+    private showPopUpDeleteConfirmation(lightFile: LightweightFile) {
+        this.setState({
+            openedDeleteDialog: true,
+            fileInPopUp: lightFile
         });
     }
 
@@ -210,7 +241,6 @@ export default class SideBar extends React.Component<SideBarProps, SideBarState>
         if (file) {
             this.saveFile(file);
         }
-
         this.handleCloseOverrideDialog();
     }
 
@@ -236,7 +266,6 @@ export default class SideBar extends React.Component<SideBarProps, SideBarState>
                 return true;
             }
         }
-
         return false;
     }
 
@@ -248,7 +277,6 @@ export default class SideBar extends React.Component<SideBarProps, SideBarState>
                 return item.colour;
             }
         }
-
         return 'black';
     }
 

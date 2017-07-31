@@ -11,6 +11,7 @@ export interface ElementOfDeletableListProps {
     lightFile: LightweightFile;
     deleteFunction: Function;
     reducer: ApplicationStateReducer;
+    showPopUpFunction: Function;
 }
 
 export interface ElementOfDeletableListState {
@@ -34,7 +35,7 @@ export class ElementOfDeletableList extends React.Component<ElementOfDeletableLi
                 <div>
                     <ClearIcon
                         className="clearIcon"
-                        onClick={() => this.props.deleteFunction(this.props.lightFile)}
+                        onClick={() => this.props.showPopUpFunction(this.props.lightFile)}
                     />
                 </div>
             </div>
