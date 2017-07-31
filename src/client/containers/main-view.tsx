@@ -116,6 +116,7 @@ export default class MainView extends React.Component<MainViewProps, MainViewSta
             tableMode={this.state.tableMode}
             currentFile={this.state.currentFile}
             comparisonActive={this.state.comparisonActive}
+            reducer={this.props.reducer}
           />
         </div>
       </Tab>

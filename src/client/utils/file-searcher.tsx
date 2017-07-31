@@ -4,16 +4,15 @@ import { DicomEntry, DicomSimpleData } from '../model/dicom-entry';
 export class FileSearcher {
     constructor(private reducer: ApplicationStateReducer) { }
 
-    public searchFile(searchExpression: string): DicomEntry[] {
+    public searchFile(): DicomSimpleData {
+        let searchExpression = this.reducer.getState().searchExpression;
         let searchFile = this.reducer.getState().currentFile;
 
         if (searchFile) {
             let data = searchFile.dicomData;
-            let result = this.findResultsOfSearch(searchExpression, data);
-            return result.entries;
+            return this.findResultsOfSearch(searchExpression, data);
         }
-
-        return [];
+        return {entries: []};
     }
 
     private findResultsOfSearch(searchExpression: string, dicomData: DicomSimpleData): DicomSimpleData {
@@ -25,7 +24,6 @@ export class FileSearcher {
 
             if (row.tagElement.search(searching) !== -1 || row.tagGroup.search(searching) !== -1 ||
                 row.tagName.search(searching) !== -1) {
-
                 matchedRows.push(row);
             }
         });

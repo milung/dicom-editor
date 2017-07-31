@@ -7,15 +7,17 @@ import { DicomExtendedTable } from './dicom-table/dicom-extended-table';
 import { convertSimpleDicomToExtended, convertSimpleDicomToExtendedComparison } from '../utils/dicom-entry-converter';
 import { DicomSimpleData, DicomSimpleComparisonData } from '../model/dicom-entry';
 import { compareTwoFiles } from '../utils/dicom-comparator';
-import { SelectedFile } from '../application-state';
+import { SelectedFile, ApplicationStateReducer } from '../application-state';
 import { DicomSimpleComparisonTable } from './dicom-table/dicom-simple-comparison-table';
 import { DicomExtendedComparisonTable } from './dicom-table/dicom-extended-comparison-table';
+import { FileSearcher } from '../utils/file-searcher';
 
 interface TagViewerProps {
     tableMode: TableMode;
     files: SelectedFile[];
     currentFile: HeavyweightFile;
     comparisonActive: boolean;
+    reducer: ApplicationStateReducer;
 }
 
 interface TagViewerState {
@@ -23,22 +25,25 @@ interface TagViewerState {
 }
 
 export default class TagViewer extends React.Component<TagViewerProps, TagViewerState> {
-
+    private fileSearcher: FileSearcher;
+    
     public constructor(props: TagViewerProps) {
         super(props);
+        this.fileSearcher = new FileSearcher(this.props.reducer);
     }
 
     render() {
-        let data: DicomSimpleData = { entries: [] };
+        let data: DicomSimpleData = this.props.currentFile.dicomData;
         let simpleComparisonData: DicomSimpleComparisonData = { dicomComparisonData: []};
 
         if (this.props.comparisonActive) {
             if (this.props.files[0] && this.props.files[1]) {
-                // data = compareTwoFiles(this.props.files[0], this.props.files[1]);
                 simpleComparisonData = compareTwoFiles(this.props.files[0], this.props.files[1]);
             }
         } else {
-            data = this.props.currentFile.dicomData;
+            if (this.props.reducer.getState().searchExpression !== '') {
+                data = this.fileSearcher.searchFile();
+            }
         }
 
         switch (this.props.tableMode) {
@@ -64,7 +69,7 @@ export default class TagViewer extends React.Component<TagViewerProps, TagViewer
 
     private renderSimpleTable(data: DicomSimpleData): JSX.Element {
 
-        return data.entries.length > 1 ? (
+        return data.entries.length >= 1 ? (
             <div>
                 <DicomSimpleTable entries={data.entries} />
             </div>
