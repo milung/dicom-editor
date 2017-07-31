@@ -15,6 +15,7 @@ export interface ApplicationState {
     currentIndex?: number;
     selectedFiles: SelectedFile[];
     comparisonActive: boolean;
+    savedFiles: LightweightFile[];
 }
 
 export class ApplicationStateReducer {
@@ -32,10 +33,36 @@ export class ApplicationStateReducer {
             currentFile: undefined,
             currentIndex: undefined,
             selectedFiles: [],
-            comparisonActive: false
+            comparisonActive: false,
+            savedFiles: []
         };
 
         this.stateSubject$ = new BehaviorSubject(this.currentState);
+    }
+
+    public addSavedFile(lightFile: LightweightFile) {
+        let isPresent = false;
+        let index: number = 0;
+
+        this.currentState.savedFiles.forEach((item, i) => {
+            if (item.fileName === lightFile.fileName) {
+                isPresent = true;
+                index = i;
+            }
+        });
+
+        if (isPresent) {
+            this.currentState.savedFiles[index] = lightFile;
+        } else {
+            this.currentState.savedFiles.push(lightFile);
+        }
+
+        this.stateSubject$.next(this.currentState);
+    }
+
+    public updateSavedFiles(files: LightweightFile[]) {
+        this.currentState.savedFiles = files;
+        this.stateSubject$.next(this.currentState);
     }
 
     public addLoadedFiles(files: HeavyweightFile[]) {
@@ -72,8 +99,8 @@ export class ApplicationStateReducer {
     public addSelectedFile(fileName: string, newColour: string) {
         let file = this.findLoadedFileByName(fileName);
         if (file) {
-            this.currentState.selectedFiles.push({ 
-                selectedFile: file, 
+            this.currentState.selectedFiles.push({
+                selectedFile: file,
                 colour: newColour
             });
             this.stateSubject$.next(this.currentState);
@@ -83,7 +110,7 @@ export class ApplicationStateReducer {
     public removeSelectedFile(fileName: string): string {
         let indexToRemove = this.findSelectedFileIndexByName(fileName);
         let freeColor = this.currentState.selectedFiles[indexToRemove].colour;
-        
+
         this.currentState.selectedFiles.splice(indexToRemove, 1);
         this.stateSubject$.next(this.currentState);
 
@@ -98,7 +125,7 @@ export class ApplicationStateReducer {
     public removeAllSelectedFiles() {
         this.currentState.selectedFiles.length = 0;
     }
- 
+
     private findLoadedFileByName(fileName: string): (HeavyweightFile | undefined) {
         for (var index = 0; index < this.currentState.loadedFiles.length; index++) {
             if (this.currentState.loadedFiles[index].fileName === fileName) {

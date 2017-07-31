@@ -1,0 +1,17 @@
+.deletableListItem {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding-right: 5%;
+}
+.clearIcon {
+    cursor: pointer;
+    color: #ff1a1a;
+    background-color: #ffcccc;
+    padding: 2px;
+    margin-left: 5px; 
+}
+.clearIcon:hover {
+    background-color: #ff9999;
+}
+

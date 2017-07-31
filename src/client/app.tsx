@@ -1,7 +1,7 @@
 import * as React from 'react';
 import AppBar from 'material-ui/AppBar';
 
-import SideBar from './components/side-bar';
+import SideBar from './components/side-bar/side-bar';
 import MainView from './containers/main-view';
 import FileDropZone from './components/file-loader/file-drop-zone';
 
@@ -9,10 +9,12 @@ import './app.css';
 import { ApplicationStateReducer } from './application-state';
 
 import { FileStorage } from './utils/file-storage';
+import { loadSavedFiles } from './utils/file-store-util';
 
 let reducer = new ApplicationStateReducer();
 let fileStorage = new FileStorage(reducer);
 fileStorage.loadRecentFiles();
+loadSavedFiles(reducer);
 
 interface AppState {
 }
