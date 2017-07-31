@@ -8,6 +8,7 @@ import { HeavyweightFile } from '../model/file-interfaces';
 import { TableMode } from '../model/table-enum';
 import Cached from 'material-ui/svg-icons/action/cached';
 import { RaisedButton } from 'material-ui';
+import Search  from '../components/search-bar';
 
 interface MainViewProps {
   reducer: ApplicationStateReducer;
@@ -87,37 +88,38 @@ export default class MainView extends React.Component<MainViewProps, MainViewSta
             <ImageViewer data={this.state.actualBufferData} />
           </div>
         </Tab>
-        <Tab
-          label="Tags"
-        >
-          <div className="container">
-            <h1>{this.state.header + this.state.fileNameOne.split('.')[0] +
-              this.state.headerJoin + this.state.fileNameTwo.split('.')[0]}</h1>
-            <div id="simpleOrHierarchical">
-              <RaisedButton 
-                style = {{ width: 170 }}
-                icon={<Cached className="material-icons"/>}
-                primary={true}
-                label={this.state.tableMode === TableMode.SIMPLE ? 'Hierarchical' : 'Simple'}
-                onClick={() => this.setState({
-                  tableMode:
-                  this.state.tableMode === TableMode.SIMPLE ?
-                    TableMode.EXTENDED : TableMode.SIMPLE
-                })}
-              />
-            </div>
-          </div>
-
-          <div className="container">
-            <TagViewer
-              files={this.state.selectedFiles}
-              tableMode={this.state.tableMode}
-              currentFile={this.state.currentFile}
-              comparisonActive={this.state.comparisonActive}
+      <Tab
+        label="Tags"
+      >
+        <div className="container">
+          <h1>{this.state.header + this.state.fileNameOne.split('.')[0] +
+            this.state.headerJoin + this.state.fileNameTwo.split('.')[0]}</h1>
+          <div id="simpleOrHierarchical">
+            <RaisedButton
+              icon={<Cached className="material-icons" />}
+              primary={true} 
+              className="raisedButton-override"
+              label={this.state.tableMode === TableMode.SIMPLE ? 'Hierarchical' : 'Simple'}
+              onClick={() => this.setState({
+                tableMode:
+                this.state.tableMode === TableMode.SIMPLE ?
+                  TableMode.EXTENDED : TableMode.SIMPLE
+              })}
             />
+            <Search reducer={this.props.reducer}/>
           </div>
-        </Tab>
-      </Tabs>
+        </div>
+
+        <div className="container">
+          <TagViewer
+            files={this.state.selectedFiles}
+            tableMode={this.state.tableMode}
+            currentFile={this.state.currentFile}
+            comparisonActive={this.state.comparisonActive}
+          />
+        </div>
+      </Tab>
+      </Tabs >
     );
   }
 }

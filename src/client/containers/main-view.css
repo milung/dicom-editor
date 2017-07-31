@@ -7,8 +7,13 @@
 }
 
 #simpleOrHierarchical{
-    width: 50%;
+    width: 100%;
     margin: 2em 0em !important;
+    display: flex;
+}
+
+.raisedButton-override { 
+     height: 50% !important; 
 }
 
 h1{
