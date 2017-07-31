@@ -88,6 +88,7 @@ export class DicomReader {
         let dataset;
         dataset = dicomParser.parseDicom(data);
         let numFrames = dataset.intString('x00280008');
-        return numFrames;
+        // if number of frame tag is undefined, try to display frame 1
+        return numFrames === undefined ? 1 : numFrames;
     }
 }
