@@ -63,7 +63,7 @@ export class ImageMultiCanvas extends React.Component<ImageMultiCanvasProps, Ima
                                 onChange={(event, newValue) => { this.handleChange(event, newValue); }}
                                 step={1}
                                 value={this.state.sliderActualIndex}
-                                max={this.props.numberOfFrames === 0 ? 1 : this.props.numberOfFrames - 1}
+                                max={this.props.numberOfFrames <= 1 ? 1 : this.props.numberOfFrames - 1}
                             />
                         </div>
                         <div className="image_control">
