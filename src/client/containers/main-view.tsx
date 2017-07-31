@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { Tabs, Tab } from 'material-ui/Tabs';
 import TagViewer from '../components/tag-viewer';
-import ImageViewer from '../components/image-viewer';
+import ImageViewer from '../components/image-viewer/image-viewer';
 import './main-view.css';
 import { ApplicationStateReducer, SelectedFile } from '../application-state';
 import { HeavyweightFile } from '../model/file-interfaces';
