@@ -39,7 +39,7 @@ export class PopUpDialog extends React.Component<PopUpDialogProps, PopUpDialogSt
         return (
             <div>
                 <Dialog
-                    title= {this.props.popUpConfirmText + " ?"}
+                    title= {this.props.popUpConfirmText + ' ?'}
                     actions={this.actions}
                     modal={false}
                     open={this.props.openedPopUpDialog}

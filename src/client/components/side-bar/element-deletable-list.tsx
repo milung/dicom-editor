@@ -9,7 +9,6 @@ var ClearIcon = require('react-icons/lib/md/clear');
 
 export interface ElementOfDeletableListProps {
     lightFile: LightweightFile;
-    deleteFunction: Function;
     reducer: ApplicationStateReducer;
     showPopUpFunction: Function;
 }
