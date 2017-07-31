@@ -2,16 +2,19 @@ import * as React from 'react';
 import { ListItem } from 'material-ui';
 import './element-deletable-list.css';
 import { LightweightFile } from '../../model/file-interfaces';
+import { getData } from '../../utils/file-store-util';
+import { ApplicationStateReducer } from '../../application-state';
 
 var ClearIcon = require('react-icons/lib/md/clear');
 
 export interface ElementOfDeletableListProps {
     lightFile: LightweightFile;
     deleteFunction: Function;
+    reducer: ApplicationStateReducer;
 }
 
 export interface ElementOfDeletableListState {
-    
+
 }
 
 export class ElementOfDeletableList extends React.Component<ElementOfDeletableListProps, ElementOfDeletableListState> {
@@ -25,6 +28,7 @@ export class ElementOfDeletableList extends React.Component<ElementOfDeletableLi
                 <div className="td">
                     <ListItem
                         primaryText={this.props.lightFile.fileName}
+                        onClick={() => this.selectCurrentFile(this.props.lightFile)}
                     />
                 </div>
                 <div>
@@ -35,5 +39,13 @@ export class ElementOfDeletableList extends React.Component<ElementOfDeletableLi
                 </div>
             </div>
         );
+    }
+
+    private selectCurrentFile(file: LightweightFile) {
+        let fileFromDb =  getData(file);
+        fileFromDb.then(file => {
+            this.props.reducer.addLoadedFiles([file]);
+            this.props.reducer.updateCurrentFile(file);
+        });
     }
 }

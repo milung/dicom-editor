@@ -134,6 +134,7 @@ export default class SideBar extends React.Component<SideBarProps, SideBarState>
                                         key={index}
                                         lightFile={item}
                                         deleteFunction={this.handleDeleteClick}
+                                        reducer={this.props.reducer}
                                     />
                                 );
                             })}
