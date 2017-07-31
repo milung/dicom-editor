@@ -42,10 +42,10 @@ export class ElementOfDeletableList extends React.Component<ElementOfDeletableLi
     }
 
     private selectCurrentFile(file: LightweightFile) {
-        let fileFromDb =  getData(file);
-        fileFromDb.then(file => {
-            this.props.reducer.addLoadedFiles([file]);
-            this.props.reducer.updateCurrentFile(file);
+        let fileFromDbPromise =  getData(file);
+        fileFromDbPromise.then(fileFromDb => {
+            this.props.reducer.addLoadedFiles([fileFromDb]);
+            this.props.reducer.updateCurrentFile(fileFromDb);
         });
     }
 }
