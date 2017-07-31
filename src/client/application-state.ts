@@ -16,6 +16,7 @@ export interface ApplicationState {
     selectedFiles: SelectedFile[];
     comparisonActive: boolean;
     savedFiles: LightweightFile[];
+    searchExpression: string;
 }
 
 export class ApplicationStateReducer {
@@ -34,7 +35,8 @@ export class ApplicationStateReducer {
             currentIndex: undefined,
             selectedFiles: [],
             comparisonActive: false,
-            savedFiles: []
+            savedFiles: [],
+            searchExpression: ''
         };
 
         this.stateSubject$ = new BehaviorSubject(this.currentState);
@@ -124,6 +126,11 @@ export class ApplicationStateReducer {
 
     public removeAllSelectedFiles() {
         this.currentState.selectedFiles.length = 0;
+    }
+
+    public setSearchExpression(searchExpression: string) {
+        this.currentState.searchExpression = searchExpression;
+        this.stateSubject$.next(this.currentState);
     }
 
     private findLoadedFileByName(fileName: string): (HeavyweightFile | undefined) {
