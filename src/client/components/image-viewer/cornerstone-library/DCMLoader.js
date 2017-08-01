@@ -3,7 +3,7 @@
 // This is a cornerstone image loader for WADO-URI requests.
 //
 
-var cornerstone = require('../../../../assets/cornetstone-library/cornerstone.js');
+var cornerstone = require('../../../../assets/js/cornetstone-library/cornerstone.js');
 var dicomParser = require('dicom-parser');
 
 var cornerstoneWADOImageLoader = function(){
@@ -1773,7 +1773,7 @@ module.exports = cornerstoneWADOImageLoader.wadors.metaDataManager = {
   var defaultConfig = {
     maxWebWorkers: navigator.hardwareConcurrency || 1,
     startWebWorkersOnDemand: true,
-    webWorkerPath : './assets/cornetstone-library/cornerstoneWADOImageLoaderWebWorker.js',
+    webWorkerPath : './assets/js/cornetstone-library/cornerstoneWADOImageLoaderWebWorker.js',
     webWorkerTaskPaths: [],
     taskConfiguration: {
       'decodeTask' : {

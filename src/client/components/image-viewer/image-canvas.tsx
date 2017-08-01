@@ -1,5 +1,5 @@
 import * as React from 'react';
-import * as cornerstone from '../../../assets/cornetstone-library/cornerstone.js';
+import * as cornerstone from '../../../assets/js/cornetstone-library/cornerstone.js';
 import { buffersEqual } from '../../utils/file-converter';
 var cornerstoneWADOImageLoader = require('./cornerstone-library/DCMLoader');
 import './image-canvas.css';
