@@ -1,12 +1,12 @@
 import * as React from 'react';
 import { DicomSimpleTable } from './dicom-table/dicom-simple-table';
 import { TableMode } from '../model/table-enum';
-import { HeavyweightFile } from '../model/file-interfaces';
+import { HeavyweightFile, SelectedFile } from '../model/file-interfaces';
 import { DicomExtendedTable } from './dicom-table/dicom-extended-table';
 import { convertSimpleDicomToExtended, convertSimpleDicomToExtendedComparison } from '../utils/dicom-entry-converter';
 import { DicomSimpleData, DicomSimpleComparisonData } from '../model/dicom-entry';
 import { compareTwoFiles } from '../utils/dicom-comparator';
-import { SelectedFile, ApplicationStateReducer } from '../application-state';
+import { ApplicationStateReducer } from '../application-state';
 import { DicomSimpleComparisonTable } from './dicom-table/dicom-simple-comparison-table';
 import { DicomExtendedComparisonTable } from './dicom-table/dicom-extended-comparison-table';
 import { FileSearcher } from '../utils/file-searcher';

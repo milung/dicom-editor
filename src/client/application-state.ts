@@ -1,12 +1,7 @@
 import { RecentFileStoreUtil } from './utils/recent-file-store-util';
-import { HeavyweightFile, LightweightFile } from './model/file-interfaces';
+import { HeavyweightFile, LightweightFile, SelectedFile } from './model/file-interfaces';
 import { Observable } from 'rxjs/Observable';
 import { BehaviorSubject } from 'rxjs/BehaviorSubject';
-
-export interface SelectedFile {
-    selectedFile: HeavyweightFile;
-    colour: string;
-}
 
 export interface ApplicationState {
     recentFiles: LightweightFile[];
