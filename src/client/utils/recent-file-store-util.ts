@@ -27,7 +27,7 @@ export class RecentFileStoreUtil {
     }
 
     /**
-     * @description Handles storing of recent file into recent files DB.
+     * @description Handles storing of recent file into recent files DB and app state.
      * Updates app state if needed and indexedDB. In case that maximum amount 
      * of recent files would be exceeded, last recent file is deleted.
      * @param {LightweightFile} file file to take care of

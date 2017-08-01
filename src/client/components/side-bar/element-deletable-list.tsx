@@ -4,6 +4,7 @@ import './element-deletable-list.css';
 import { LightweightFile } from '../../model/file-interfaces';
 import { getData } from '../../utils/file-store-util';
 import { ApplicationStateReducer } from '../../application-state';
+import { RecentFileStoreUtil } from '../../utils/recent-file-store-util';
 
 var ClearIcon = require('react-icons/lib/md/clear');
 
@@ -42,10 +43,12 @@ export class ElementOfDeletableList extends React.Component<ElementOfDeletableLi
     }
 
     private selectCurrentFile(file: LightweightFile) {
-        let fileFromDbPromise =  getData(file);
+        let fileFromDbPromise = getData(file);
         fileFromDbPromise.then(fileFromDb => {
             this.props.reducer.addLoadedFiles([fileFromDb]);
             this.props.reducer.updateCurrentFile(fileFromDb);
+            let recentFileUtil: RecentFileStoreUtil = new RecentFileStoreUtil(this.props.reducer);
+            recentFileUtil.handleStoringRecentFile(file);
         });
     }
 }
