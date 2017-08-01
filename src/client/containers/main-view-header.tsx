@@ -1,7 +1,7 @@
 import * as React from 'react';
 import './main-view.css';
-import { ApplicationStateReducer, SelectedFile } from '../application-state';
-import { HeavyweightFile } from '../model/file-interfaces';
+import { ApplicationStateReducer } from '../application-state';
+import { HeavyweightFile, SelectedFile } from '../model/file-interfaces';
 
 interface MainViewHeaderProps {
     reducer: ApplicationStateReducer;

@@ -5,8 +5,8 @@ import { List } from 'material-ui/List';
 import { Tabs, Tab } from 'material-ui/Tabs';
 import RaisedButton from 'material-ui/RaisedButton';
 
-import { ApplicationStateReducer, SelectedFile } from '../../application-state';
-import { HeavyweightFile, LightweightFile } from '../../model/file-interfaces';
+import { ApplicationStateReducer } from '../../application-state';
+import { HeavyweightFile, LightweightFile, SelectedFile } from '../../model/file-interfaces';
 import { ElementOfSelectableList } from './element-selectable-list';
 import { ColorDictionary } from '../../utils/colour-dictionary';
 import './side-bar.css';

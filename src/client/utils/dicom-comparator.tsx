@@ -1,5 +1,5 @@
 import { DicomEntry, DicomSimpleComparisonData, DicomComparisonData } from '../model/dicom-entry';
-import { SelectedFile } from '../application-state';
+import { SelectedFile } from '../model/file-interfaces';
 
 function createEntryCopy(entry: DicomEntry): DicomEntry {
     let entryCopy: DicomEntry = {

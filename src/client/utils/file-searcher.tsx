@@ -52,9 +52,11 @@ export class FileSearcher {
 
         data.forEach(row => {
             let searching = new RegExp(searchExpression, 'i');
+            let tagWithoutComma = row.tagGroup + row.tagElement;
+            let tagWithComma = row.tagGroup + ', ' + row.tagElement;
 
-            if (row.tagElement.search(searching) !== -1 || row.tagGroup.search(searching) !== -1 ||
-                row.tagName.search(searching) !== -1) {
+            if (row.tagName.search(searching) !== -1 || tagWithoutComma.search(searching) !== -1 ||
+                tagWithComma.search(searching) !== -1) {
                 matchedRows.push(row);
             }
         });

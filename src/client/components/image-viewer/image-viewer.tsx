@@ -1,5 +1,4 @@
 import * as React from 'react';
-import './image-viewer.css';
 import { ImageMultiCanvas } from '.././image-viewer/image-multi-canvas';
 import { DicomReader } from '../../utils/dicom-reader';
 

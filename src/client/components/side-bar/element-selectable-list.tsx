@@ -47,7 +47,7 @@ export class ElementOfSelectableList extends
     render() {
         let bckgcolor = this.isCurrentFile() ? { backgroundColor: '#c7d5ed' } : { backgroundColor: 'white' };
         return (
-            <div className="containera" style={bckgcolor}>
+            <div className="container-selectable-list" style={bckgcolor}>
                 <div className="checkbox">
                     <Checkbox
                         onCheck={this.handleCheck}

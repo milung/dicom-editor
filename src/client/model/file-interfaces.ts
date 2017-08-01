@@ -14,3 +14,8 @@ export interface HeavyweightFile extends FileInterface {
     bufferedData: Uint8Array;
     dicomData: DicomSimpleData;
 }
+
+export interface SelectedFile {
+    selectedFile: HeavyweightFile;
+    colour: string;
+}
