@@ -170,6 +170,42 @@ describe('FileSearcher -> searchCompareData() ->', () => {
         expect(fs.searchCompareData(data).dicomComparisonData[0].group.length).to.equal(2);
     });
 
+    it('find no match', () => {
+        let reducer = new ApplicationStateReducer();
+        let data  = prepareSimpleTestComparisionData();
+        reducer.setSearchExpression('xxx');
+
+        let fs = new FileSearcher(reducer);
+        expect(fs.searchCompareData(data).dicomComparisonData.length).to.equal(0);
+    });
+
+    it('search for tagElement and tagGroup using comma + space', () => {
+        let reducer = new ApplicationStateReducer();
+        let data = prepareSimpleTestComparisionData();
+        reducer.setSearchExpression('0001, 0002');
+
+        let fs = new FileSearcher(reducer);
+        expect(fs.searchCompareData(data).dicomComparisonData.length).to.equal(1);
+    });
+
+    it ('search for tagElement and tagGroup without comma or space', ()=> {
+        let reducer = new ApplicationStateReducer();
+        let data = prepareSimpleTestComparisionData();
+        reducer.setSearchExpression('00010002');
+
+        let fs = new FileSearcher(reducer);
+        expect(fs.searchCompareData(data).dicomComparisonData.length).to.equal(1); 
+    } );
+
+    it ('search in tagElement and tagGroup as in one string', ()=> {
+        let reducer = new ApplicationStateReducer();
+        let data = prepareSimpleTestComparisionData();
+        reducer.setSearchExpression('1000');
+
+        let fs = new FileSearcher(reducer);
+        expect(fs.searchCompareData(data).dicomComparisonData.length).to.equal(1); 
+    } );
+
 });
 
 function prepareTestFile(): HeavyweightFile {
@@ -182,7 +218,6 @@ function prepareTestFile(): HeavyweightFile {
             entries: [prepareDicomEntry()]
         }
     }
-
     return testFile;
 }
 
