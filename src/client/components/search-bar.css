@@ -4,11 +4,28 @@
 }
 
 .raisedButton-override { 
-    height: 50% !important; 
+    height: 50%; 
     margin-left: 20px;
 }
 
 .textField-override {
-    margin: 10 !important;
+    margin: 10;
     margin-left: 20px;
 }
+
+.icon-override {
+     position: absolute;
+     right: 0px;
+     top: 15px;
+     width: 20px;
+     height: 20px;
+     color: #ff1a1a;
+     cursor: pointer;
+}
+
+.list-item {
+    position: relative; 
+    display: inline-block ;
+}
+
+
