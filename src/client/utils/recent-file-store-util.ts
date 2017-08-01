@@ -74,4 +74,8 @@ export class RecentFileStoreUtil {
         });
     }
 
+    public deleteFileFromRecent(file: LightweightFile) {
+        this.dbService.removeItem(file.dbKey);
+    }
+
 }

@@ -80,6 +80,14 @@ export class ApplicationStateReducer {
         return this.currentState;
     }
 
+    /**
+     * @description removes file from recent files in application state
+     * @param {number} index index of file to remove
+     */
+    public removeRecentFile(index: number) {
+        this.currentState.recentFiles.splice(index, 1);
+    }
+
     public updateRecentFiles(files: LightweightFile[]) {
         this.currentState.recentFiles = files;
 

@@ -187,16 +187,45 @@ export default class SideBar extends React.Component<SideBarProps, SideBarState>
 
     }
 
-    public handleDeleteClick(lightFile: LightweightFile) {
+    public handleDeleteClick() {
         if (this.state.fileInPopUp) {
-             deleteFileFromSaved(this.state.fileInPopUp);
-             loadSavedFiles(this.props.reducer);
-             this.handleCloseDeleteDialog();
+            let file = this.state.fileInPopUp;
+            deleteFileFromSaved(this.state.fileInPopUp);
+            loadSavedFiles(this.props.reducer);
+
+            // delete from recent files
+            let index = this.findIndexOfFile(file.dbKey, this.props.reducer.getState().recentFiles);
+
+            // if is in recent files, remove from DB and app state
+            if (index > -1) {
+                let recentFileStore: RecentFileStoreUtil = new RecentFileStoreUtil(this.props.reducer);
+                recentFileStore.deleteFileFromRecent(file);
+                this.props.reducer.removeRecentFile(index);
+            }
+
+            this.handleCloseDeleteDialog();
         }
     }
 
     public handleCompareClick(event: object) {
         this.props.reducer.setComparisonActive(true);
+    }
+
+    /**
+     * @description Finds index of file in given array based on db key
+     * @param {string} searchDbKey db key of file, for which index should be found
+     * @param {LightweightFile[]} files array of files to search in
+     * @returns {number} index of file found by db key or -1 if no file found
+     */
+    private findIndexOfFile(searchDbKey: string, files: LightweightFile[]): number {
+        let i: number = -1;
+        files.map((element, index) => {
+            if (element.dbKey === searchDbKey) {
+                i = index;
+            }
+        });
+
+        return i;
     }
 
     /**
