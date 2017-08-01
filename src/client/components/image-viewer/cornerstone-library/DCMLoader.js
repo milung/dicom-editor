@@ -1773,7 +1773,7 @@ module.exports = cornerstoneWADOImageLoader.wadors.metaDataManager = {
   var defaultConfig = {
     maxWebWorkers: navigator.hardwareConcurrency || 1,
     startWebWorkersOnDemand: true,
-    webWorkerPath : './src/assets/cornetstone-library/cornerstoneWADOImageLoaderWebWorker.js',
+    webWorkerPath : './assets/cornetstone-library/cornerstoneWADOImageLoaderWebWorker.js',
     webWorkerTaskPaths: [],
     taskConfiguration: {
       'decodeTask' : {

@@ -45,5 +45,9 @@ module.exports = {
         modules: ['node_modules', 'src/client'],
         extensions: [".tsx", ".ts", ".js"]
     },
-    devServer: { inline: true, hot: true }
+    devServer: {
+        inline: true,
+        hot: true,
+        contentBase: path.join(__dirname, "assets")
+    }
 };
