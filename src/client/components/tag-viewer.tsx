@@ -26,7 +26,7 @@ interface TagViewerState {
 
 export default class TagViewer extends React.Component<TagViewerProps, TagViewerState> {
     private fileSearcher: FileSearcher;
-    
+
     public constructor(props: TagViewerProps) {
         super(props);
         this.fileSearcher = new FileSearcher(this.props.reducer);
@@ -34,11 +34,15 @@ export default class TagViewer extends React.Component<TagViewerProps, TagViewer
 
     render() {
         let data: DicomSimpleData = this.props.currentFile.dicomData;
-        let simpleComparisonData: DicomSimpleComparisonData = { dicomComparisonData: []};
+        let simpleComparisonData: DicomSimpleComparisonData = { dicomComparisonData: [] };
 
         if (this.props.comparisonActive) {
             if (this.props.files[0] && this.props.files[1]) {
                 simpleComparisonData = compareTwoFiles(this.props.files[0], this.props.files[1]);
+            }
+
+            if (this.props.reducer.getState().searchExpression !== '') {
+                simpleComparisonData = this.fileSearcher.searchCompareData(simpleComparisonData.dicomComparisonData);
             }
         } else {
             if (this.props.reducer.getState().searchExpression !== '') {
@@ -55,11 +59,11 @@ export default class TagViewer extends React.Component<TagViewerProps, TagViewer
                 }
 
             case TableMode.EXTENDED:
-            if (this.props.comparisonActive) {
-                return this.renderExtendedComparisonTable(simpleComparisonData);
-            } else {
-               return this.renderExtendedTable(data); 
-            }
+                if (this.props.comparisonActive) {
+                    return this.renderExtendedComparisonTable(simpleComparisonData);
+                } else {
+                    return this.renderExtendedTable(data);
+                }
             default:
                 return (
                     <div />
@@ -73,16 +77,16 @@ export default class TagViewer extends React.Component<TagViewerProps, TagViewer
             <div>
                 <DicomSimpleTable entries={data.entries} />
             </div>
-        ) : (<div/>);
-        
+        ) : (<div />);
+
     }
 
     private renderExtendedTable(data: DicomSimpleData): JSX.Element {
-        return (
+        return data.entries.length >= 1 ? (
             <div>
                 <DicomExtendedTable data={convertSimpleDicomToExtended(data)} />
             </div>
-        );
+        ) : (<div />);
     }
 
     private renderSimpleComparisonTable(data: DicomSimpleComparisonData): JSX.Element {
