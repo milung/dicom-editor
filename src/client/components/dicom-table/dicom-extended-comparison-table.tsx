@@ -1,15 +1,11 @@
 import * as React from 'react';
-import {
-    List,
-    ListItem,
-} from 'material-ui';
+import { List, ListItem } from 'material-ui';
 import { DicomExtendedComparisonData, DicomComparisonData } from '../../model/dicom-entry';
 import './dicom-table.css';
 import { sortDicomComparisonEntries } from '../../utils/dicom-entry-converter';
 import { DicomSimpleComparisonTable } from './dicom-simple-comparison-table';
 
 interface TableData {
-    // entries: DicomEntry[];
     groups: DicomComparisonData[];
     moduleName: string;
 }

@@ -5,7 +5,6 @@ import { TableHeader, Table, TableBody } from 'material-ui';
 import { DicomTableRow } from './dicom-table-row';
 
 export interface DicomSimpleComparisonTableProps {
-    // dicomSimpleComparisonData: DicomSimpleComparisonData;
     comparisonData: DicomComparisonData[];
 }
 
