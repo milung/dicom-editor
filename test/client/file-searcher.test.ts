@@ -1,9 +1,10 @@
 import { FileSearcher } from '../../src/client/utils/file-searcher';
 import { ApplicationStateReducer } from '../../src/client/application-state';
 import { HeavyweightFile } from '../../src/client/model/file-interfaces';
+import { DicomComparisonData, DicomEntry } from '../../src/client/model/dicom-entry';
 import { expect } from 'chai';
 
-describe('FileSearcher', () => {
+describe('FileSearcher -> searchFile() ->', () => {
     it('search on empty file', () => {
         let reducer = new ApplicationStateReducer();
         let testFile: HeavyweightFile = {
@@ -22,7 +23,7 @@ describe('FileSearcher', () => {
 
     it('find exact match on tagGroup', () => {
         let reducer = new ApplicationStateReducer();
-        let testFile = prepareTestDataWithOneRow();
+        let testFile = prepareTestFile();
         reducer.updateCurrentFile(testFile);
         reducer.setSearchExpression('0001');
         let fs = new FileSearcher(reducer);
@@ -32,7 +33,7 @@ describe('FileSearcher', () => {
 
     it('find exact match on tagElement', () => {
         let reducer = new ApplicationStateReducer();
-        let testFile = prepareTestDataWithOneRow();
+        let testFile = prepareTestFile();
         reducer.updateCurrentFile(testFile);
         reducer.setSearchExpression('0002');
 
@@ -42,7 +43,7 @@ describe('FileSearcher', () => {
 
     it('find exact match on tagName', () => {
         let reducer = new ApplicationStateReducer();
-        let testFile = prepareTestDataWithOneRow();
+        let testFile = prepareTestFile();
         reducer.updateCurrentFile(testFile);
         reducer.setSearchExpression('Test name');
         let fs = new FileSearcher(reducer);
@@ -51,7 +52,7 @@ describe('FileSearcher', () => {
 
     it('find partial match on tagGroup', () => {
         let reducer = new ApplicationStateReducer();
-        let testFile = prepareTestDataWithOneRow();
+        let testFile = prepareTestFile();
         reducer.updateCurrentFile(testFile);
         reducer.setSearchExpression('1');
 
@@ -61,7 +62,7 @@ describe('FileSearcher', () => {
 
     it('find partial match on tagElement', () => {
         let reducer = new ApplicationStateReducer();
-        let testFile = prepareTestDataWithOneRow();
+        let testFile = prepareTestFile();
         reducer.updateCurrentFile(testFile);
         reducer.setSearchExpression('02');
 
@@ -71,7 +72,7 @@ describe('FileSearcher', () => {
 
     it('find partial match on tagName', () => {
         let reducer = new ApplicationStateReducer();
-        let testFile = prepareTestDataWithOneRow();
+        let testFile = prepareTestFile();
         reducer.updateCurrentFile(testFile);
         reducer.setSearchExpression('est n');
 
@@ -81,7 +82,7 @@ describe('FileSearcher', () => {
 
     it('find case insensitive match', () => {
         let reducer = new ApplicationStateReducer();
-        let testFile = prepareTestDataWithOneRow();
+        let testFile = prepareTestFile();
         reducer.updateCurrentFile(testFile);
         reducer.setSearchExpression('TEsT nAmE');
 
@@ -91,7 +92,7 @@ describe('FileSearcher', () => {
 
     it('match on both tag element and group returned just once', () => {
         let reducer = new ApplicationStateReducer();
-        let testFile = prepareTestDataWithOneRow();
+        let testFile = prepareTestFile();
         reducer.updateCurrentFile(testFile);
         reducer.setSearchExpression('00');
 
@@ -101,7 +102,7 @@ describe('FileSearcher', () => {
 
     it('find match in one row in two row table', () => {
         let reducer = new ApplicationStateReducer();
-        let testFile = prepareTestDataWithOneRow();
+        let testFile = prepareTestFile();
         testFile.dicomData.entries.push(
             {
                 tagGroup: '0011',
@@ -122,7 +123,7 @@ describe('FileSearcher', () => {
 
     it('no search on tag value', () => {
         let reducer = new ApplicationStateReducer();
-        let testFile = prepareTestDataWithOneRow();
+        let testFile = prepareTestFile();
         reducer.updateCurrentFile(testFile);
         reducer.setSearchExpression('Test value');
 
@@ -132,7 +133,7 @@ describe('FileSearcher', () => {
 
     it('no search on tagVR and tagVM', () => {
         let reducer = new ApplicationStateReducer();
-        let testFile = prepareTestDataWithOneRow();
+        let testFile = prepareTestFile();
         reducer.updateCurrentFile(testFile);
         reducer.setSearchExpression('TV');
 
@@ -142,26 +143,68 @@ describe('FileSearcher', () => {
 
 });
 
-function prepareTestDataWithOneRow(): HeavyweightFile {
+describe('FileSearcher -> searchCompareData() ->', () => {
+    it('search on empty comparision data', () => {
+        let reducer = new ApplicationStateReducer();
+        let data: DicomComparisonData[] = [];
+
+        let fs = new FileSearcher(reducer);
+        expect(fs.searchCompareData(data).dicomComparisonData.length).to.equal(0);
+    });
+
+    it('find exact match on tagGroup', () => {
+        let reducer = new ApplicationStateReducer();
+        let data = prepareSimpleTestComparisionData();
+        reducer.setSearchExpression('0001');
+
+        let fs = new FileSearcher(reducer);
+        expect(fs.searchCompareData(data).dicomComparisonData.length).to.equal(1);
+    });
+
+    it('find exact match on tagElement on both compared rows', () => {
+        let reducer = new ApplicationStateReducer();
+        let data = prepareSimpleTestComparisionData();
+        reducer.setSearchExpression('0002');
+
+        let fs = new FileSearcher(reducer);
+        expect(fs.searchCompareData(data).dicomComparisonData[0].group.length).to.equal(2);
+    });
+
+});
+
+function prepareTestFile(): HeavyweightFile {
     let testFile: HeavyweightFile = {
         fileName: 'test',
         timestamp: 12345,
         fileSize: 100,
         bufferedData: new Uint8Array(0),
         dicomData: {
-            entries: [
-                {
-                    tagGroup: '0001',
-                    tagElement: '0002',
-                    tagName: 'Test name',
-                    tagValue: 'Test value',
-                    tagVR: 'TVR',
-                    tagVM: 'TVM',
-                    colour: 'test color',
-                }
-            ]
+            entries: [prepareDicomEntry()]
         }
     }
 
     return testFile;
+}
+
+function prepareDicomEntry(): DicomEntry {
+    return {
+        tagGroup: '0001',
+        tagElement: '0002',
+        tagName: 'Test name',
+        tagValue: 'Test value',
+        tagVR: 'TVR',
+        tagVM: 'TVM',
+        colour: 'test color',
+    };
+}
+
+function prepareSimpleTestComparisionData(): DicomComparisonData[] {
+    let data: DicomComparisonData[] = [
+        {
+            group: [prepareDicomEntry(), prepareDicomEntry()],
+            tagElement: '0001',
+            tagGroup: '0002'
+        }
+    ];
+    return data;
 }
