@@ -48,6 +48,6 @@ module.exports = {
     devServer: {
         inline: true,
         hot: true,
-        contentBase: path.join(__dirname, "assets")
+        contentBase: path.join(__dirname, "../src")
     }
 };
