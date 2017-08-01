@@ -86,6 +86,7 @@ export class ApplicationStateReducer {
      */
     public removeRecentFile(index: number) {
         this.currentState.recentFiles.splice(index, 1);
+        this.stateSubject$.next(this.currentState);
     }
 
     public updateRecentFiles(files: LightweightFile[]) {
