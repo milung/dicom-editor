@@ -1,27 +1,22 @@
 import * as React from 'react';
-
 import Paper from 'material-ui/Paper';
-import { List } from 'material-ui/List';
 import { Tabs, Tab } from 'material-ui/Tabs';
-import RaisedButton from 'material-ui/RaisedButton';
 
 import { ApplicationStateReducer } from '../../application-state';
 import { HeavyweightFile, LightweightFile, SelectedFile } from '../../model/file-interfaces';
-import { ElementOfSelectableList } from './element-selectable-list';
-import { ColorDictionary } from '../../utils/colour-dictionary';
 import './side-bar.css';
-import { ListItem } from 'material-ui';
 import TabTemplate from '.././tab-template';
-import { ElementOfDeletableList } from './element-deletable-list';
 import {
-    isFileSavedInDb,
     saveFileIntoSavedDb,
-    convertHeavyToLight,
-    deleteFileFromSaved,
-    loadSavedFiles
+    convertHeavyToLight
 } from '../../utils/file-store-util';
-import { PopUpDialog } from './pop-up-dialog';
 import { RecentFileStoreUtil } from '../../utils/recent-file-store-util';
+import { ColorDictionary } from '../../utils/colour-dictionary';
+import LoadedFilesTab from './loaded-files-tab';
+import RecentFilesTab from './recent-files-tab';
+import SavedFilesTab from './saved-files-tab';
+import OverridePopUpDialog from './override-popup-dialog';
+import DeletePopUpDialog from './delete-popup-dialog';
 
 export interface SideBarProps {
     reducer: ApplicationStateReducer;
@@ -31,7 +26,6 @@ export interface SideBarState {
     loadedFiles: HeavyweightFile[];
     recentFiles: LightweightFile[];
     selectedFiles: SelectedFile[];
-    checkedCheckboxes: number;
     savedFiles: LightweightFile[];
     openedOverrideDialog: boolean;
     openedDeleteDialog: boolean;
@@ -48,7 +42,6 @@ export default class SideBar extends React.Component<SideBarProps, SideBarState>
             loadedFiles: [],
             recentFiles: [],
             selectedFiles: [],
-            checkedCheckboxes: 0,
             savedFiles: [],
             openedOverrideDialog: false,
             openedDeleteDialog: false,
@@ -56,18 +49,12 @@ export default class SideBar extends React.Component<SideBarProps, SideBarState>
         };
 
         this.colorDictionary = new ColorDictionary();
-        this.selectCurrentFile = this.selectCurrentFile.bind(this);
-        this.selectCurrentFileFromRecentFile = this.selectCurrentFileFromRecentFile.bind(this);
-        this.handleCompareClick = this.handleCompareClick.bind(this);
-        this.changeNumberOfCheckedBoxes = this.changeNumberOfCheckedBoxes.bind(this);
-        this.handleSaveClick = this.handleSaveClick.bind(this);
-        this.handleDeleteClick = this.handleDeleteClick.bind(this);
+
         this.handleCloseOverrideDialog = this.handleCloseOverrideDialog.bind(this);
         this.handleCloseDeleteDialog = this.handleCloseDeleteDialog.bind(this);
         this.showPopUpOverrideConfirmation = this.showPopUpOverrideConfirmation.bind(this);
-        this.handleOverrideButton = this.handleOverrideButton.bind(this);
-        this.saveFile = this.saveFile.bind(this);
         this.showPopUpDeleteConfirmation = this.showPopUpDeleteConfirmation.bind(this);
+        this.saveFile = this.saveFile.bind(this);
     }
 
     public componentDidMount() {
@@ -76,7 +63,6 @@ export default class SideBar extends React.Component<SideBarProps, SideBarState>
                 loadedFiles: state.loadedFiles,
                 recentFiles: state.recentFiles,
                 selectedFiles: state.selectedFiles,
-                checkedCheckboxes: state.selectedFiles.length === 0 ? 0 : this.state.checkedCheckboxes,
                 savedFiles: state.savedFiles
             });
         });
@@ -93,139 +79,46 @@ export default class SideBar extends React.Component<SideBarProps, SideBarState>
                     tabTemplateStyle={{ display: 'flex', flexDirection: 'column', flexGrow: 1 }}
                 >
                     <Tab label="Loaded">
-                        <List style={{ overflowX: 'hidden', overflowY: 'auto' }}>
-                            {this.state.loadedFiles.map((item, index) => {
-                                const checked = this.isChecked(item);
-                                const color = this.getColor(item);
-
-                                return (
-                                    <ElementOfSelectableList
-                                        reducer={this.props.reducer}
-                                        key={index}
-                                        item={item}
-                                        selectFunction={this.selectCurrentFile}
-                                        colorDictionary={this.colorDictionary}
-                                        checked={checked}
-                                        color={color}
-                                        checkInform={this.changeNumberOfCheckedBoxes}
-                                        checkBoxDisabled={this.state.checkedCheckboxes === 2 ? true : false}
-                                    />
-                                );
-                            })}
-                        </List>
-                        <RaisedButton
-                            className="compare-button"
-                            label="Compare files"
-                            onClick={this.handleCompareClick}
-                            primary={true}
-                            disabled={this.state.selectedFiles.length === 2 ? false : true}
+                        <LoadedFilesTab
+                            reducer={this.props.reducer}
+                            loadedFiles={this.state.loadedFiles}
+                            selectedFiles={this.state.selectedFiles}
+                            colorDictionary={this.colorDictionary}
+                            className={'tab-container'}
                         />
                     </Tab>
                     <Tab label="Recent">
-                        <List>
-                            {this.state.recentFiles.map((item, index) => (
-                                <ListItem
-                                    key={index}
-                                    onClick={() => this.selectCurrentFileFromRecentFile(item)}
-                                    primaryText={item.fileName}
-                                />
-                            ))}
-                        </List>
+                        <RecentFilesTab
+                            reducer={this.props.reducer}
+                            recentFiles={this.state.recentFiles}
+                            colorDictionary={this.colorDictionary}
+                        />
                     </Tab>
                     <Tab label="Saved">
-                        <List style={{ overflowX: 'hidden', overflowY: 'auto' }}>
-                            {this.state.savedFiles.map((item, index) => {
-
-                                return (
-                                    <ElementOfDeletableList
-                                        key={index}
-                                        lightFile={item}
-                                        showPopUpFunction={this.showPopUpDeleteConfirmation}
-                                        reducer={this.props.reducer}
-                                    />
-                                );
-                            })}
-                        </List>
-                        <RaisedButton
-                            className="compare-button"
-                            label="Save current file"
-                            onClick={this.handleSaveClick}
-                            primary={true}
-                            disabled={this.props.reducer.getState().currentFile ? false : true}
+                        <SavedFilesTab
+                            reducer={this.props.reducer}
+                            savedFiles={this.state.savedFiles}
+                            showPopUpOverrideConfirmation={this.showPopUpOverrideConfirmation}
+                            showPopUpDeleteConfirmation={this.showPopUpDeleteConfirmation}
+                            saveFile={this.saveFile}
+                            className={'tab-container'}
                         />
                     </Tab>
                 </Tabs>
-                <PopUpDialog
-                    handleClosePopUpDialog={this.handleCloseOverrideDialog}
-                    handleAction={this.handleOverrideButton}
-                    openedPopUpDialog={this.state.openedOverrideDialog}
-                    popUpConfirmText="Override the file"
-                    popUpText="There is already a file with this name in the database. Do you want to override it?"
+                <OverridePopUpDialog
+                    reducer={this.props.reducer}
+                    saveFile={this.saveFile}
+                    handleCloseOverrideDialog={this.handleCloseOverrideDialog}
+                    openedOverrideDialog={this.state.openedOverrideDialog}
                 />
-                <PopUpDialog
-                    handleClosePopUpDialog={this.handleCloseDeleteDialog}
-                    handleAction={this.handleDeleteClick}
-                    openedPopUpDialog={this.state.openedDeleteDialog}
-                    popUpConfirmText="Delete the file"
-                    popUpText="Are you sure you want to delete the file?"
+                <DeletePopUpDialog
+                    reducer={this.props.reducer}
+                    handleCloseDeleteDialog={this.handleCloseDeleteDialog}
+                    openedDeleteDialog={this.state.openedDeleteDialog}
+                    fileInPopUp={this.state.fileInPopUp}
                 />
             </Paper>
         );
-    }
-
-    public async handleSaveClick() {
-        let file: HeavyweightFile | undefined = this.props.reducer.getState().currentFile;
-        if (file) {
-            file.timestamp = (new Date()).getTime();
-            let isSaved = await isFileSavedInDb(file);
-            if (!isSaved) {
-                this.saveFile(file);
-            } else {
-                this.showPopUpOverrideConfirmation();
-            }
-        }
-
-    }
-
-    public handleDeleteClick() {
-        if (this.state.fileInPopUp) {
-            let file = this.state.fileInPopUp;
-            deleteFileFromSaved(this.state.fileInPopUp);
-            loadSavedFiles(this.props.reducer);
-
-            // delete from recent files
-            let index = this.findIndexOfFile(file.dbKey, this.props.reducer.getState().recentFiles);
-
-            // if is in recent files, remove from DB and app state
-            if (index > -1) {
-                let recentFileStore: RecentFileStoreUtil = new RecentFileStoreUtil(this.props.reducer);
-                recentFileStore.deleteFileFromRecent(file);
-                this.props.reducer.removeRecentFile(index);
-            }
-
-            this.handleCloseDeleteDialog();
-        }
-    }
-
-    public handleCompareClick(event: object) {
-        this.props.reducer.setComparisonActive(true);
-    }
-
-    /**
-     * @description Finds index of file in given array based on db key
-     * @param {string} searchDbKey db key of file, for which index should be found
-     * @param {LightweightFile[]} files array of files to search in
-     * @returns {number} index of file found by db key or -1 if no file found
-     */
-    private findIndexOfFile(searchDbKey: string, files: LightweightFile[]): number {
-        let i: number = -1;
-        files.map((element, index) => {
-            if (element.dbKey === searchDbKey) {
-                i = index;
-            }
-        });
-
-        return i;
     }
 
     /**
@@ -237,16 +130,22 @@ export default class SideBar extends React.Component<SideBarProps, SideBarState>
         });
     }
 
-    private handleCloseDeleteDialog() {
-        this.setState({
-            openedDeleteDialog: false
-        });
-    }
-
     private showPopUpDeleteConfirmation(lightFile: LightweightFile) {
         this.setState({
             openedDeleteDialog: true,
             fileInPopUp: lightFile
+        });
+    }
+
+    private handleCloseOverrideDialog() {
+        this.setState({
+            openedOverrideDialog: false
+        });
+    }
+
+    private handleCloseDeleteDialog() {
+        this.setState({
+            openedDeleteDialog: false
         });
     }
 
@@ -261,63 +160,5 @@ export default class SideBar extends React.Component<SideBarProps, SideBarState>
         let recentFileUtil: RecentFileStoreUtil = new RecentFileStoreUtil(this.props.reducer);
         recentFileUtil.handleStoringRecentFile(lightFile);
         this.props.reducer.addSavedFile(lightFile);
-    }
-
-    private handleCloseOverrideDialog() {
-        this.setState({
-            openedOverrideDialog: false
-        });
-    }
-
-    private handleOverrideButton() {
-        let file = this.props.reducer.getState().currentFile;
-        if (file) {
-            this.saveFile(file);
-        }
-        this.handleCloseOverrideDialog();
-    }
-
-    private selectCurrentFile(file: HeavyweightFile) {
-        this.props.reducer.removeAllSelectedFiles();
-        this.props.reducer.setComparisonActive(false);
-        this.colorDictionary.reset();
-        this.props.reducer.updateCurrentFile(file);
-    }
-
-    private selectCurrentFileFromRecentFile(file: LightweightFile) {
-        this.props.reducer.removeAllSelectedFiles();
-        this.props.reducer.setComparisonActive(false);
-        this.colorDictionary.reset();
-        this.props.reducer.updateCurrentFromRecentFile(file);
-    }
-
-    private isChecked(file: HeavyweightFile) {
-        const ll = this.state.selectedFiles.length;
-        for (let i = 0; i < ll; i++) {
-            const item = this.state.selectedFiles[i];
-            if (item.selectedFile.fileName === file.fileName) {
-                return true;
-            }
-        }
-        return false;
-    }
-
-    private getColor(file: HeavyweightFile) {
-        const ll = this.state.selectedFiles.length;
-        for (let i = 0; i < ll; i++) {
-            const item = this.state.selectedFiles[i];
-            if (item.selectedFile.fileName === file.fileName) {
-                return item.colour;
-            }
-        }
-        return 'black';
-    }
-
-    private changeNumberOfCheckedBoxes(addition: boolean) {
-        if (addition) {
-            this.setState({ checkedCheckboxes: this.state.checkedCheckboxes + 1 });
-        } else {
-            this.setState({ checkedCheckboxes: this.state.checkedCheckboxes - 1 });
-        }
     }
 }
