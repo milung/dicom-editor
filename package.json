@@ -78,7 +78,9 @@
     "webpack-node-externals": "^1.6.0"
   },
   "dependencies": {
+    "@types/jsdom": "^11.0.1",
     "express": "^4.15.3",
+    "jsdom": "^11.1.0",
     "react-file-download": "^0.3.4",
     "tslint-loader": "^3.5.3"
   },
