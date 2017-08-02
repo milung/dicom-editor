@@ -17,7 +17,7 @@ interface MainViewHeaderState {
     searching: string;
 }
 
-export default class MainView extends React.Component<MainViewHeaderProps, MainViewHeaderState> {
+export default class MainViewHeader extends React.Component<MainViewHeaderProps, MainViewHeaderState> {
 
     public constructor(props: MainViewHeaderProps) {
         super(props);

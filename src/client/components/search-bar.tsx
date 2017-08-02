@@ -24,19 +24,6 @@ export default class Search extends React.Component<SearchBarProps, SearchBarSta
         };
     }
 
-    setSearching = () => {
-        var value = this.state.searchingValue;
-        this.props.reducer.setSearchExpression(value);
-    }
-
-    removeSearching = () => {
-        this.props.reducer.setSearchExpression('');
-        this.setState({
-            searchingValue: '',
-            defaultValue: 'Text to find'
-        });
-    }
-
     render() {
         return (
             <div className="flex-container">
@@ -64,5 +51,18 @@ export default class Search extends React.Component<SearchBarProps, SearchBarSta
                 />
             </div>
         );
+    }
+    
+    private setSearching = () => {
+        var value = this.state.searchingValue;
+        this.props.reducer.setSearchExpression(value);
+    }
+
+    private removeSearching = () => {
+        this.props.reducer.setSearchExpression('');
+        this.setState({
+            searchingValue: '',
+            defaultValue: 'Text to find'
+        });
     }
 }
