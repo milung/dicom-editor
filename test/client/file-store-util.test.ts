@@ -18,6 +18,7 @@ describe('file-store convertHeavyToLight', () => {
                         tagVR: 'vr',
                         tagVM: 'vm',
                         colour: 'red',
+                        sequence: []
                     }
                 ]
             }

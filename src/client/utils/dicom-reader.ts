@@ -6,6 +6,23 @@ import { DicomSimpleData } from '../model/dicom-entry';
 
 import * as dicomParser from 'dicom-parser';
 
+// interface Dataset {
+//     byteArray: any;
+//     byteArrayParser: any;
+//     elements: any;
+//     warnings: any;
+//     string(a: any,b: any): any;
+//     text(a: any,b: any): any;
+//     float(a: any,b: any): any;
+//     double(a: any,b: any): any;
+//     uint16(a: any,b: any): any;
+//     uint32(a: any,b: any): any;
+//     uint32(a: any,b: any): any;
+//     int16(a: any,b: any): any;
+//     int32(a: any,b: any): any;
+//     attributeTag(a: any): any            
+// };
+
 export class DicomReader {
 
     /**
@@ -20,7 +37,7 @@ export class DicomReader {
     }
 
     public getValueMultiplicity(value: string) {
-        return value === undefined ? 0 : (value.match(/\\/g) || []).length + 1;
+        return value === undefined ? 0 : (value.toString().match(/\\/g) || []).length + 1;
     }
 
     /**
@@ -36,36 +53,9 @@ export class DicomReader {
         try {
             dataset = dicomParser.parseDicom(bytes);
 
-            for (var tag in dataset.elements) {
-                if (tag) {
-                    const tagElement = dataset.elements[tag];
+            let freshData = this.createEntries(dataset);
+            data.entries = data.entries.concat(freshData.entries);
 
-                    const value = dataset.string(tag, undefined);
-                    const VM = this.getValueMultiplicity(value);
-
-                    const firstHalf: string = tag.slice(1, 5);
-                    const latterHalf: string = tag.slice(5, 9);
-
-                    const fullTag = `${firstHalf}${latterHalf}`;
-
-                    const name = dicomDictionary[fullTag];
-                    const VR = tagElement.vr;
-
-                    let entry: DicomEntry = {
-                        tagGroup: firstHalf,
-                        tagElement: latterHalf,
-                        // need to get second item, because of dicom dictionary structure
-                        tagName: name || 'Unknown name',
-                        tagValue: value,
-                        tagVR: VR || 'Unknown VR',
-                        tagVM: VM.toString(),
-                        colour: '#000000'
-                    };
-
-                    data.entries.push(entry);
-
-                }
-            }
         } catch (err) {
             var message = err;
             if (err.exception) {
@@ -91,4 +81,81 @@ export class DicomReader {
         // if number of frame tag is undefined, try to display frame 1
         return numFrames === undefined ? 1 : numFrames;
     }
+
+    /**
+     * @description creates DicomSimpleData with respect to VR 
+     * @param dataset raw data containing information
+     * @return {DicomSimpleData} that is ready for table
+     */
+    // tslint:disable-next-line
+    private createEntries(dataset: any): DicomSimpleData { 
+        let data: DicomSimpleData = {
+            entries: []
+        };
+        for (var tag in dataset.elements) {
+            if (!tag) {
+                continue;
+            }
+            const tagElement = dataset.elements[tag];
+            const firstHalf: string = tag.slice(1, 5);
+            const latterHalf: string = tag.slice(5, 9);
+
+            let value;
+            let tempSequence: DicomEntry[] = [];
+            if (tagElement.vr === 'AE' || tagElement.vr === 'CS' ||
+                tagElement.vr === 'SH' || tagElement.vr === 'LO') {
+                value = dataset.string(tag, undefined);
+            } else if (tagElement.vr === 'UT' || tagElement.vr === 'ST' ||
+                tagElement.vr === 'LT') {
+                value = dataset.text(tag, undefined);
+            } else if (tagElement.vr === 'FD') {
+                value = dataset.double(tag, undefined);
+            } else if (tagElement.vr === 'FL') {
+                value = dataset.float(tag, undefined);
+            } else if (tagElement.vr === 'UL') {
+                value = dataset.uint32(tag, undefined);
+            } else if (tagElement.vr === 'US') {
+                value = dataset.uint16(tag, undefined);
+            } else if (tagElement.vr === 'SS') {
+                value = dataset.int16(tag, undefined);
+            } else if (tagElement.vr === 'AT') {
+                value = dataset.attributeTag(tag);
+                value = '(' + value.slice(1, 5) + ', ' + value.slice(5, 9) + ')';
+
+            } else if (tagElement.vr === 'SQ') {
+                for (var i = 0; i < tagElement.items.length; i++) {
+                    tempSequence = tempSequence.concat(this.createEntries(
+                        tagElement.items[i].dataSet).entries);
+                }
+
+            } else if (tagElement.vr === 'SL') {
+                value = dataset.int32(tag, undefined);
+            } else {
+                value = dataset.string(tag, undefined);
+            }
+            const VM = this.getValueMultiplicity(value);
+
+            const fullTag = `${firstHalf}${latterHalf}`;
+
+            const name = dicomDictionary[fullTag];
+            const VR = tagElement.vr;
+
+            let entry: DicomEntry = {
+                tagGroup: firstHalf,
+                tagElement: latterHalf,
+                // need to get second item, because of dicom dictionary structure
+                tagName: name || 'Unknown name',
+                tagValue: value,
+                tagVR: VR || 'Unknown VR',
+                tagVM: VM.toString(),
+                colour: '#000000',
+                sequence: tempSequence
+            };
+
+            data.entries.push(entry);
+
+        }
+        return data;
+    }
+
 }

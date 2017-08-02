@@ -44,7 +44,8 @@ export class DicomSimpleComparisonTable extends React.Component<
                                 tagValue: '',
                                 tagVR: '',
                                 tagVM: '',
-                                colour: '#000000'
+                                colour: '#000000',
+                                sequence: []      
                             };
                             arr.push(
                                 <DicomTableRow entry={entryHeader} shouldShowTag={true} key={groupIndex} />

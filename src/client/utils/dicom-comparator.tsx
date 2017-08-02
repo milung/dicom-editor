@@ -9,7 +9,8 @@ function createEntryCopy(entry: DicomEntry): DicomEntry {
         tagValue: entry.tagValue,
         tagVR: entry.tagVR,
         tagVM: entry.tagVM,
-        colour: entry.colour
+        colour: entry.colour,
+        sequence: entry.sequence
     };
     return entryCopy;
 }

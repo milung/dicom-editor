@@ -6,6 +6,7 @@ export interface DicomEntry {
     tagVR: string;
     tagVM: string;
     colour: string;
+    sequence: DicomEntry[];
 }
 
 /**

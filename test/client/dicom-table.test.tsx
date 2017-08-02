@@ -16,7 +16,8 @@ const arrayTest = {
                 tagValue: 'Michal Mrkvicka',
                 tagVR: 'PN',
                 tagVM: '2',
-                colour: '#000000'
+                colour: '#000000',
+                sequence: []
             },
             {
                 tagGroup: '0008',
@@ -25,7 +26,8 @@ const arrayTest = {
                 tagValue: '18',
                 tagVR: 'PA',
                 tagVM: '1',
-                colour: '#000000'
+                colour: '#000000',
+                sequence: []
             }
         ]
     ,
@@ -38,7 +40,8 @@ const arrayTest = {
                 tagValue: 'Michal Mrkvicka',
                 tagVR: 'PN',
                 tagVM: '2',
-                colour: '#000000'
+                colour: '#000000',
+                sequence: []
             },
             {
                 tagGroup: '0010',
@@ -47,7 +50,8 @@ const arrayTest = {
                 tagValue: '18',
                 tagVR: 'PA',
                 tagVM: '1',
-                colour: '#000000'
+                colour: '#000000',
+                sequence: []
             }
         ]
 }
@@ -60,7 +64,8 @@ const dicomTestEntry = {
     tagValue: 'Michal Mrkvicka',
     tagVR: 'PN',
     tagVM: '2',
-    colour: '#000000'
+    colour: '#000000',
+    sequence: []
 }
 
 const dicomTestEntries =
@@ -72,7 +77,8 @@ const dicomTestEntries =
             tagValue: 'Michal Mrkvicka',
             tagVR: 'PN',
             tagVM: '2',
-            colour: '#000000'
+            colour: '#000000',
+            sequence: []
         },
         {
             tagGroup: '0010',
@@ -81,7 +87,8 @@ const dicomTestEntries =
             tagValue: '18',
             tagVR: 'PA',
             tagVM: '1',
-            colour: '#000000'
+            colour: '#000000',
+            sequence: []
         },
         {
             tagGroup: '0152',
@@ -90,7 +97,8 @@ const dicomTestEntries =
             tagValue: 'Michal Mrkvicka',
             tagVR: 'PN',
             tagVM: '2',
-            colour: '#000000'
+            colour: '#000000',
+            sequence: []
         },
         {
             tagGroup: '0010',
@@ -99,7 +107,8 @@ const dicomTestEntries =
             tagValue: '18',
             tagVR: 'PA',
             tagVM: '1',
-            colour: '#000000'
+            colour: '#000000',
+            sequence: []
         }
     ]
 
