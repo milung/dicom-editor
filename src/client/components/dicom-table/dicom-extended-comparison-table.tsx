@@ -54,7 +54,7 @@ export class DicomExtendedComparisonTable extends React.Component<
                                 nestedItems={[
             
                                  <ListItem disabled={true} key={moduleIndex}>
-                                     <DicomSimpleComparisonTable comparisonData = {module.groups}/>
+                                     <DicomSimpleComparisonTable comparisonData={module.groups}/>
                                 </ListItem>
 
                                 ]}

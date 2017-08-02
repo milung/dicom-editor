@@ -56,7 +56,7 @@ export class DicomExtendedTable extends React.Component<DicomExtendedTableProps,
                                 nestedItems={[
             
                                  <ListItem disabled={true} key={moduleIndex}>
-                                     <DicomSimpleTable entries = {module.entries}/>
+                                     <DicomSimpleTable entries={module.entries}/>
                                 </ListItem>
 
                                 ]}
