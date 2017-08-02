@@ -5,8 +5,8 @@
   "main": "index.js",
   "scripts": {
     "test": "mocha-webpack --webpack-config config/webpack-test.config.js --reporter list \"test/**/*.test.{ts,tsx}\" ",
-    "test-ci": "mocha-webpack",
-    "cover": "cross-env NODE_ENV=coverage nyc --reporter=lcov --reporter=text npm test-ci",
+    "test-ci": "mocha-webpack --webpack-config config/webpack-test.config.js --reporter list \"test/**/*.test.{ts,tsx}\" ",
+    "cover": "cross-env NODE_ENV=coverage nyc --reporter=lcov --reporter=text npm run test-ci",
     "test:watch": "mocha-webpack --webpack-config webpack-test.config.js --watch --reporter list \"**/*.test.ts\"",
     "lint:client": "tslint --project tsconfig.json -c tslint.json 'src/**/*.{ts,tsx}' --type-check",
     "lint:server": "tslint --project tsconfig.json -c tslint.json 'src/server/**/*.{ts,tsx}' --type-check",
@@ -88,5 +88,5 @@
     ],
     "instrument": false,
     "sourceMap": false
-   }
+  }
 }

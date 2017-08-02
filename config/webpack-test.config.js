@@ -1,4 +1,6 @@
 var nodeExternals = require('webpack-node-externals');
+var isCoverage = process.env.NODE_ENV === 'coverage';
+var path = require('path');
 
 module.exports = {
     output: {
@@ -8,7 +10,13 @@ module.exports = {
     target: 'node',
     externals: [nodeExternals()],
     module: {
-        rules: [
+        rules: [].concat(
+            isCoverage ? {
+                test: /\.(tsx|ts)/,
+                include: path.resolve('src'), // instrument only testing sources with Istanbul, after ts-loader runs
+                loader: 'istanbul-instrumenter-loader',
+                enforce: 'post'
+            } : [],
             {
                 test: /\.tsx?$/,
                 loader: 'ts-loader',
@@ -20,7 +28,7 @@ module.exports = {
                     { loader: 'null-loader' }
                 ]
             }
-        ]
+        )
     },
 
     resolve: {
