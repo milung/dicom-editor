@@ -112,6 +112,7 @@ describe('FileSearcher -> searchFile() ->', () => {
                 tagVR: 'TVR2',
                 tagVM: 'TVM2',
                 colour: 'test color2',
+                sequence: []
             }
         );
         reducer.updateCurrentFile(testFile);
@@ -230,6 +231,7 @@ function prepareDicomEntry(): DicomEntry {
         tagVR: 'TVR',
         tagVM: 'TVM',
         colour: 'test color',
+        sequence: []
     };
 }
 
