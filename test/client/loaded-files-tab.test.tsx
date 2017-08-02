@@ -1,12 +1,12 @@
 import * as React from 'react';
 import { mount } from 'enzyme';
 import { expect } from 'chai';
-import { ApplicationStateReducer } from '../../src/client/application-state';
 import { JSDOM } from 'jsdom';
-import { ColorDictionary } from "../../src/client/utils/colour-dictionary";
-import LoadedFilesTab from "../../src/client/components/side-bar/loaded-files-tab";
-import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
 import * as injectTapEventPlugin from 'react-tap-event-plugin';
+import { ApplicationStateReducer } from '../../src/client/application-state';
+import { ColorDictionary } from '../../src/client/utils/colour-dictionary';
+import LoadedFilesTab from '../../src/client/components/side-bar/loaded-files-tab';
+import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
 
 injectTapEventPlugin();
 const doc = new JSDOM('<!doctype html><html><body></body></html>')
@@ -18,7 +18,7 @@ global.navigator.userAgent = global.navigator.userAgent || 'all';
 describe('LoadedFilesTab', () => {
   it('contains raised button', () => {
     let reducer = new ApplicationStateReducer();
-    let props = prepareTestProps(reducer);
+    let props = prepareDefaultTestProps(reducer);
 
     const wrapper = mount(
       <MuiThemeProvider>
@@ -35,7 +35,7 @@ describe('LoadedFilesTab', () => {
   });
 });
 
-function prepareTestProps(reducer: ApplicationStateReducer) {
+function prepareDefaultTestProps(reducer: ApplicationStateReducer) {
   return {
     reducer: reducer,
     loadedFiles: [],
