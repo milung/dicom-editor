@@ -5,6 +5,7 @@ import { DicomTableRow } from "../../src/client/components/dicom-table/dicom-tab
 import { DicomExtendedTable } from "../../src/client/components/dicom-table/dicom-extended-table";
 import { DicomTableHeader } from "../../src/client/components/dicom-table/dicom-table-header";
 import { DicomSimpleTable } from "../../src/client/components/dicom-table/dicom-simple-table";
+import { DicomSimpleComparisonTable } from "../../src/client/components/dicom-table/dicom-simple-comparison-table";
 
 const arrayTest = {
     'Module 1': 
@@ -112,6 +113,141 @@ const dicomTestEntries =
         }
     ]
 
+    const dicomSequenceTestEntry =  [
+        {
+            tagGroup: '0152',
+            tagElement: '0145',
+            tagName: 'PatientName',
+            tagValue: 'Michal Mrkvicka',
+            tagVR: 'PN',
+            tagVM: '2',
+            colour: '#000000',
+            sequence: 
+        [
+            {
+                tagGroup: '0152',
+                tagElement: '0146',
+                tagName: 'PatientName',
+                tagValue: 'Michal Mrkvicka',
+                tagVR: 'PN',
+                tagVM: '2',
+                colour: '#000000',
+                sequence: []   
+            },
+            {
+                tagGroup: '0152',
+                tagElement: '0147',
+                tagName: 'PatientGender',
+                tagValue: 'M',
+                tagVR: 'PG',
+                tagVM: '2',
+                colour: '#000000',
+                sequence: []   
+            },
+            {
+                tagGroup: '0152',
+                tagElement: '0147',
+                tagName: 'PatientDiet',
+                tagValue: 'Apple',
+                tagVR: 'PD',
+                tagVM: '2',
+                colour: '#000000',
+                sequence: []   
+            }
+        ]
+        }
+    ]
+
+const comparisonData = [
+    {
+    group: 
+    [
+            {
+                tagGroup: '0152',
+                tagElement: '0146',
+                tagName: 'PatientName',
+                tagValue: 'Michal Mrkvicka',
+                tagVR: 'PN',
+                tagVM: '2',
+                colour: '#000000',
+                sequence: []   
+            },
+            {
+                tagGroup: '0152',
+                tagElement: '0146',
+                tagName: 'PatientName',
+                tagValue: 'Nemichal',
+                tagVR: 'PN',
+                tagVM: '2',
+                colour: '#000000',
+                sequence: []   
+            }
+        ],
+    tagGroup: '0152',
+    tagElement: '0147'
+    },
+    {
+    group: [
+            {
+                tagGroup: '0152',
+                tagElement: '0146',
+                tagName: 'PatientName',
+                tagValue: 'Michal Mrkvicka',
+                tagVR: 'PN',
+                tagVM: '2',
+                colour: '#000000',
+                sequence: []   
+            },
+            {
+                tagGroup: '0152',
+                tagElement: '0146',
+                tagName: 'PatientName',
+                tagValue: 'Nemichal Nemrkvicka',
+                tagVR: 'PN',
+                tagVM: '2',
+                colour: '#000000',
+                sequence: []   
+            }
+        ],
+    tagGroup: '0152',
+    tagElement: '0147'
+    }
+]
+
+const comparisonHeaderData = [
+    {
+    group: [
+        {
+        tagGroup: '0152',
+        tagElement: '0146',
+        tagName: 'PatientName',
+        tagValue: 'Michal Mrkvicka',
+        tagVR: 'PN',
+        tagVM: '2',
+        colour: '#000000',
+        sequence: []   
+        }
+    ],
+    tagGroup: '0152',
+    tagElement: '0147'
+    },
+    {
+    group: [
+        {
+        tagGroup: '0152',
+        tagElement: '0146',
+        tagName: 'PatientName',
+        tagValue: 'Michal Mrkvicka',
+        tagVR: 'PN',
+        tagVM: '2',
+        colour: '#000000',
+        sequence: []   
+        }
+    ],
+    tagGroup: '0152',
+    tagElement: '0147'
+    }
+]
 
 describe('dicom-table', () => {
     it('Render one row with DICOM entry', () => {
@@ -151,6 +287,21 @@ describe('dicom-table', () => {
    it('Render the correct amount of rows in the table of entries within a single module', () => {
        const div = shallow(<DicomSimpleTable entries={dicomTestEntries} />);
        expect(div.find('Table').find('TableBody').children('DicomTableRow').length).to.equal(4);
+   });
+
+   it('Render sequence in simple table correctly', () => {
+       const div = shallow(<DicomSimpleTable entries={dicomSequenceTestEntry} />);
+       expect(div.find('Table').find('TableBody').children('DicomTableRow').length).to.equal(4);
+   });
+
+   it('Render same row for simple comparison table', () => {
+       const div = shallow(<DicomSimpleComparisonTable comparisonData={comparisonHeaderData} />);
+       expect(div.find('Table').find('TableBody').children('DicomTableRow').length).to.equal(2);
+   });
+
+   it('Render different rows for simple comparison table', () => {
+       const div = shallow(<DicomSimpleComparisonTable comparisonData={comparisonData} />);
+       expect(div.find('Table').find('TableBody').children('DicomTableRow').length).to.equal(6);
    });
 
 // describe('dicom-table', () => {
