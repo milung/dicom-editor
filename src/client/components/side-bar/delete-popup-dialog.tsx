@@ -5,17 +5,18 @@ import { deleteFileFromSaved, loadSavedFiles } from '../../utils/file-store-util
 import { LightweightFile } from '../../model/file-interfaces';
 import { RecentFileStoreUtil } from '../../utils/recent-file-store-util';
 
-interface DeletePopUpDialogProps {
+export interface DeletePopUpDialogProps {
     reducer: ApplicationStateReducer;
     handleCloseDeleteDialog: Function;
     openedDeleteDialog: boolean;
-    fileInPopUp?: LightweightFile;
+    fileInPopUp?: 
+    LightweightFile;
 }
 
 interface DeletePopUpDialogState {
 }
 
-export default class DeletePopUpDialog extends React.Component<DeletePopUpDialogProps, DeletePopUpDialogState> {
+export class DeletePopUpDialog extends React.Component<DeletePopUpDialogProps, DeletePopUpDialogState> {
     constructor(props: DeletePopUpDialogProps) {
         super(props);
 
@@ -29,8 +30,8 @@ export default class DeletePopUpDialog extends React.Component<DeletePopUpDialog
                 handleClosePopUpDialog={this.props.handleCloseDeleteDialog}
                 handleAction={this.handleDeleteClick}
                 openedPopUpDialog={this.props.openedDeleteDialog}
-                popUpConfirmText="Delete the file"
-                popUpText="Are you sure you want to delete the file?"
+                popUpConfirmText="Remove the file from saved"
+                popUpText="Are you sure you want to remove the file from saved?"
             />
         );
     }

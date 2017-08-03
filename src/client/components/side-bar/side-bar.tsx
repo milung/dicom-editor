@@ -16,7 +16,7 @@ import LoadedFilesTab from './loaded-files-tab';
 import RecentFilesTab from './recent-files-tab';
 import SavedFilesTab from './saved-files-tab';
 import OverridePopUpDialog from './override-popup-dialog';
-import DeletePopUpDialog from './delete-popup-dialog';
+import { DeletePopUpDialog } from './delete-popup-dialog';
 
 export interface SideBarProps {
     reducer: ApplicationStateReducer;
