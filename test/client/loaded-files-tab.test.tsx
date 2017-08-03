@@ -4,9 +4,9 @@ import { expect } from 'chai';
 import { JSDOM } from 'jsdom';
 import * as injectTapEventPlugin from 'react-tap-event-plugin';
 import { ApplicationStateReducer } from '../../src/client/application-state';
-import { ColorDictionary } from '../../src/client/utils/colour-dictionary';
 import LoadedFilesTab from '../../src/client/components/side-bar/loaded-files-tab';
 import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
+import { prepareDefaultTestProps, prepareTestFile } from "./test-utils";
 
 injectTapEventPlugin();
 const doc = new JSDOM('<!doctype html><html><body></body></html>')
@@ -33,14 +33,22 @@ describe('LoadedFilesTab', () => {
 
     expect(wrapper.find('RaisedButton').length).to.equal(1);
   });
-});
 
-function prepareDefaultTestProps(reducer: ApplicationStateReducer) {
-  return {
-    reducer: reducer,
-    loadedFiles: [],
-    selectedFiles: [],
-    colorDictionary: new ColorDictionary(),
-    className: ''
-  }
-}
+  it('list item contains correct number of items', () => {
+    let reducer = new ApplicationStateReducer();
+    let props = prepareDefaultTestProps(reducer);
+
+    const wrapper = mount(
+      <MuiThemeProvider>
+        <LoadedFilesTab
+          reducer={props.reducer}
+          loadedFiles={[prepareTestFile(), prepareTestFile()]}
+          selectedFiles={props.selectedFiles}
+          colorDictionary={props.colorDictionary}
+          className={props.className} />
+      </MuiThemeProvider>
+    );
+
+    expect(wrapper.find('ElementOfSelectableList').length).to.equal(2);
+  });
+});

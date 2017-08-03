@@ -1,8 +1,9 @@
 import { FileSearcher } from '../../src/client/utils/file-searcher';
 import { ApplicationStateReducer } from '../../src/client/application-state';
 import { HeavyweightFile } from '../../src/client/model/file-interfaces';
-import { DicomComparisonData, DicomEntry } from '../../src/client/model/dicom-entry';
+import { DicomComparisonData } from '../../src/client/model/dicom-entry';
 import { expect } from 'chai';
+import { prepareSimpleTestComparisionData, prepareTestFile } from "./test-utils";
 
 describe('FileSearcher -> searchFile() ->', () => {
     it('search on empty file', () => {
@@ -208,40 +209,3 @@ describe('FileSearcher -> searchCompareData() ->', () => {
     } );
 
 });
-
-function prepareTestFile(): HeavyweightFile {
-    let testFile: HeavyweightFile = {
-        fileName: 'test',
-        timestamp: 12345,
-        fileSize: 100,
-        bufferedData: new Uint8Array(0),
-        dicomData: {
-            entries: [prepareDicomEntry()]
-        }
-    }
-    return testFile;
-}
-
-function prepareDicomEntry(): DicomEntry {
-    return {
-        tagGroup: '0001',
-        tagElement: '0002',
-        tagName: 'Test name',
-        tagValue: 'Test value',
-        tagVR: 'TVR',
-        tagVM: 'TVM',
-        colour: 'test color',
-        sequence: []
-    };
-}
-
-function prepareSimpleTestComparisionData(): DicomComparisonData[] {
-    let data: DicomComparisonData[] = [
-        {
-            group: [prepareDicomEntry(), prepareDicomEntry()],
-            tagElement: '0001',
-            tagGroup: '0002'
-        }
-    ];
-    return data;
-}
