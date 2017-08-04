@@ -3,12 +3,15 @@ import { mount } from 'enzyme';
 import { expect } from 'chai';
 import { MuiThemeProvider } from 'material-ui/styles';
 import { Navigation } from '../../src/client/components/navigation/navigation';
+import { ApplicationStateReducer } from "../../src/client/application-state";
+
 
 describe('navigation', () => {
     it('should render navigation with drawer and app bar', () => {
+        let reducer = new ApplicationStateReducer();
         let element = mount(
             <MuiThemeProvider>
-                <Navigation />
+                <Navigation reducer={reducer}/>
             </MuiThemeProvider>
         )
 
@@ -18,9 +21,10 @@ describe('navigation', () => {
     });
 
     it('should render navigation in drawer with "Export" menu item', () => {
+        let reducer = new ApplicationStateReducer();
         let element = mount(
             <MuiThemeProvider>
-                <Navigation />
+                <Navigation reducer={reducer}/>
             </MuiThemeProvider>
         )
 

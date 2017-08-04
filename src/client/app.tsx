@@ -38,7 +38,7 @@ export default class App extends React.Component<{}, AppState> {
     return (
       <div className="app">
 
-        <Navigation />
+        <Navigation reducer={reducer} />
 
         <FileDropZone reducer={reducer} >
           <div className="app-view">
