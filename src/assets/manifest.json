@@ -1,0 +1,29 @@
+{
+  "short_name": "PWA Dicom viewer",
+  "name": "Progresive web application dicom viewer",
+  "icons": [
+    {
+      "src": "/img/logo.ico",
+      "type": "image/ico"
+    },
+    {
+      "src": "../assets/img/logo.png",
+      "sizes": "144x144",
+      "type": "image/png"
+    },
+    {
+      "src": "../assets/img/logo.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "../assets/img/logo.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ],
+  "start_url": "../client/index.html",
+  "display": "standalone",
+  "theme_color": "aliceblue",
+  "background_color": "blue"
+}
