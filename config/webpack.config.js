@@ -34,6 +34,14 @@ module.exports = {
             }
         ]
     },
+    externals: [
+        {
+            './cptable': 'var cptable'
+        }
+    ],
+    node: {
+        fs: "empty"
+    },
     plugins: [
         new HtmlWebpackPlugin({
             template: './src/client/index.html'

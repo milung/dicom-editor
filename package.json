@@ -89,6 +89,13 @@
       "src/**/*.{ts,tsx}"
     ],
     "instrument": false,
-    "sourceMap": false
+    "sourceMap": false,
+    "excel-export": "^0.5.1",
+    "express": "^4.15.3",
+    "node-excel-export": "^1.4.2",
+    "react-file-download": "^0.3.4",
+    "tslint-loader": "^3.5.3",
+    "xlsx": "^0.10.9",
+    "xlsx-style": "^0.8.13"
   }
 }
