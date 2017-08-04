@@ -1,5 +1,4 @@
 import * as React from 'react';
-import AppBar from 'material-ui/AppBar';
 
 import SideBar from './components/side-bar/side-bar';
 import MainView from './containers/main-view';
@@ -10,6 +9,7 @@ import { ApplicationStateReducer } from './application-state';
 
 import { RecentFileStoreUtil } from './utils/recent-file-store-util';
 import { loadSavedFiles } from './utils/file-store-util';
+import { Navigation } from './components/navigation/navigation';
 
 let reducer = new ApplicationStateReducer();
 let fileStorage = new RecentFileStoreUtil(reducer);
@@ -17,12 +17,17 @@ fileStorage.loadRecentFiles();
 loadSavedFiles(reducer);
 
 interface AppState {
+  open: boolean;
 }
 
 export default class App extends React.Component<{}, AppState> {
 
   public constructor(props: {}) {
     super(props);
+
+    this.state = {
+      open: false
+    };
   }
 
   public componentDidMount() {
@@ -32,17 +37,16 @@ export default class App extends React.Component<{}, AppState> {
   render() {
     return (
       <div className="app">
-        <AppBar
-          className="app-bar"
-          title="Dicom Viewer"
-        />
+
+        <Navigation />
+
         <FileDropZone reducer={reducer} >
           <div className="app-view">
             {/*<Route exact path="/" render={() => (<Redirect to="/dashboard" />)} />*/}
             <div className="main-content">
               {/*<FileLoader reducer={reducer}/>
               <DicomTable data={this.state.dicomEntries}/>*/}
-              <MainView reducer={reducer}/>
+              <MainView reducer={reducer} />
               {/*<Switch>
                 <Route exact path="/dashboard" render={() => (<Dashboard />)} />
                 <Route exact path="/containers" render={() => (<ContainersPage />)} />
@@ -53,7 +57,7 @@ export default class App extends React.Component<{}, AppState> {
                 <Route exact path="/volumes" render={() => (<VolumesPage />)} />
               </Switch>*/}
             </div>
-            <SideBar reducer={reducer}/>
+            <SideBar reducer={reducer} />
           </div>
         </FileDropZone>
       </div>
