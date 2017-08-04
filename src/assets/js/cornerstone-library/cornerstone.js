@@ -206,7 +206,7 @@
         }
 
         var canvas = document.createElement('canvas');
-        canvas.setAttribute("id", "KANVASIK");
+        canvas.setAttribute("id", "image-canvas");
         element.appendChild(canvas);
 
         var el = {

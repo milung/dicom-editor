@@ -3,11 +3,6 @@ import * as cornerstone from '../../../assets/js/cornerstone-library/cornerstone
 import { buffersEqual } from '../../utils/file-converter';
 var cornerstoneWADOImageLoader = require('./cornerstone-library/DCMLoader');
 import './image-canvas.css';
-// import { FlatButton } from 'material-ui';
-
-// import { getImageFromUnitArray } from '../../utils/image-converter';
-// var fileDownload = require('react-file-download');
-// import * as dicomParser from 'dicom-parser';
 
 interface ImageCanvasProps {
   data: Uint8Array;
@@ -60,27 +55,5 @@ export class ImageCanvas extends React.Component<ImageCanvasProps, {}> {
       </div>
     );
   }
-
-  // private createImg(byteArray: Uint8Array) {
-
-  //   try {
-  //     // Parse the byte array to get a DataSet object that has the parsed contents
-  //     var dataSet = dicomParser.parseDicom(byteArray/*, options */);
-  //     // access a string element
-  //     // var studyInstanceUid = dataSet.string('x0020000d');
-  //     // get the pixel data element (contains the offset and length of the data)
-  //     var pixelDataElement = dataSet.elements.x7fe00010;
-
-  //     // create a typed array on the pixel data (this example assumes 16 bit unsigned data)
-  //     var pixelData = new Uint8Array(dataSet.byteArray.buffer, pixelDataElement.dataOffset, pixelDataElement.length);
-      
-  //     let img = getImageFromUnitArray(pixelData);
-  //     let file = ('data:image/png;base64,').concat(img);
-  //     fileDownload(file, 'filename.png');
-  // }
-  //   catch (ex) {
-  //     console.log('Error parsing byte stream');
-  //   }
-  // }
 
 }

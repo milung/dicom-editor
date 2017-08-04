@@ -1,4 +1,4 @@
-import { HeavyweightFile } from "../model/file-interfaces";
+import { HeavyweightFile } from '../model/file-interfaces';
 const excel = require('node-excel-export');
 
 export function dicomDataToExcel(file: HeavyweightFile) {
@@ -19,7 +19,7 @@ export function dicomDataToExcel(file: HeavyweightFile) {
         underline: false
       },
       alignment: {
-        horizontal: "center"
+        horizontal: 'center'
       }
     },
     titleDark: {
@@ -37,7 +37,7 @@ export function dicomDataToExcel(file: HeavyweightFile) {
         underline: true
       },
       alignment: {
-        horizontal: "center"
+        horizontal: 'center'
       }
     },
     cellRegular: {
@@ -53,7 +53,7 @@ export function dicomDataToExcel(file: HeavyweightFile) {
         sz: 12,
       },
       alignment: {
-        horizontal: "center"
+        horizontal: 'center'
       }
     }
   };
@@ -94,7 +94,7 @@ export function dicomDataToExcel(file: HeavyweightFile) {
 
   // Array of objects representing heading rows (very top) 
   const heading = [
-    [{value: 'Dicom data from file: ' + file.fileName, style: styles.titleDark}]
+    [{ value: 'Dicom data from file: ' + file.fileName, style: styles.titleDark }]
   ];
 
   // The data to fill the rows with
@@ -120,7 +120,7 @@ export function dicomDataToExcel(file: HeavyweightFile) {
   // A merge will overwrite all data _not_ in the top-left cell. 
   const merges = [
     { start: { row: 1, column: 1 }, end: { row: 1, column: 5 } },
-   // { start: { row: 2, column: 1 }, end: { row: 2, column: 2 } }
+    // { start: { row: 2, column: 1 }, end: { row: 2, column: 2 } }
   ];
 
   // Create the excel report 
