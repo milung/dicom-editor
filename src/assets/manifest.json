@@ -22,7 +22,7 @@
       "type": "image/png"
     }
   ],
-  "start_url": "../client/index.html",
+  "start_url": "../index.html",
   "display": "standalone",
   "theme_color": "aliceblue",
   "background_color": "blue"
