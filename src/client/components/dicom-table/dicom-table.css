@@ -9,3 +9,30 @@ background-color: #00BCD4;
 .tagBorder {
     border-top: 2px solid rgb(0, 0, 0);
 }
+
+.plain-link {
+    cursor: pointer;
+}
+
+.plain-link:hover {
+    color: gray;
+}
+
+.plain-link:hover~.show-comment-on-hover {
+    display: block;
+}
+
+.show-comment-on-hover{
+    display: none;
+    position: absolute;
+    text-align: center;
+    word-wrap: break-word;
+    background-color: white;
+    margin-top: -6%;
+    margin-left: -1%;
+    border: 1px solid gray;
+    width: 15%;
+    padding: 0.5%;
+    cursor: pointer;
+    z-index: 1;
+}
