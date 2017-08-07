@@ -1,7 +1,6 @@
 var HtmlWebpackPlugin = require('html-webpack-plugin');
 var path = require('path');
 var webpack = require('webpack');
-var ManifestPlugin = require('webpack-manifest-plugin');
 
 module.exports = {
     entry: './src/client/index.tsx',
@@ -48,7 +47,6 @@ module.exports = {
             template: './src/client/index.html'
         }),
         new webpack.HotModuleReplacementPlugin(),
-        new ManifestPlugin()
     ],
     devtool: 'inline-source-map',
     resolve: {
