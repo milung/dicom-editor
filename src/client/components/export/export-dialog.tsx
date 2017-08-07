@@ -3,6 +3,7 @@ import { Dialog, FlatButton, Checkbox } from 'material-ui';
 import { ApplicationStateReducer } from '../../application-state';
 import { containsImage, isMultiframe } from '../../utils/dicom-validator';
 import { ExportMetadata } from '../../model/export-interfaces';
+import { download } from '../../utils/download-service';
 
 export interface ExportDialogProps {
     reducer: ApplicationStateReducer;
@@ -115,6 +116,6 @@ export class ExportDialog extends React.Component<ExportDialogProps, ExportDialo
     }
 
     private dummyExport(exportMetadata: ExportMetadata) {
-        // abc
+        download(exportMetadata, this.props.reducer);
     }
 }

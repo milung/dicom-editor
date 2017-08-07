@@ -8,7 +8,7 @@ export function containsImage(dicomData: DicomSimpleData): boolean {
     let result: boolean = false;
     dicomData.entries.forEach((entry) => {
         if (entry !== undefined
-            && entry.tagVR === 'OW'
+            && entry.tagVR === 'OB'
             && entry.tagName === 'Pixel Data'
             && entry.tagValue.length > 0) {
             result = true;
