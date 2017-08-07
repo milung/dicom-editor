@@ -1,27 +1,12 @@
+import { DicomSimpleData } from './../model/dicom-entry';
 import { DicomEntry } from '../model/dicom-entry';
 import { dicomDictionary } from './dicom-dictionary';
 import { convertFileToArrayBuffer } from './file-converter';
 // import { translateTagGroup } from './group-name-translator';
-import { DicomSimpleData } from '../model/dicom-entry';
 
 import * as dicomParser from 'dicom-parser';
 
-// interface Dataset {
-//     byteArray: any;
-//     byteArrayParser: any;
-//     elements: any;
-//     warnings: any;
-//     string(a: any,b: any): any;
-//     text(a: any,b: any): any;
-//     float(a: any,b: any): any;
-//     double(a: any,b: any): any;
-//     uint16(a: any,b: any): any;
-//     uint32(a: any,b: any): any;
-//     uint32(a: any,b: any): any;
-//     int16(a: any,b: any): any;
-//     int32(a: any,b: any): any;
-//     attributeTag(a: any): any            
-// };
+const SOP_CLASS_TAG = '00080016';
 
 export class DicomReader {
 
@@ -80,6 +65,23 @@ export class DicomReader {
         let numFrames = dataset.intString('x00280008');
         // if number of frame tag is undefined, try to display frame 1
         return numFrames === undefined ? 1 : numFrames;
+    }
+
+    /**
+     * @description reads sop class from parsed dicom entries
+     * @param {DicomSimpleData} parsedDicom dicom data
+     * @returns {string} SOP class found in parsed dicom or undefined if no SOP class was found
+     */
+    public getSopClassFromParsedDicom(parsedDicom: DicomSimpleData): string | undefined {
+        let entries = parsedDicom.entries.filter((entry) => {
+            return (entry.tagGroup + entry.tagElement) === SOP_CLASS_TAG;
+        });
+
+        if (entries && entries.length > 0) {
+            return entries[0].tagValue;
+        } else {
+            return undefined;
+        }
     }
 
     /**

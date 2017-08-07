@@ -1,7 +1,9 @@
-import { DicomExtendedData, DicomSimpleData, DicomEntry,
+import {
+    DicomExtendedData, DicomSimpleData, DicomEntry,
     DicomExtendedComparisonData, DicomSimpleComparisonData, DicomComparisonData
 } from './../model/dicom-entry';
 import { getModuleNamesForTag } from './module-name-translator';
+import { moduleNameBelongsToSopClass } from './sop-class-handler';
 
 export function convertSimpleDicomToExtended(simpleDicom: DicomSimpleData): DicomExtendedData {
     let result: DicomExtendedData = {
@@ -76,4 +78,21 @@ export function sortDicomComparisonEntries(entries: DicomComparisonData[]): Dico
 
         return groupElement;
     });
+}
+
+/**
+ * @description filters modules that do not belong to given Sop class
+ * @param {DicomExtendedData} originalData data to filter
+ * @param {string} sopClass clas to filter by
+ * @returns {DicomExtendedData} filtered result data containing only modules 
+ * that belong to given sop class
+ */
+export function filterRedundantModulesBySopClass(originalData: DicomExtendedData, sopClass: string): DicomExtendedData {
+    let result: DicomExtendedData = {};
+    for (var moduleName in originalData) {
+        if (moduleNameBelongsToSopClass(moduleName, sopClass)) {
+            result[moduleName] = originalData[moduleName];
+        }
+    }
+    return result;
 }

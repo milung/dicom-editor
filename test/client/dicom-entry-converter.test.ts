@@ -1,6 +1,6 @@
 import { DicomSimpleData, DicomExtendedData, DicomEntry } from './../../src/client/model/dicom-entry';
 import { expect } from 'chai';
-import { convertSimpleDicomToExtended, sortDicomEntries } from '../../src/client/utils/dicom-entry-converter';
+import { convertSimpleDicomToExtended, sortDicomEntries, filterRedundantModulesBySopClass } from '../../src/client/utils/dicom-entry-converter';
 import { getModuleNamesForTag } from '../../src/client/utils/module-name-translator';
 
 // convertSimpleDicomToExtended
@@ -145,7 +145,7 @@ describe('dicom-entry-converter-sortDicomEntries', () => {
                 tagVR: 'VM',
                 tagVM: '2',
                 colour: '#000000',
-                sequence: []    
+                sequence: []
 
             },
             {
@@ -167,7 +167,7 @@ describe('dicom-entry-converter-sortDicomEntries', () => {
                 tagVR: 'VM',
                 tagVM: '2',
                 colour: '#000000',
-                sequence: []    
+                sequence: []
 
             }
         ];
@@ -246,4 +246,90 @@ describe('dicom-entry-converter-sortDicomEntries', () => {
         let sortedEntries = sortDicomEntries(originalEntries);
         expect(sortedEntries).to.deep.equal(expectedEntries);
     })
+});
+
+describe('DicomEntryConverter -> filterRedundantModulesBySopClass()', () => {
+    it('should return correctly filtered modules by sop class', () => {
+
+        let expectedFiltered: DicomExtendedData = {
+            'TEST MODULE 1':
+            [
+                {
+                    tagGroup: '0008',
+                    tagElement: '0145',
+                    tagName: 'PatientName',
+                    tagValue: 'Michal Mrkvicka',
+                    tagVR: 'PN',
+                    tagVM: '2',
+                    colour: '#000000',
+                    sequence: []
+                },
+                {
+                    tagGroup: '0008',
+                    tagElement: '1548',
+                    tagName: 'PatientAge',
+                    tagValue: '18',
+                    tagVR: 'PA',
+                    tagVM: '1',
+                    colour: '#000000',
+                    sequence: []
+                }
+            ]
+
+        };
+
+        let dicomExtended: DicomExtendedData = {
+            'TEST MODULE 1':
+            [
+                {
+                    tagGroup: '0008',
+                    tagElement: '0145',
+                    tagName: 'PatientName',
+                    tagValue: 'Michal Mrkvicka',
+                    tagVR: 'PN',
+                    tagVM: '2',
+                    colour: '#000000',
+                    sequence: []
+                },
+                {
+                    tagGroup: '0008',
+                    tagElement: '1548',
+                    tagName: 'PatientAge',
+                    tagValue: '18',
+                    tagVR: 'PA',
+                    tagVM: '1',
+                    colour: '#000000',
+                    sequence: []
+                }
+            ]
+            ,
+            'Module 2':
+            [
+                {
+                    tagGroup: '0010',
+                    tagElement: '0145',
+                    tagName: 'PatientName',
+                    tagValue: 'Michal Mrkvicka',
+                    tagVR: 'PN',
+                    tagVM: '2',
+                    colour: '#000000',
+                    sequence: []
+                },
+                {
+                    tagGroup: '0010',
+                    tagElement: '1548',
+                    tagName: 'PatientAge',
+                    tagValue: '18',
+                    tagVR: 'PA',
+                    tagVM: '1',
+                    colour: '#000000',
+                    sequence: []
+                }
+            ]
+        }
+
+        let actualFiltered = filterRedundantModulesBySopClass(dicomExtended, 'TEST SOP CLASS');
+
+        expect(actualFiltered).to.deep.equal(expectedFiltered);
+    });
 });

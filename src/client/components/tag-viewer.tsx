@@ -3,13 +3,18 @@ import { DicomSimpleTable } from './dicom-table/dicom-simple-table';
 import { TableMode } from '../model/table-enum';
 import { HeavyweightFile, SelectedFile } from '../model/file-interfaces';
 import { DicomExtendedTable } from './dicom-table/dicom-extended-table';
-import { convertSimpleDicomToExtended, convertSimpleDicomToExtendedComparison } from '../utils/dicom-entry-converter';
-import { DicomSimpleData, DicomSimpleComparisonData } from '../model/dicom-entry';
+import {
+    convertSimpleDicomToExtended,
+    convertSimpleDicomToExtendedComparison,
+    filterRedundantModulesBySopClass
+} from '../utils/dicom-entry-converter';
+import { DicomSimpleData, DicomSimpleComparisonData, DicomExtendedData } from '../model/dicom-entry';
 import { compareTwoFiles } from '../utils/dicom-comparator';
 import { ApplicationStateReducer } from '../application-state';
 import { DicomSimpleComparisonTable } from './dicom-table/dicom-simple-comparison-table';
 import { DicomExtendedComparisonTable } from './dicom-table/dicom-extended-comparison-table';
 import { FileSearcher } from '../utils/file-searcher';
+import { DicomReader } from '../utils/dicom-reader';
 
 interface TagViewerProps {
     tableMode: TableMode;
@@ -81,11 +86,20 @@ export default class TagViewer extends React.Component<TagViewerProps, TagViewer
     }
 
     private renderExtendedTable(data: DicomSimpleData): JSX.Element {
-        return data.entries.length >= 1 ? (
+        let reader = new DicomReader();
+        let sopClass = reader.getSopClassFromParsedDicom(data);
+
+        let filtered: DicomExtendedData = {};
+
+        if (sopClass) {
+            filtered = filterRedundantModulesBySopClass(convertSimpleDicomToExtended(data), sopClass);
+        }
+
+        return (filtered.entries && filtered.entries.length >= 1) ? (
             <div>
-                <DicomExtendedTable data={convertSimpleDicomToExtended(data)} />
+                <DicomExtendedTable data={filtered} />
             </div>
-        ) : (<div />);
+        ) : (<div>No data to display or no modules found for SOP class: {sopClass}</ div>);
     }
 
     private renderSimpleComparisonTable(data: DicomSimpleComparisonData): JSX.Element {
