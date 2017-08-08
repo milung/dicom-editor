@@ -1757,6 +1757,12 @@ expand-range@^1.8.1:
   dependencies:
     fill-range "^2.1.0"
 
+express-http-to-https@^1.1.2:
+  version "1.1.2"
+  resolved "https://registry.yarnpkg.com/express-http-to-https/-/express-http-to-https-1.1.2.tgz#e4626da2fe9433d8665e487e14f5f5fa0fc7b59d"
+  dependencies:
+    express "^4.15.3"
+
 express@^4.13.3, express@^4.15.3:
   version "4.15.3"
   resolved "https://registry.yarnpkg.com/express/-/express-4.15.3.tgz#bab65d0f03aa80c358408972fc700f916944b662"
