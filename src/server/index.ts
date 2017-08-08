@@ -4,12 +4,11 @@ const app = express();
 app.set('view engine', 'pug');
 app.use(express.static('public'));
 
-app.get('/*', function (req, res) {
+app.get('*', function (req: express.Request, res: express.Response) {
     if (req.hostname !== 'localhost') {
-        res.redirect(process.env.root + req.url)
+        res.redirect(process.env.root + req.url);
     }
-    console.log(process.env.root + req.url);
-})
+});
 
 var port = process.env.PORT || 8080;
 app.listen(port);

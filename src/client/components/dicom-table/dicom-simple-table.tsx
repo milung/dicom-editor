@@ -3,25 +3,36 @@ import { DicomEntry } from '../../model/dicom-entry';
 import { DicomTableHeader } from './dicom-table-header';
 import { DicomTableRow } from './dicom-table-row';
 import { TableHeader, Table, TableBody } from 'material-ui';
+import { DicomSequenceRow } from './dicom-sequence-row';
 
 export interface DicomSimpleTableProps {
     entries: DicomEntry[];
-
 }
 
 export interface DicomSimpleTableState {
-
+    expandedSequences: {};
 }
 
 // This component displays a table of all entries belonging to a single module
 export class DicomSimpleTable extends React.Component<DicomSimpleTableProps, DicomSimpleTableState> {
+
     public constructor(props: DicomSimpleTableProps) {
         super(props);
+        this.state = {
+            expandedSequences: { '': false }
+        };
+        this.props.entries.forEach((entry) => {
+            if (entry.sequence.length > 0) {
+                this.state.expandedSequences[entry.tagGroup + entry.tagElement] = false;
+            }
+        });
     }
 
     public render() {
+
         return (
             <Table selectable={false}>
+
                 <TableHeader
                     className="tableHeader"
                     displaySelectAll={false}
@@ -30,6 +41,7 @@ export class DicomSimpleTable extends React.Component<DicomSimpleTableProps, Dic
                     {/* Header containing tag value names*/}
                     <DicomTableHeader />
                 </TableHeader>
+
                 <TableBody selectable={false} displayRowCheckbox={false}>
                     {this.getEntryRows(this.props.entries, 0)}
                 </TableBody>
@@ -46,35 +58,45 @@ export class DicomSimpleTable extends React.Component<DicomSimpleTableProps, Dic
         return entries.reduce(
             (arr: JSX.Element[], entry, entryIndex) => {
 
-                if (entry.sequence !== undefined) {
-                    // for each sequence entry modify tag to separate sequence tags from ordinary ones
-                    for (var i = 0; i < entry.sequence.length; i++) {
-                        // prevent from adding multiple sequence delimiters
-                        if (entry.sequence[i].tagGroup.length === 4) {
-                            entry.sequence[i].tagGroup = ' > ' + entry.sequence[i].tagGroup;
-                        }
+                let dasKey = ((depth + 1) * 100000 + (entryIndex));
+
+                if (entry.sequence.length > 0) {
+                    arr.push(
+                        <DicomSequenceRow
+                            entry={entry}
+                            key={dasKey}
+                            handleClick={() => this.handleSequenceClick(entry)}
+                        />
+                    );
+
+                    if (this.state.expandedSequences[entry.tagGroup + entry.tagElement]) {
+                        this.getEntryRows(entry.sequence, depth + 1).forEach((row, ind) => arr.push(row));
                     }
 
-                    arr.push(
-                        <DicomTableRow
-                            entry={entry}
-                            key={entryIndex + (10000 * (depth + 1))}
-                            shouldShowTag={true}
-                        />);
-                    arr = arr.concat(this.getEntryRows(entry.sequence, ++depth));
                 } else {
-
-                    // single row with single DicomEntry
+                    // single row with single DicomEntry 
                     arr.push(
                         <DicomTableRow
                             entry={entry}
-                            key={entryIndex + (100000 * (depth + 1))}
+                            key={dasKey}
                             shouldShowTag={true}
+                            margin={(25 * depth).toString() + 'px'}
                         />
                     );
                 }
+
                 return arr;
             },
             []);
+    }
+
+    private handleSequenceClick(entry: DicomEntry) {
+        let tempDict = this.state.expandedSequences;
+        if (tempDict[entry.tagGroup + entry.tagElement] === true) {
+            tempDict[entry.tagGroup + entry.tagElement] = false;
+        } else {
+            tempDict[entry.tagGroup + entry.tagElement] = true;
+        }
+        this.setState({ expandedSequences: tempDict });
     }
 }

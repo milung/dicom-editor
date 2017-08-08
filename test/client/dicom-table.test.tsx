@@ -285,14 +285,21 @@ describe('dicom-table', () => {
    });
 
    it('Render the correct amount of rows in the table of entries within a single module', () => {
-       const div = shallow(<DicomSimpleTable entries={dicomTestEntries} />);
+       const div = shallow(<DicomSimpleTable entries={dicomTestEntries}/>);
        expect(div.find('Table').find('TableBody').children('DicomTableRow').length).to.equal(4);
    });
 
-   it('Render sequence in simple table correctly', () => {
-       const div = shallow(<DicomSimpleTable entries={dicomSequenceTestEntry} />);
-       expect(div.find('Table').find('TableBody').children('DicomTableRow').length).to.equal(4);
+   it('Do not render sequence in simple table', () => {
+       const div = shallow(<DicomSimpleTable entries={dicomSequenceTestEntry}/>);
+       expect(div.find('Table').find('TableBody').children('DicomTableRow').length).to.equal(0);
    });
+   
+//    lateeeer  :(((((((((   
+//    it('Render sequence in simple table (after a click)', () => {
+//        const div = shallow(<DicomSimpleTable entries={dicomSequenceTestEntry}/>);
+//        div.find('Table').find('TableBody').childAt(1);
+//        expect(div.find('Table').find('TableBody').children('DicomTableRow').length).to.equal(0);
+//    });
 
    it('Render same row for simple comparison table', () => {
        const div = shallow(<DicomSimpleComparisonTable comparisonData={comparisonHeaderData} />);

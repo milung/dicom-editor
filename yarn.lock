@@ -884,9 +884,9 @@ code-point-at@^1.0.0:
   version "1.1.0"
   resolved "https://registry.yarnpkg.com/code-point-at/-/code-point-at-1.1.0.tgz#0d070b4d043a5bea33a2f1a40e2edb3d9a4ccf77"
 
-codepage@~1.11.0:
-  version "1.11.0"
-  resolved "https://registry.yarnpkg.com/codepage/-/codepage-1.11.0.tgz#1076095b9f03b5ca04f43873fa1a627742285de2"
+codepage@~1.10.1:
+  version "1.10.2"
+  resolved "https://registry.yarnpkg.com/codepage/-/codepage-1.10.2.tgz#bebd25224dc626a0007ea014e076ce057374769e"
   dependencies:
     commander "~2.11.0"
     exit-on-epipe "~1.0.1"
@@ -4832,7 +4832,7 @@ sprintf-js@~1.0.2:
   version "1.0.3"
   resolved "https://registry.yarnpkg.com/sprintf-js/-/sprintf-js-1.0.3.tgz#04e6926f662895354f3dd015203633b857297e2c"
 
-ssf@~0.10.1:
+ssf@~0.10.0:
   version "0.10.1"
   resolved "https://registry.yarnpkg.com/ssf/-/ssf-0.10.1.tgz#f23d82b63792ef56089089c1cd0c848e911cdba6"
   dependencies:
@@ -5592,17 +5592,17 @@ xlsx-style@^0.8.13:
     jszip "2.4.0"
     ssf "~0.8.1"
 
-xlsx@^0.11.1:
-  version "0.11.1"
-  resolved "https://registry.yarnpkg.com/xlsx/-/xlsx-0.11.1.tgz#02ded68001ac941b7ef9dd1cc03455e01bb0ad1e"
+xlsx@^0.10.9:
+  version "0.10.9"
+  resolved "https://registry.yarnpkg.com/xlsx/-/xlsx-0.10.9.tgz#2c43d8c04ec2521d61955287246ea8defe19275f"
   dependencies:
     adler-32 "~1.1.0"
     cfb "~0.12.0"
-    codepage "~1.11.0"
+    codepage "~1.10.1"
     commander "~2.11.0"
     crc-32 "~1.1.0"
     exit-on-epipe "~1.0.1"
-    ssf "~0.10.1"
+    ssf "~0.10.0"
 
 xml-char-classes@^1.0.0:
   version "1.0.0"

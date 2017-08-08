@@ -9,6 +9,7 @@ var fileDownload = require('react-file-download');
 export interface DicomTableRowProps {
     entry: DicomEntry;
     shouldShowTag: boolean;
+    margin?: string;
 }
 
 export interface DicomTableRowState {
@@ -25,7 +26,7 @@ export class DicomTableRow extends React.Component<DicomTableRowProps, DicomTabl
 
     public render() {
         let tableRowStyle = { color: this.props.entry.colour };
-        let tagColor = { color: '#000000' };
+        let tagColor = this.props.margin ? { paddingLeft: this.props.margin, color: '#000000' } : { color: '#000000' };
         let tableRowColumnStyle = {
             whiteSpace: 'normal',
             wordWrap: 'break-word'

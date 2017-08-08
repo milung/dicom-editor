@@ -79,7 +79,7 @@ export default class TagViewer extends React.Component<TagViewerProps, TagViewer
 
         return data.entries.length >= 1 ? (
             <div>
-                <DicomSimpleTable entries={data.entries} />
+                <DicomSimpleTable entries={data.entries}/>
             </div>
         ) : (<div />);
 
