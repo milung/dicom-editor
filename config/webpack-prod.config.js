@@ -37,7 +37,7 @@ module.exports = {
                 test: /\.tsx?$/,
                 enforce: 'pre',
                 loader: 'tslint-loader',
-                options: { 
+                options: {
                     configFile: './tslint.json',
                     tsConfigFile: './tsconfig.json',
                     emitErrors: true,
@@ -46,6 +46,14 @@ module.exports = {
                 }
             }
         ]
+    },
+    externals: [
+        {
+            './cptable': 'var cptable'
+        }
+    ],
+    node: {
+        fs: "empty"
     },
     plugins: [
         new HtmlWebpackPlugin({
