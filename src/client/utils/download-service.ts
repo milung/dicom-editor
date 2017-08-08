@@ -3,6 +3,7 @@ import { ApplicationStateReducer } from '../application-state';
 import { dicomDataToExcel } from './dicom-table-exporter';
 import { getImageFile } from './image-file-maker';
 import { ExportMetadata } from '../model/export-interfaces';
+import { Zipper } from '../utils/zip-service';
 
 /**
  * @description download one file or more files in zip
@@ -19,7 +20,8 @@ export function download(data: ExportMetadata, reducer: ApplicationStateReducer)
     } else if (data.image && (!data.multiframe && !data.excel)) {
         downloadOneItem(getImageFile(), 'Image');
     } else if ((data.excel && data.image) || (data.multiframe && data.image)) {
-        // call zipper
+        let zipper = new Zipper();
+        zipper.zipp(data, reducer);
     }
 }
 

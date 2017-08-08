@@ -43,6 +43,10 @@
     "@types/express-serve-static-core" "*"
     "@types/serve-static" "*"
 
+"@types/file-saver@^0.0.1":
+  version "0.0.1"
+  resolved "https://registry.yarnpkg.com/@types/file-saver/-/file-saver-0.0.1.tgz#3a3a37884b840e2c4c55770c9fa75a3e11784ef8"
+
 "@types/history@*":
   version "4.6.0"
   resolved "https://registry.yarnpkg.com/@types/history/-/history-4.6.0.tgz#093d67ed780d889c9543f6dca24ebee0b6b9fc45"
@@ -54,6 +58,10 @@
     "@types/node" "*"
     "@types/tough-cookie" "*"
     parse5 "^3.0.2"
+
+"@types/jszip@^0.0.33":
+  version "0.0.33"
+  resolved "https://registry.yarnpkg.com/@types/jszip/-/jszip-0.0.33.tgz#01e5f8a244aabe5f05b22f1325c4b575a6714e05"
 
 "@types/lodash@^4.14.71":
   version "4.14.71"
@@ -714,6 +722,10 @@ caniuse-db@^1.0.30000529, caniuse-db@^1.0.30000634, caniuse-db@^1.0.30000639:
   version "1.0.30000703"
   resolved "https://registry.yarnpkg.com/caniuse-db/-/caniuse-db-1.0.30000703.tgz#c7d899b8adea6da1aa587355d39ac8533f878403"
 
+canvas-to-blob@^0.0.0:
+  version "0.0.0"
+  resolved "https://registry.yarnpkg.com/canvas-to-blob/-/canvas-to-blob-0.0.0.tgz#f1db4dd083ddc74a78fe5bce6a869786b59f51f3"
+
 caseless@~0.12.0:
   version "0.12.0"
   resolved "https://registry.yarnpkg.com/caseless/-/caseless-0.12.0.tgz#1b681c21ff84033c826543090689420d187151dc"
@@ -872,12 +884,11 @@ code-point-at@^1.0.0:
   version "1.1.0"
   resolved "https://registry.yarnpkg.com/code-point-at/-/code-point-at-1.1.0.tgz#0d070b4d043a5bea33a2f1a40e2edb3d9a4ccf77"
 
-codepage@~1.10.1:
-  version "1.10.1"
-  resolved "https://registry.yarnpkg.com/codepage/-/codepage-1.10.1.tgz#3532e6128c92b281392d10c5e45da24110dd9996"
+codepage@~1.11.0:
+  version "1.11.0"
+  resolved "https://registry.yarnpkg.com/codepage/-/codepage-1.11.0.tgz#1076095b9f03b5ca04f43873fa1a627742285de2"
   dependencies:
     commander "~2.11.0"
-    concat-stream "~1.6.0"
     exit-on-epipe "~1.0.1"
     voc "~1.0.0"
 
@@ -892,12 +903,6 @@ codepage@~1.3.6:
 collapse-white-space@^1.0.0:
   version "1.0.3"
   resolved "https://registry.yarnpkg.com/collapse-white-space/-/collapse-white-space-1.0.3.tgz#4b906f670e5a963a87b76b0e1689643341b6023c"
-
-collections@^3.0.0:
-  version "3.0.0"
-  resolved "https://registry.yarnpkg.com/collections/-/collections-3.0.0.tgz#27e3894df1b24cedfc55a1bbb0c0da12f68bab31"
-  dependencies:
-    weak-map "~1.0.x"
 
 color-convert@^1.0.0, color-convert@^1.3.0:
   version "1.9.0"
@@ -955,10 +960,6 @@ commander@2.9.0, commander@2.9.x, commander@~2.9.0:
   dependencies:
     graceful-readlink ">= 1.0.0"
 
-commander@^2.9.0:
-  version "2.11.0"
-  resolved "https://registry.yarnpkg.com/commander/-/commander-2.11.0.tgz#157152fd1e7a6c8d98a5b715cf376df928004563"
-
 commondir@^1.0.1:
   version "1.0.1"
   resolved "https://registry.yarnpkg.com/commondir/-/commondir-1.0.1.tgz#ddd800da0c66127393cca5950ea968a3aaf1253b"
@@ -985,7 +986,7 @@ concat-map@0.0.1:
   version "0.0.1"
   resolved "https://registry.yarnpkg.com/concat-map/-/concat-map-0.0.1.tgz#d8a96bd77fd68df7793a73036a3ba0d5405d477b"
 
-concat-stream@, concat-stream@^1.4.7, concat-stream@~1.6.0:
+concat-stream@, concat-stream@^1.4.7:
   version "1.6.0"
   resolved "https://registry.yarnpkg.com/concat-stream/-/concat-stream-1.6.0.tgz#0aac662fd52be78964d5532f694784e70110acf7"
   dependencies:
@@ -1042,6 +1043,10 @@ core-js@^1.0.0:
 core-js@^2.4.0:
   version "2.4.1"
   resolved "https://registry.yarnpkg.com/core-js/-/core-js-2.4.1.tgz#4de911e667b0eae9124e34254b53aea6fc618d3e"
+
+core-js@~2.3.0:
+  version "2.3.0"
+  resolved "https://registry.yarnpkg.com/core-js/-/core-js-2.3.0.tgz#fab83fbb0b2d8dc85fa636c4b9d34c75420c6d65"
 
 core-util-is@~1.0.0:
   version "1.0.2"
@@ -1600,6 +1605,10 @@ es6-map@^0.1.3:
     es6-symbol "~3.1.1"
     event-emitter "~0.3.5"
 
+es6-promise@~3.0.2:
+  version "3.0.2"
+  resolved "https://registry.yarnpkg.com/es6-promise/-/es6-promise-3.0.2.tgz#010d5858423a5f118979665f46486a95c6ee2bb6"
+
 es6-set@~0.1.5:
   version "0.1.5"
   resolved "https://registry.yarnpkg.com/es6-set/-/es6-set-0.1.5.tgz#d2b3ec5d4d800ced818db538d28974db0a73ccb1"
@@ -1731,12 +1740,6 @@ execa@^0.7.0:
     p-finally "^1.0.0"
     signal-exit "^3.0.0"
     strip-eof "^1.0.0"
-excel-export@^0.5.1:
-  version "0.5.1"
-  resolved "https://registry.yarnpkg.com/excel-export/-/excel-export-0.5.1.tgz#6d08787f98b2ec931e4b3dcff18cc9083bbb8b77"
-  dependencies:
-    collections "^3.0.0"
-    node-zip "1.x"
 
 exit-on-epipe@~1.0.1:
   version "1.0.1"
@@ -1845,6 +1848,10 @@ fbjs@^0.8.1, fbjs@^0.8.4, fbjs@^0.8.6, fbjs@^0.8.9:
     promise "^7.1.1"
     setimmediate "^1.0.5"
     ua-parser-js "^0.7.9"
+
+file-saver@^1.3.3:
+  version "1.3.3"
+  resolved "https://registry.yarnpkg.com/file-saver/-/file-saver-1.3.3.tgz#cdd4c44d3aa264eac2f68ec165bc791c34af1232"
 
 filename-regex@^2.0.0:
   version "2.0.1"
@@ -2801,11 +2808,15 @@ jszip@2.4.0:
   dependencies:
     pako "~0.2.5"
 
-jszip@2.5.0:
-  version "2.5.0"
-  resolved "https://registry.yarnpkg.com/jszip/-/jszip-2.5.0.tgz#7444fd8551ddf3e5da7198fea0c91bc8308cc274"
+jszip@^3.1.3:
+  version "3.1.3"
+  resolved "https://registry.yarnpkg.com/jszip/-/jszip-3.1.3.tgz#8a920403b2b1651c0fc126be90192d9080957c37"
   dependencies:
-    pako "~0.2.5"
+    core-js "~2.3.0"
+    es6-promise "~3.0.2"
+    lie "~3.1.0"
+    pako "~1.0.2"
+    readable-stream "~2.0.6"
 
 keycode@^2.1.8:
   version "2.1.9"
@@ -2854,6 +2865,12 @@ lie@3.0.2:
     immediate "~3.0.5"
     inline-process-browser "^1.0.0"
     unreachable-branch-transform "^0.3.0"
+
+lie@~3.1.0:
+  version "3.1.1"
+  resolved "https://registry.yarnpkg.com/lie/-/lie-3.1.1.tgz#9a436b2cc7746ca59de7a41fa469b3efb76bd87e"
+  dependencies:
+    immediate "~3.0.5"
 
 load-json-file@^1.0.0:
   version "1.1.0"
@@ -3370,12 +3387,6 @@ node-pre-gyp@^0.6.36:
     tar "^2.2.1"
     tar-pack "^3.4.0"
 
-node-zip@1.x:
-  version "1.1.1"
-  resolved "https://registry.yarnpkg.com/node-zip/-/node-zip-1.1.1.tgz#94d1ad674a3cd46a1588dd736f4a9a78c757eb62"
-  dependencies:
-    jszip "2.5.0"
-
 nopt@^4.0.1:
   version "4.0.1"
   resolved "https://registry.yarnpkg.com/nopt/-/nopt-4.0.1.tgz#d0d4685afd5415193c8c7505602d0d17cd64474d"
@@ -3638,6 +3649,10 @@ p-map@^1.1.1:
 pako@~0.2.0, pako@~0.2.5:
   version "0.2.9"
   resolved "https://registry.yarnpkg.com/pako/-/pako-0.2.9.tgz#f3f7522f4ef782348da8161bad9ecfd51bf83a75"
+
+pako@~1.0.2:
+  version "1.0.5"
+  resolved "https://registry.yarnpkg.com/pako/-/pako-1.0.5.tgz#d2205dfe5b9da8af797e7c163db4d1f84e4600bc"
 
 param-case@2.1.x:
   version "2.1.1"
@@ -4335,6 +4350,17 @@ readable-stream@^2.0.1, readable-stream@^2.0.2, readable-stream@^2.0.5, readable
     string_decoder "~1.0.3"
     util-deprecate "~1.0.1"
 
+readable-stream@~2.0.6:
+  version "2.0.6"
+  resolved "https://registry.yarnpkg.com/readable-stream/-/readable-stream-2.0.6.tgz#8f90341e68a53ccc928788dacfcd11b36eb9b78e"
+  dependencies:
+    core-util-is "~1.0.0"
+    inherits "~2.0.1"
+    isarray "~1.0.0"
+    process-nextick-args "~1.0.6"
+    string_decoder "~0.10.x"
+    util-deprecate "~1.0.1"
+
 readdirp@^2.0.0:
   version "2.1.0"
   resolved "https://registry.yarnpkg.com/readdirp/-/readdirp-2.1.0.tgz#4ed0ad060df3073300c48440373f72d1cc642d78"
@@ -4806,7 +4832,7 @@ sprintf-js@~1.0.2:
   version "1.0.3"
   resolved "https://registry.yarnpkg.com/sprintf-js/-/sprintf-js-1.0.3.tgz#04e6926f662895354f3dd015203633b857297e2c"
 
-ssf@~0.10.0:
+ssf@~0.10.1:
   version "0.10.1"
   resolved "https://registry.yarnpkg.com/ssf/-/ssf-0.10.1.tgz#f23d82b63792ef56089089c1cd0c848e911cdba6"
   dependencies:
@@ -5376,9 +5402,6 @@ wbuf@^1.1.0, wbuf@^1.7.2:
 webidl-conversions@^4.0.0, webidl-conversions@^4.0.1:
   version "4.0.1"
   resolved "https://registry.yarnpkg.com/webidl-conversions/-/webidl-conversions-4.0.1.tgz#8015a17ab83e7e1b311638486ace81da6ce206a0"
-weak-map@~1.0.x:
-  version "1.0.5"
-  resolved "https://registry.yarnpkg.com/weak-map/-/weak-map-1.0.5.tgz#79691584d98607f5070bd3b70a40e6bb22e401eb"
 
 webpack-dev-middleware@^1.11.0:
   version "1.11.0"
@@ -5556,6 +5579,7 @@ write-file-atomic@^1.1.4:
     graceful-fs "^4.1.11"
     imurmurhash "^0.1.4"
     slide "^1.1.5"
+
 xlsx-style@^0.8.13:
   version "0.8.13"
   resolved "https://registry.yarnpkg.com/xlsx-style/-/xlsx-style-0.8.13.tgz#ed238d6b8c0562f9447c2906abbded2d339e0486"
@@ -5568,17 +5592,17 @@ xlsx-style@^0.8.13:
     jszip "2.4.0"
     ssf "~0.8.1"
 
-xlsx@^0.10.9:
-  version "0.10.9"
-  resolved "https://registry.yarnpkg.com/xlsx/-/xlsx-0.10.9.tgz#2c43d8c04ec2521d61955287246ea8defe19275f"
+xlsx@^0.11.1:
+  version "0.11.1"
+  resolved "https://registry.yarnpkg.com/xlsx/-/xlsx-0.11.1.tgz#02ded68001ac941b7ef9dd1cc03455e01bb0ad1e"
   dependencies:
     adler-32 "~1.1.0"
     cfb "~0.12.0"
-    codepage "~1.10.1"
+    codepage "~1.11.0"
     commander "~2.11.0"
     crc-32 "~1.1.0"
     exit-on-epipe "~1.0.1"
-    ssf "~0.10.0"
+    ssf "~0.10.1"
 
 xml-char-classes@^1.0.0:
   version "1.0.0"
