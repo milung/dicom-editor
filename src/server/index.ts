@@ -4,21 +4,11 @@ const app = express();
 app.set('view engine', 'pug');
 app.use(express.static('public'));
 
-app.get('/', (req, res) => {
-    res.send('Hello worldy!');
-});
+app.get('*', function (req, res) {
+    if (req.hostname !== 'localhost') {
+        res.redirect(process.env.root + req.url)
+    }
+})
 
-app.get('/hello/:who',  (req, res) => {
-  res.render('hello', { 
-      title: 'Hey', 
-      message: `Hello ${req.params.who}, my friendly friend!` });
-});
-
-app.get('/calc/add',  (req, res) => { 
-    let sum = parseInt(req.query.left, 10) + parseInt(req.query.right, 10);
-    res.send(`${req.query.left} + ${req.query.right} = ${sum}` );
-});
-
-var port = process.env.PORT || 8080; 
-
+var port = process.env.PORT || 8080;
 app.listen(port);
