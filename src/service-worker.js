@@ -2,6 +2,7 @@ var CACHE_NAME = 'pwa-dicom-viewer-cache-v1';
 var urlsToCache = [
     '/',
     '/bundle.js',
+    '/index.html',
     '/assets/js/cornerstone-library/cornerstoneWADOImageLoaderWebWorker.js',
     '/assets/js/cornerstone-library/cornerstone.js',
     '/assets/js/cornerstone-library/codecs/Allcodecs.min.js',
@@ -20,10 +21,25 @@ self.addEventListener('install', function (event) {
 });
 
 self.addEventListener('fetch', function (event) {
-    console.log(event.request.url);
     event.respondWith(
-        caches.match(event.request).then(function (response) {
-            return response || fetch(event.request);
+        fetch(event.request).catch(function () {
+            return caches.match(event.request);
         })
+    );
+});
+
+self.addEventListener("activate", function (event) {
+    var cacheWhitelist = ['pwa-dicom-viewer-cache-v1'];
+
+    event.waitUntil(
+        caches.keys()
+            .then(function (allCaches) {
+                //Check all caches and delete old caches here
+                allCaches.map(function (cacheName) {
+                    if (cacheWhitelist.indexOf(cacheName) === -1) {
+                        return caches.delete(cacheName);
+                    }
+                });
+            })
     );
 });
