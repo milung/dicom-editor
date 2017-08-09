@@ -1,7 +1,8 @@
 var CACHE_NAME = 'pwa-dicom-viewer-cache-v1';
 var urlsToCache = [
     '.',
-    'bundle.js'
+    'bundle.js',
+    'assets/manifest.json'
 ];
 
 self.addEventListener('install', function (event) {
