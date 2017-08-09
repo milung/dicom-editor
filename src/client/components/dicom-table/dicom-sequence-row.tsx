@@ -4,6 +4,8 @@ import { DicomEntry } from '../../model/dicom-entry';
 import { ColorDictionary } from '../../utils/colour-dictionary';
 import './dicom-table.css';
 
+var ExpandIcon = require('react-icons/lib/md/arrow-drop-down');
+
 export interface DicomSequenceRowProps {
     entry: DicomEntry;
     handleClick?: () => void;
@@ -22,7 +24,7 @@ export class DicomSequenceRow extends React.Component<DicomSequenceRowProps, Dic
     }
 
     public render() {
-        let tableRowStyle = { color: this.props.entry.colour , backgroundColor: 'rgb(199, 213, 237)'};
+        let tableRowStyle = { color: this.props.entry.colour, backgroundColor: 'rgb(199, 213, 237)' };
         let tagColor = { color: '#000000' };
         let tableRowColumnStyle = {
             whiteSpace: 'normal',
@@ -32,7 +34,7 @@ export class DicomSequenceRow extends React.Component<DicomSequenceRowProps, Dic
         let rowClass = 'tagBorder';
         return (
             <TableRow style={tableRowStyle} className={rowClass} onRowClick={this.props.handleClick}>
-                <TableRowColumn style={tagColor}>
+                <TableRowColumn style={tagColor}><ExpandIcon className='expandable-icon' />
                     {tag}
                 </TableRowColumn>
                 <TableRowColumn style={tableRowColumnStyle}>{this.props.entry.tagName}</TableRowColumn>

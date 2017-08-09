@@ -10,7 +10,6 @@ background-color: #00BCD4;
     border-top: 2px solid rgb(0, 0, 0);
 }
 
-.offset{
-    margin-left: 80px;
-    border-top: 2px solid rgb(0, 0, 0);
+.expandable-icon {
+    margin-left: -10%;
 }
