@@ -26,7 +26,7 @@ export class ExportDialog extends React.Component<ExportDialogProps, ExportDialo
             <FlatButton
                 label="Cancel"
                 primary={true}
-                onTouchTap={() => { this.props.handleClosePopUpDialog(); }}
+                onTouchTap={() => { this.clearCheckBoxes(); this.props.handleClosePopUpDialog(); }}
             />
         ),
         (
@@ -37,7 +37,7 @@ export class ExportDialog extends React.Component<ExportDialogProps, ExportDialo
             />
         ),
     ];
-    
+
     constructor(props: ExportDialogProps) {
         super(props);
         this.state = {
@@ -113,9 +113,19 @@ export class ExportDialog extends React.Component<ExportDialogProps, ExportDialo
             multiframe: this.state.multiframe
         };
         this.dummyExport(exportMetadata);
+        this.clearCheckBoxes();
+        this.props.handleClosePopUpDialog();
     }
 
     private dummyExport(exportMetadata: ExportMetadata) {
         download(exportMetadata, this.props.reducer);
     }
+
+    private clearCheckBoxes() {
+        this.setState({
+            exportImage: false,
+            exportTags: false
+        });
+    }
+
 }

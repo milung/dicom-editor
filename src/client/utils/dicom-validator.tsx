@@ -8,9 +8,8 @@ export function containsImage(dicomData: DicomSimpleData): boolean {
     let result: boolean = false;
     dicomData.entries.forEach((entry) => {
         if (entry !== undefined
-            && entry.tagVR === 'OB'
-            && entry.tagName === 'Pixel Data'
-            && entry.tagValue.length > 0) {
+            && (entry.tagVR === 'OB' || entry.tagVR === 'OW')
+            && entry.tagName === 'Pixel Data') {
             result = true;
         }
     });
