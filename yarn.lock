@@ -3334,12 +3334,6 @@ no-case@^2.2.0:
   dependencies:
     lower-case "^1.1.1"
 
-node-excel-export@^1.4.2:
-  version "1.4.2"
-  resolved "https://registry.yarnpkg.com/node-excel-export/-/node-excel-export-1.4.2.tgz#e1c0c6480eff59ef333f86dfa4acd86f481d3d3b"
-  dependencies:
-    xlsx-style "^0.8.13"
-
 node-fetch@^1.0.1:
   version "1.7.1"
   resolved "https://registry.yarnpkg.com/node-fetch/-/node-fetch-1.7.1.tgz#899cb3d0a3c92f952c47f1b876f4c8aeabd400d5"

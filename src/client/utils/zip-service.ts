@@ -1,6 +1,6 @@
 
 import { ApplicationStateReducer } from '../application-state';
-// import { dicomDataToExcel } from './dicom-table-exporter';
+import { dicomDataToExcel } from './excel-export/dicom-table-exporter';
 import { getImageFile } from './image-file-maker';
 import { ExportMetadata } from '../model/export-interfaces';
 import { saveAs } from 'file-saver';
@@ -45,6 +45,7 @@ export class Zipper {
     private async imageToZip(reducer: ApplicationStateReducer) {
         let dicomReader: DicomReader = new DicomReader();
 
+        // <<<<<<<<<<<<<<<<<<<<<<<<<<<<< prec asi 
         var element = document.getElementById('dicomImage') as Element;
         cornerstone.enable(element);
 
@@ -60,10 +61,10 @@ export class Zipper {
     }
 
     private async excelToZip(reducer: ApplicationStateReducer) {
-        // var dicomData = this.zip.folder('DicomData');
+        var dicomData = this.zip.folder('DicomData');
         var dataToExcel = reducer.getState().currentFile;
         if (dataToExcel) {
-            // dicomData.file('dicomData.xlsx', dicomDataToExcel(dataToExcel), { binary: true });
+            dicomData.file('dicomData.xlsx', dicomDataToExcel(dataToExcel), { binary: true });
         }
     }
 

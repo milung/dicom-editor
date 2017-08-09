@@ -1,5 +1,5 @@
-import { HeavyweightFile } from '../model/file-interfaces';
-const excel = require('node-excel-export');
+import { HeavyweightFile } from '../../model/file-interfaces';
+const excel = require('./node-excel-exporter/index');
 
 export function dicomDataToExcel(file: HeavyweightFile) {
   // Definition of cell styles
