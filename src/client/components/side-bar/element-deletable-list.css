@@ -6,12 +6,11 @@
 }
 .clearIcon {
     cursor: pointer;
-    color: #ff1a1a;
-    background-color: #ffcccc;
+    color: #9e0000;
     padding: 2px;
     margin-left: 5px; 
 }
 .clearIcon:hover {
-    background-color: #ff9999;
+    background-color: #ffe0e0;
 }
 
