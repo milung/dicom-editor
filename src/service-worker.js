@@ -2,7 +2,6 @@ var CACHE_NAME = 'pwa-dicom-viewer-cache-v1';
 var urlsToCache = [
     '.',
     'bundle.js',
-    'service-worker.js',
     'assets/manifest.json',
     'assets/js/cornerstone-library/cornerstoneWADOImageLoaderWebWorker.js',
     'assets/js/cornerstone-library/cornerstone.js',
