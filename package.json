@@ -89,7 +89,6 @@
     "xlsx-style": "^0.8.13"
   },
   "dependencies": {
-    "express": "^4.15.3",
-    "express-http-to-https": "^1.1.2"
+    "express": "^4.15.3"
   }
 }
