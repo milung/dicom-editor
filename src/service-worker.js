@@ -21,12 +21,11 @@ self.addEventListener('install', function (event) {
 
 self.addEventListener('fetch', function (event) {
     console.log('FETCHING START');
-    event.respondWith(a => {
-        console.log('Fetch' + event.request);
+    event.respondWith(
         fetch(event.request).catch(function () {
             console.log('Match ' + event.request);
             return caches.match(event.request);
-        })}
+        })
     );
     console.log('FETCHING END');
 });
