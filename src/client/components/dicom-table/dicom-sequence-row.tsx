@@ -34,7 +34,7 @@ export class DicomSequenceRow extends React.Component<DicomSequenceRowProps, Dic
         let rowClass = 'tagBorder';
         return (
             <TableRow style={tableRowStyle} className={rowClass} onRowClick={this.props.handleClick}>
-                <TableRowColumn style={tagColor}><ExpandIcon className='expandable-icon' />
+                <TableRowColumn style={tagColor}><ExpandIcon className="expandable-icon" />
                     {tag}
                 </TableRowColumn>
                 <TableRowColumn style={tableRowColumnStyle}>{this.props.entry.tagName}</TableRowColumn>
