@@ -2,7 +2,12 @@ var CACHE_NAME = 'pwa-dicom-viewer-cache-v1';
 var urlsToCache = [
     '.',
     'bundle.js',
-    'assets/manifest.json'
+    'assets/manifest.json',
+    'assets/js/cornerstone-library/cornerstoneWADOImageLoaderWebWorker.js',
+    'assets/js/cornerstone-library/cornerstone.js',
+    'assets/js/cornerstone-library/codecs/Allcodecs.min.js',
+    'assets/img/logo.ico',
+    'assets/img/logo.png'
 ];
 
 self.addEventListener('install', function (event) {
@@ -15,11 +20,15 @@ self.addEventListener('install', function (event) {
 });
 
 self.addEventListener('fetch', function (event) {
-    event.respondWith(
+    console.log('FETCHING START');
+    event.respondWith(a => {
+        console.log('Fetch' + event.request);
         fetch(event.request).catch(function () {
+            console.log('Match ' + event.request);
             return caches.match(event.request);
-        })
+        })}
     );
+    console.log('FETCHING END');
 });
 
 self.addEventListener("activate", function (event) {
