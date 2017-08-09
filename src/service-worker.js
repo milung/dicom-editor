@@ -2,12 +2,12 @@ var CACHE_NAME = 'pwa-dicom-viewer-cache-v1';
 var urlsToCache = [
     '/',
     '/bundle.js',
-    'assets/js/cornerstone-library/cornerstoneWADOImageLoaderWebWorker.js',
-    'assets/js/cornerstone-library/cornerstone.js',
-    'assets/js/cornerstone-library/codecs/Allcodecs.min.js',
-    'assets/manifest.json',
-    'assets/img/logo.ico',
-    'assets/img/logo.png'
+    '/assets/js/cornerstone-library/cornerstoneWADOImageLoaderWebWorker.js',
+    '/assets/js/cornerstone-library/cornerstone.js',
+    '/assets/js/cornerstone-library/codecs/Allcodecs.min.js',
+    '/assets/manifest.json',
+    '/assets/img/logo.ico',
+    '/assets/img/logo.png'
 ];
 
 self.addEventListener('install', function (event) {
