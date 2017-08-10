@@ -33,7 +33,7 @@ describe('navigation', () => {
             switch (index) {
                 case 0: {
                     expect(item.props()).to.have.property('primaryText', 'Export');
-                    console.log(item.props());
+                    // console.log(item.props());
                 }
                 // case 1: {
                 //     expect(item.props()).to.have.property('primaryText', 'Save to browser');
