@@ -9,4 +9,23 @@
 .container-selectable-list {
     display: flex;
     align-items: center;
+    padding-right: 5%;
+}
+
+.clearIcon {
+    cursor: pointer;
+    color: #9e0000;
+    padding: 2px;
+    margin-left: 5px; 
+}
+
+.clear-icon-container {
+    margin-left: auto;
+}
+
+.truncate {
+    width: 250px;
+    white-space: nowrap;
+    overflow:hidden !important;
+    text-overflow: ellipsis;
 }

@@ -71,6 +71,28 @@ export class ApplicationStateReducer {
         this.stateSubject$.next(this.currentState);
     }
 
+    public removeLoadedFiles(files: HeavyweightFile[]) {
+        files.forEach(file => {
+            let index = this.currentState.loadedFiles.indexOf(file);
+
+            if (index >= 0) {
+                this.currentState.loadedFiles.splice(index, 1);
+            }
+
+            // if there are some files behind deleted index, load first one of them
+            // only in case that removing current file
+            // variable index points to next item now
+            if (this.currentState.currentFile === file) {
+                if (index <= this.currentState.loadedFiles.length - 1) {
+                    this.updateCurrentFile(this.currentState.loadedFiles[index]);
+                } else {
+                    this.updateCurrentFile(this.currentState.loadedFiles[0]);
+                }
+            }
+            this.stateSubject$.next(this.currentState);
+        });
+    }
+
     public getState(): ApplicationState {
         return this.currentState;
     }

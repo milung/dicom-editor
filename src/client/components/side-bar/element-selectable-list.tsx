@@ -1,14 +1,15 @@
 import * as React from 'react';
-import { FileInterface } from '../../model/file-interfaces';
+import { HeavyweightFile } from '../../model/file-interfaces';
 import { ListItem, Checkbox } from 'material-ui';
 import { ApplicationStateReducer } from '../../application-state';
 import './element-selectable-list.css';
 import { ColorDictionary } from '../../utils/colour-dictionary';
+var ClearIcon = require('react-icons/lib/md/clear');
 
 interface ElementOfSelectableListProps {
     reducer: ApplicationStateReducer;
     selectFunction: Function;
-    item: FileInterface;
+    item: HeavyweightFile;
     colorDictionary: ColorDictionary;
     checked: boolean;
     color: string;
@@ -55,13 +56,21 @@ export class ElementOfSelectableList extends
                         disabled={this.props.checked ? false : this.props.checkBoxDisabled}
                     />
                 </div>
-                <div className="td">
+                <div className="truncate">
                     <ListItem
                         onClick={() => this.props.selectFunction(this.props.item)}
                         primaryText={this.props.item.fileName}
                         style={{ color: this.props.color || this.state.currentColor }}
                     />
                 </div>
+
+                <div className="clear-icon-container">
+                    <ClearIcon
+                        className="clearIcon"
+                        onClick={() => this.props.reducer.removeLoadedFiles([this.props.item])}
+                    />
+                </div>
+
             </div>
         );
     }
