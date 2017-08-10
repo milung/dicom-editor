@@ -15,6 +15,7 @@ import { DicomSimpleComparisonTable } from './dicom-table/dicom-simple-compariso
 import { DicomExtendedComparisonTable } from './dicom-table/dicom-extended-comparison-table';
 import { FileSearcher } from '../utils/file-searcher';
 import { DicomReader } from '../utils/dicom-reader';
+import * as lodash from 'lodash';
 
 interface TagViewerProps {
     tableMode: TableMode;
@@ -95,7 +96,7 @@ export default class TagViewer extends React.Component<TagViewerProps, TagViewer
             filtered = filterRedundantModulesBySopClass(convertSimpleDicomToExtended(data), sopClass);
         }
 
-        return (filtered.entries && filtered.entries.length >= 1) ? (
+        return (!lodash.isEqual(filtered, {})) ? (
             <div>
                 <DicomExtendedTable data={filtered} />
             </div>
