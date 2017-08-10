@@ -6,6 +6,7 @@ import { DicomTableRow } from './dicom-table-row';
 
 export interface DicomSimpleComparisonTableProps {
     comparisonData: DicomComparisonData[];
+    showOnlyDiffs: boolean;
 }
 
 export interface DicomSimpleComparisonTableState {
@@ -62,7 +63,7 @@ export class DicomSimpleComparisonTable extends React.Component<
                                 );
                             });
 
-                        } else if (group.group.length === 1) {
+                        } else if (group.group.length === 1 && this.props.showOnlyDiffs === false) {
                             arr.push(
                                 <DicomTableRow entry={group.group[0]} shouldShowTag={true} key={groupIndex} />
                             );

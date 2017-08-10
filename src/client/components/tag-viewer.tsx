@@ -16,6 +16,7 @@ import { DicomExtendedComparisonTable } from './dicom-table/dicom-extended-compa
 import { FileSearcher } from '../utils/file-searcher';
 import { DicomReader } from '../utils/dicom-reader';
 import * as lodash from 'lodash';
+import { Toggle } from 'material-ui';
 
 interface TagViewerProps {
     tableMode: TableMode;
@@ -26,7 +27,7 @@ interface TagViewerProps {
 }
 
 interface TagViewerState {
-
+    showOnlyDiffs: boolean;
 }
 
 export default class TagViewer extends React.Component<TagViewerProps, TagViewerState> {
@@ -35,6 +36,10 @@ export default class TagViewer extends React.Component<TagViewerProps, TagViewer
     public constructor(props: TagViewerProps) {
         super(props);
         this.fileSearcher = new FileSearcher(this.props.reducer);
+        this.showOnlyDiffsOn = this.showOnlyDiffsOn.bind(this);
+        this.state = {
+            showOnlyDiffs: false
+        };
     }
 
     render() {
@@ -80,7 +85,7 @@ export default class TagViewer extends React.Component<TagViewerProps, TagViewer
 
         return data.entries.length >= 1 ? (
             <div>
-                <DicomSimpleTable entries={data.entries}/>
+                <DicomSimpleTable entries={data.entries} />
             </div>
         ) : (<div />);
 
@@ -106,7 +111,17 @@ export default class TagViewer extends React.Component<TagViewerProps, TagViewer
     private renderSimpleComparisonTable(data: DicomSimpleComparisonData): JSX.Element {
         return (
             <div>
-                <DicomSimpleComparisonTable comparisonData={data.dicomComparisonData} />
+                <Toggle
+                    label="show only differences"
+                    defaultToggled={false}
+                    onToggle={this.showOnlyDiffsOn}
+                    labelPosition="right"
+                    style={{ margin: 20 }}
+                />
+                <DicomSimpleComparisonTable
+                    comparisonData={data.dicomComparisonData}
+                    showOnlyDiffs={this.state.showOnlyDiffs}
+                />
             </div>
         );
     }
@@ -114,8 +129,31 @@ export default class TagViewer extends React.Component<TagViewerProps, TagViewer
     private renderExtendedComparisonTable(data: DicomSimpleComparisonData): JSX.Element {
         return (
             <div>
-                <DicomExtendedComparisonTable data={convertSimpleDicomToExtendedComparison(data)} />
+                <Toggle
+                    label="show only differences"
+                    defaultToggled={false}
+                    onToggle={this.showOnlyDiffsOn}
+                    labelPosition="right"
+                    style={{ margin: 20 }}
+                />
+                <DicomExtendedComparisonTable
+                    data={convertSimpleDicomToExtendedComparison(data)}
+                    showOnlyDiffs={this.state.showOnlyDiffs}
+                />
             </div>
         );
+    }
+
+    private showOnlyDiffsOn() {
+        if (this.state.showOnlyDiffs) {
+            this.setState({
+                showOnlyDiffs: false
+            });
+        } else {
+            this.setState({
+                showOnlyDiffs: true
+            });
+        }
+
     }
 }

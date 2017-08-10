@@ -12,6 +12,7 @@ interface TableData {
 
 interface DicomExtendedComparisonProps {
     data: DicomExtendedComparisonData;
+    showOnlyDiffs: boolean;
 }
 
 interface DicomExtendedComparisonState {
@@ -26,7 +27,7 @@ export class DicomExtendedComparisonTable extends React.Component<
 
     render() {
         let moduleArray: TableData[] = [];
-        
+
         if (this.props.data) {
 
             for (var moduleName in this.props.data) {
@@ -45,17 +46,20 @@ export class DicomExtendedComparisonTable extends React.Component<
             return (
                 <List>
                     {/* iterates over modules */}
-                    { moduleArray.map((module, moduleIndex) => {
+                    {moduleArray.map((module, moduleIndex) => {
                         return (
                             <ListItem
                                 primaryText={module.moduleName}
                                 key={moduleIndex}
-                                primaryTogglesNestedList={true}                
+                                primaryTogglesNestedList={true}
                                 nestedItems={[
-            
-                                 <ListItem disabled={true} key={moduleIndex}>
-                                     <DicomSimpleComparisonTable comparisonData={module.groups}/>
-                                </ListItem>
+
+                                    <ListItem disabled={true} key={moduleIndex}>
+                                        <DicomSimpleComparisonTable
+                                            comparisonData={module.groups}
+                                            showOnlyDiffs={this.props.showOnlyDiffs}
+                                        />
+                                    </ListItem>
 
                                 ]}
                             />

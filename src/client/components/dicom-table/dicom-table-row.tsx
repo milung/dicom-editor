@@ -48,7 +48,7 @@ export class DicomTableRow extends React.Component<DicomTableRowProps, DicomTabl
                             <div className="plain-link">
                                 <div className="show-comment-on-hover">
                                     Click to downlad a text file with the tag value
-                                    </div>
+                                </div>
                                 {value}
                             </div>
                         </span>
@@ -77,7 +77,8 @@ export class DicomTableRow extends React.Component<DicomTableRowProps, DicomTabl
         let val = this.props.entry.tagValue.toString();
         if (val.length > 100) {
             let blob = new Blob([val], { type: 'text/plain;charset=utf-8' });
-            let fileName = this.props.entry.tagName + '-value.txt';
+            let fileName = this.props.entry.tagName +
+                ' (' + this.props.entry.tagGroup + ', ' + this.props.entry.tagElement + ') -value.txt';
             fileDownload(blob, fileName);
         }
     }

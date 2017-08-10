@@ -15,7 +15,11 @@ export class DicomTableHeader extends React.Component<DicomTableHeaderProps, Dic
     }
 
     public render() {
-        let tableRowStyle = { color: '#FFFFFF' };
+        let tableRowStyle = { 
+            color: '#FFFFFF', 
+            backgroundColor: '#009999',
+            fontSize: '0.9em' 
+        };
         return (
                 <TableRow>
                     <TableHeaderColumn style={tableRowStyle}>

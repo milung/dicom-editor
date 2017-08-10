@@ -6,8 +6,7 @@ import App from '../app';
 
 const muiTheme = getMuiTheme({
   palette: {
-    primary1Color: '#009999',
-    borderColor: '#009e9e'
+    primary1Color: '#009999'
   },
 
   tabs: {
@@ -19,6 +18,7 @@ const muiTheme = getMuiTheme({
   inkBar: {
     backgroundColor: '#009999'
   }
+
 });
 
 export default class AppContainer extends React.Component<{}, {}> {

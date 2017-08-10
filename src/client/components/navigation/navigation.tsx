@@ -55,7 +55,7 @@ export class Navigation extends React.Component<NavigationProps, NavigationState
                         onClick={() => this.showExportDialog()}
                     />
                     <MenuItem
-                        primaryText="Save to browser"
+                        primaryText="Save here"
                         onClick={() => this.handleSaveClick()}
                     />
                     <ExportDialog

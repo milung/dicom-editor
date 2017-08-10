@@ -302,12 +302,12 @@ describe('dicom-table', () => {
 //    });
 
    it('Render same row for simple comparison table', () => {
-       const div = shallow(<DicomSimpleComparisonTable comparisonData={comparisonHeaderData} />);
+       const div = shallow(<DicomSimpleComparisonTable comparisonData={comparisonHeaderData} showOnlyDiffs={false} />);
        expect(div.find('Table').find('TableBody').children('DicomTableRow').length).to.equal(2);
    });
 
    it('Render different rows for simple comparison table', () => {
-       const div = shallow(<DicomSimpleComparisonTable comparisonData={comparisonData} />);
+       const div = shallow(<DicomSimpleComparisonTable comparisonData={comparisonData} showOnlyDiffs={false} />);
        expect(div.find('Table').find('TableBody').children('DicomTableRow').length).to.equal(6);
    });
 
