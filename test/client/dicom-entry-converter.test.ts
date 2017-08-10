@@ -51,7 +51,7 @@ describe('dicom-entry-converter', () => {
         };
 
         let expectedDicomExtended: DicomExtendedData = {
-            'SOP COMMON MODULE ATTRIBUTES': [
+            'SOP COMMON': [
                 {
                     tagGroup: '0008',
                     tagElement: '0012',
@@ -96,7 +96,7 @@ describe('dicom-entry-converter', () => {
 describe('module-name-translator', () => {
     it('should get single module name for tag', () => {
         let moduleName = getModuleNamesForTag('00080012');
-        expect(moduleName).to.deep.equal(['SOP COMMON MODULE ATTRIBUTES']);
+        expect(moduleName).to.deep.equal(['SOP COMMON']);
     })
 
     it('should get undefined module name for tag', () => {
@@ -107,8 +107,8 @@ describe('module-name-translator', () => {
     it('should get multiple module names for tag', () => {
         let moduleName = getModuleNamesForTag('0040a0b0');
         expect(moduleName).to.deep.equal([
-            'Waveform Annotation Module Attributes',
-            'Waveform Module Attributes'
+            'Waveform Annotation',
+            'Waveform'
         ]);
     })
 });
@@ -252,7 +252,7 @@ describe('DicomEntryConverter -> filterRedundantModulesBySopClass()', () => {
     it('should return correctly filtered modules by sop class', () => {
 
         let expectedFiltered: DicomExtendedData = {
-            'TEST MODULE 1':
+            'Patient':
             [
                 {
                     tagGroup: '0008',
@@ -279,7 +279,7 @@ describe('DicomEntryConverter -> filterRedundantModulesBySopClass()', () => {
         };
 
         let dicomExtended: DicomExtendedData = {
-            'TEST MODULE 1':
+            'Patient':
             [
                 {
                     tagGroup: '0008',
@@ -303,7 +303,7 @@ describe('DicomEntryConverter -> filterRedundantModulesBySopClass()', () => {
                 }
             ]
             ,
-            'Module 2':
+            'DX Series':
             [
                 {
                     tagGroup: '0010',
@@ -328,7 +328,7 @@ describe('DicomEntryConverter -> filterRedundantModulesBySopClass()', () => {
             ]
         }
 
-        let actualFiltered = filterRedundantModulesBySopClass(dicomExtended, 'TEST SOP CLASS');
+        let actualFiltered = filterRedundantModulesBySopClass(dicomExtended, '1.2.840.10008.5.1.4.1.1.1');
 
         expect(actualFiltered).to.deep.equal(expectedFiltered);
     });

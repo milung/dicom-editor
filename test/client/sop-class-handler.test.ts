@@ -4,8 +4,30 @@ import { getModuleNamesForSopClass, moduleNameBelongsToSopClass } from '../../sr
 
 describe('SopClassHandler -> getModuleNamesForSopClass()', () => {
     it('should get module names for sop class', () => {
-        let expectedModules = ['TEST MODULE 1', 'TEST MODULE 2'];
-        let actualModules = getModuleNamesForSopClass('TEST SOP CLASS');
+        let expectedModules = [
+            'Patient',
+            'Clinical Trial Subject',
+            'General Study',
+            'Patient Study',
+            'Clinical Trial Study',
+            'General Series',
+            'CR Series',
+            'Clinical Trial Series',
+            'General Equipment',
+            'General Image',
+            'Image Pixel',
+            'Contrast/Bolus',
+            'Display Shutter',
+            'Device',
+            'Specimen',
+            'CR Image',
+            'Overlay Plane',
+            'Modality LUT',
+            'VOILUT',
+            'SOP Common',
+            'Common Instance Reference'
+        ];
+        let actualModules = getModuleNamesForSopClass('1.2.840.10008.5.1.4.1.1.1');
         expect(actualModules).to.deep.equal(expectedModules);
     });
 
@@ -18,14 +40,14 @@ describe('SopClassHandler -> getModuleNamesForSopClass()', () => {
 
 describe('SopClassHandler -> moduleNameBelongsToSopClass()', () => {
     it('should decide that module belongs to sop class', () => {
-        expect(moduleNameBelongsToSopClass('TEST MODULE 1', 'TEST SOP CLASS')).to.equal(true);
+        expect(moduleNameBelongsToSopClass('Patient', '1.2.840.10008.5.1.4.1.1.1')).to.equal(true);
     });
 
     it('should decide that module does not belong to sop class', () => {
-        expect(moduleNameBelongsToSopClass('DOES NOT BELONG', 'TEST SOP CLASS')).to.equal(false);
+        expect(moduleNameBelongsToSopClass('DOES NOT BELONG', '1.2.840.10008.5.1.4.1.1.1')).to.equal(false);
     });
 
     it('should decide that module does not belong to non existing sop class', () => {
-        expect(moduleNameBelongsToSopClass('TEST MODULE 1', 'SOP THAT DOES NOT EXIST')).to.equal(false);
+        expect(moduleNameBelongsToSopClass('Patient', 'SOP THAT DOES NOT EXIST')).to.equal(false);
     });
 });
