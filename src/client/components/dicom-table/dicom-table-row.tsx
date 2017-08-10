@@ -45,7 +45,12 @@ export class DicomTableRow extends React.Component<DicomTableRowProps, DicomTabl
                 ele =
                     (
                         <span onClick={() => this.handleExcessiveText()}>
-                            <div className="plain-link"><div className="show-comment-on-hover">Click to downlad a text file with the tag value</div>{value}</div>
+                            <div className="plain-link">
+                                <div className="show-comment-on-hover">
+                                    Click to downlad a text file with the tag value
+                                    </div>
+                                {value}
+                            </div>
                         </span>
                     );
             } else {
