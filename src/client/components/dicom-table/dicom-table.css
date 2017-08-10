@@ -13,3 +13,34 @@ background-color: #00BCD4;
 .expandable-icon {
     margin-left: -10%;
 }
+
+.plain-link {
+   cursor: pointer;
+   /*display: flex;
+   justify-content: center;
+   align-items: center;*/
+}
+
+.plain-link:hover {
+   color: gray;
+}
+
+.plain-link:hover .show-comment-on-hover {
+    display: block;
+}
+
+.show-comment-on-hover{
+    color: black !important;
+    display: none;
+    position: absolute;
+    text-align: center;
+    width: 15%;
+    word-wrap: break-word;
+    background-color: #daeded;
+    border: 1px solid #009999;
+    margin-top: 1.5rem;
+    margin-left: -1.5em;
+    padding: 0.7%;
+    cursor: pointer;
+    z-index: 1;
+}

@@ -31,7 +31,7 @@ export class DicomSimpleTable extends React.Component<DicomSimpleTableProps, Dic
     public render() {
 
         return (
-            <Table selectable={false}>
+            <Table selectable={false} headerStyle={{backgroundColor: '#009999'}}>
 
                 <TableHeader
                     className="tableHeader"
