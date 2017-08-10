@@ -45,7 +45,7 @@ export class PopUpDialog extends React.Component<PopUpDialogProps, PopUpDialogSt
                     open={this.props.openedPopUpDialog}
                     onRequestClose={() => {this.props.handleClosePopUpDialog(); }}
                 >
-                    {this.props.popUpText};
+                    {this.props.popUpText}
                 </Dialog>
             </div>
         );
