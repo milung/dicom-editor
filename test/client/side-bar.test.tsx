@@ -5,10 +5,10 @@ import SideBar from '../../src/client/components/side-bar/side-bar';
 import { ApplicationStateReducer } from '../../src/client/application-state';
 
 describe('side-bar', () => {
-    it('should render side bar with 3 tabs', () => {
+    it('should render side bar with 2 tabs', () => {
         let reducer = new ApplicationStateReducer();
         const sideBar = shallow(<SideBar reducer={reducer} />);
-        expect(sideBar.find('Paper').find('Tabs').find('Tab').length).to.equal(3);
+        expect(sideBar.find('Paper').find('Tabs').find('Tab').length).to.equal(2);
     });
 
     it('should render side bar with loadedFilesTab', () => {

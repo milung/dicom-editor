@@ -1,45 +1,81 @@
 import * as React from 'react';
 import { ApplicationStateReducer } from '../../application-state';
-import { List, RaisedButton } from 'material-ui';
+import { List, RaisedButton, ListItem } from 'material-ui';
 import { ElementOfDeletableList } from './element-deletable-list';
 import { LightweightFile, HeavyweightFile } from '../../model/file-interfaces';
 import { isFileSavedInDb } from '../../utils/file-store-util';
+import { ActionWatchLater, ContentSave } from 'material-ui/svg-icons';
+import { ColorDictionary } from '../../utils/colour-dictionary';
+import './side-bar.css';
 
 interface SavedFilesTabProps {
     reducer: ApplicationStateReducer;
     savedFiles: LightweightFile[];
+    recentFiles: LightweightFile[];
     showPopUpOverrideConfirmation: Function;
     showPopUpDeleteConfirmation: Function;
     saveFile: Function;
     className: string;
+    colorDictionary: ColorDictionary;
 }
 
 interface SavedFilesTabState {
-
+    recentFilesOpen: boolean;
+    savedFilesOpen: boolean;
 }
 
 export default class SavedFilesTab extends React.Component<SavedFilesTabProps, SavedFilesTabState> {
     constructor(props: SavedFilesTabProps) {
         super(props);
 
+        this.state = {
+            recentFilesOpen: false,
+            savedFilesOpen: true
+        };
+
         this.handleSaveClick = this.handleSaveClick.bind(this);
+        this.handleRecentFilesToggle = this.handleRecentFilesToggle.bind(this);
+        this.handleSavedFilesToggle = this.handleSavedFilesToggle.bind(this);
+        this.selectCurrentFileFromRecentFile = this.selectCurrentFileFromRecentFile.bind(this);
     }
 
     render() {
         return (
             <div className={this.props.className}>
                 <List style={{ overflowX: 'hidden', overflowY: 'auto' }}>
-                    {this.props.savedFiles.map((item, index) => {
 
-                        return (
-                            <ElementOfDeletableList
+                    <ListItem
+                        onTouchTap={this.handleRecentFilesToggle}
+                        primaryText="Recent files"
+                        leftIcon={<ActionWatchLater />}
+                        open={this.state.recentFilesOpen}
+                        onNestedListToggle={this.handleRecentFilesToggle}
+                        nestedItems={this.props.recentFiles.map((item, index) => (
+                            <ListItem
                                 key={index}
-                                lightFile={item}
-                                showPopUpFunction={this.props.showPopUpDeleteConfirmation}
-                                reducer={this.props.reducer}
+                                onClick={() => this.selectCurrentFileFromRecentFile(item)}
+                                primaryText={item.fileName}
                             />
-                        );
-                    })}
+                        ))}
+                    />
+
+                    <ListItem
+                        onTouchTap={this.handleSavedFilesToggle}
+                        primaryText="Saved files"
+                        leftIcon={<ContentSave />}
+                        open={this.state.savedFilesOpen}
+                        onNestedListToggle={this.handleSavedFilesToggle}
+                        nestedItems={this.props.savedFiles.map((item, index) => {
+                            return (
+                                <ElementOfDeletableList
+                                    key={index}
+                                    lightFile={item}
+                                    showPopUpFunction={this.props.showPopUpDeleteConfirmation}
+                                    reducer={this.props.reducer}
+                                />
+                            );
+                        })}
+                    />
                 </List>
                 <RaisedButton
                     className="compare-button"
@@ -64,4 +100,24 @@ export default class SavedFilesTab extends React.Component<SavedFilesTabProps, S
             }
         }
     }
+
+    private handleSavedFilesToggle() {
+        this.setState({
+            savedFilesOpen: !this.state.savedFilesOpen
+        });
+    }
+
+    private handleRecentFilesToggle() {
+        this.setState({
+            recentFilesOpen: !this.state.recentFilesOpen
+        });
+    }
+
+    private selectCurrentFileFromRecentFile(file: LightweightFile) {
+        this.props.reducer.removeAllSelectedFiles();
+        this.props.reducer.setComparisonActive(false);
+        this.props.colorDictionary.reset();
+        this.props.reducer.updateCurrentFromRecentFile(file);
+    }
+
 }

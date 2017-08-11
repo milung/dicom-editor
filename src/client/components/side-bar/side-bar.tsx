@@ -13,7 +13,6 @@ import {
 import { RecentFileStoreUtil } from '../../utils/recent-file-store-util';
 import { ColorDictionary } from '../../utils/colour-dictionary';
 import LoadedFilesTab from './loaded-files-tab';
-import RecentFilesTab from './recent-files-tab';
 import SavedFilesTab from './saved-files-tab';
 import OverridePopUpDialog from './override-popup-dialog';
 import { DeletePopUpDialog } from './delete-popup-dialog';
@@ -87,13 +86,6 @@ export default class SideBar extends React.Component<SideBarProps, SideBarState>
                             className={'tab-container'}
                         />
                     </Tab>
-                    <Tab label="Recent">
-                        <RecentFilesTab
-                            reducer={this.props.reducer}
-                            recentFiles={this.state.recentFiles}
-                            colorDictionary={this.colorDictionary}
-                        />
-                    </Tab>
                     <Tab label="Saved">
                         <SavedFilesTab
                             reducer={this.props.reducer}
@@ -101,6 +93,8 @@ export default class SideBar extends React.Component<SideBarProps, SideBarState>
                             showPopUpOverrideConfirmation={this.showPopUpOverrideConfirmation}
                             showPopUpDeleteConfirmation={this.showPopUpDeleteConfirmation}
                             saveFile={this.saveFile}
+                            recentFiles={this.state.recentFiles}
+                            colorDictionary={this.colorDictionary}
                             className={'tab-container'}
                         />
                     </Tab>
