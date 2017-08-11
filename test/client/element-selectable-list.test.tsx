@@ -39,5 +39,6 @@ describe('ElementOfSelectableList', () => {
 
         expect(element.find('Checkbox').length).to.equal(1);
         expect(element.find('ListItem').length).to.equal(1);
+        expect(element.find('.clearIcon').length).to.equal(1);
     });
 });

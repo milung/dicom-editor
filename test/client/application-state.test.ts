@@ -148,6 +148,94 @@ describe('ApplicationStateReducer -> addLoadedFiles()', () => {
     });
 });
 
+describe('ApplicationStateReducer -> removeLoadedFiles()', () => {
+    it('should remove one file from loaded files containing one file', () => {
+        let reducer: ApplicationStateReducer = new ApplicationStateReducer();
+        expect(reducer.getState().loadedFiles).to.deep.equal([]);
+        expect(reducer.getState().currentFile).to.equal(undefined);
+
+        let file: HeavyweightFile = {
+            fileName: 'name',
+            timestamp: 123456789,
+            fileSize: 1,
+            bufferedData: new Uint8Array(0),
+            dicomData: {
+                entries: []
+            }
+        }
+        reducer.addLoadedFiles([file]);
+
+        reducer.removeLoadedFiles([file]);
+        expect(reducer.getState().loadedFiles.length).to.equal(0);
+        expect(reducer.getState().currentFile).to.equal(undefined);
+
+    });
+
+    it('should not crash when removing empty array from loaded files', () => {
+        let reducer: ApplicationStateReducer = new ApplicationStateReducer();
+        expect(reducer.getState().loadedFiles).to.deep.equal([]);
+        expect(reducer.getState().currentFile).to.equal(undefined);
+
+        reducer.removeLoadedFiles([]);
+        expect(reducer.getState().loadedFiles.length).to.equal(0);
+        expect(reducer.getState().currentFile).to.equal(undefined);
+
+    });
+
+    it('should do nothing when removing empty array from loaded files', () => {
+        let reducer: ApplicationStateReducer = new ApplicationStateReducer();
+
+        let file: HeavyweightFile = {
+            fileName: 'name',
+            timestamp: 123456789,
+            fileSize: 1,
+            bufferedData: new Uint8Array(0),
+            dicomData: {
+                entries: []
+            }
+        }
+        reducer.addLoadedFiles([file]);
+
+        reducer.removeLoadedFiles([]);
+        expect(reducer.getState().loadedFiles.length).to.equal(1);
+        expect(reducer.getState().loadedFiles).to.deep.equal([file]);
+        expect(reducer.getState().currentFile).to.deep.equal(file);
+
+    });
+
+    it('should remove loaded file and select current file correctly ', () => {
+        let reducer: ApplicationStateReducer = new ApplicationStateReducer();
+
+        let files: HeavyweightFile[] = [
+            {
+                fileName: 'name',
+                timestamp: 123456789,
+                fileSize: 1,
+                bufferedData: new Uint8Array(0),
+                dicomData: {
+                    entries: []
+                }
+            },
+            {
+                fileName: 'name2',
+                timestamp: 2,
+                fileSize: 3,
+                bufferedData: new Uint8Array(3),
+                dicomData: {
+                    entries: []
+                }
+            }
+        ]
+        reducer.addLoadedFiles(files);
+        
+        reducer.removeLoadedFiles([files[0]]);
+
+        expect(reducer.getState().loadedFiles.length).to.equal(1);
+        expect(reducer.getState().currentFile).to.deep.equal(files[1]);
+        expect(reducer.getState().loadedFiles[0]).to.deep.equal(files[1]);
+    });
+});
+
 describe('ApplicationStateReducer -> getState()', () => {
     it('should get initial state', () => {
         let reducer: ApplicationStateReducer = new ApplicationStateReducer();
@@ -419,7 +507,7 @@ describe('ApplicationStateReducer -> removeAllSelectedFiles()', () => {
 describe('ApplicationStateReducer -> setSearchExpression()', () => {
     it('should set search expression', () => {
         let reducer: ApplicationStateReducer = new ApplicationStateReducer();
-        
+
         reducer.setSearchExpression('exp');
         expect(reducer.getState().searchExpression).to.equal('exp');
     });
