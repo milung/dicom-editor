@@ -3,6 +3,7 @@ import { HeavyweightFile } from '../../model/file-interfaces';
 import { ListItem, Checkbox } from 'material-ui';
 import { ApplicationStateReducer } from '../../application-state';
 import './element-selectable-list.css';
+import './side-bar.css';
 import { ColorDictionary } from '../../utils/colour-dictionary';
 var ClearIcon = require('react-icons/lib/md/clear');
 

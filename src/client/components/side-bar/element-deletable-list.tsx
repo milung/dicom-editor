@@ -1,6 +1,7 @@
 import * as React from 'react';
 import { ListItem } from 'material-ui';
 import './element-deletable-list.css';
+import './side-bar.css';
 import { LightweightFile } from '../../model/file-interfaces';
 import { getData } from '../../utils/file-store-util';
 import { ApplicationStateReducer } from '../../application-state';
@@ -28,6 +29,7 @@ export class ElementOfDeletableList extends React.Component<ElementOfDeletableLi
             <div className="deletableListItem">
                 <div className="td">
                     <ListItem
+                        className="truncate"
                         primaryText={this.props.lightFile.fileName}
                         onClick={() => this.selectCurrentFile(this.props.lightFile)}
                     />
