@@ -102,6 +102,9 @@ export default class LoadedFilesTab extends React.Component<LoadedFilesTabProps,
         this.props.reducer.setComparisonActive(false);
         this.props.colorDictionary.reset();
         this.props.reducer.updateCurrentFile(file);
+        this.setState({
+            checkedCheckboxes: 0
+        });
     }
 
     private changeNumberOfCheckedBoxes(addition: boolean) {
