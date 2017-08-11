@@ -38,7 +38,7 @@ export default class TagViewer extends React.Component<TagViewerProps, TagViewer
         this.fileSearcher = new FileSearcher(this.props.reducer);
         this.showOnlyDiffsOn = this.showOnlyDiffsOn.bind(this);
         this.state = {
-            showOnlyDiffs: false
+            showOnlyDiffs: true
         };
     }
 
@@ -113,7 +113,7 @@ export default class TagViewer extends React.Component<TagViewerProps, TagViewer
             <div>
                 <Toggle
                     label="show only differences"
-                    defaultToggled={false}
+                    defaultToggled={true}
                     onToggle={this.showOnlyDiffsOn}
                     labelPosition="right"
                     style={{ margin: 20 }}
@@ -131,7 +131,7 @@ export default class TagViewer extends React.Component<TagViewerProps, TagViewer
             <div>
                 <Toggle
                     label="show only differences"
-                    defaultToggled={false}
+                    defaultToggled={true}
                     onToggle={this.showOnlyDiffsOn}
                     labelPosition="right"
                     style={{ margin: 20 }}

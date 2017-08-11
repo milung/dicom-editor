@@ -3,6 +3,7 @@ import { DicomEntry, DicomComparisonData } from '../../model/dicom-entry';
 import { DicomTableHeader } from './dicom-table-header';
 import { TableHeader, Table, TableBody } from 'material-ui';
 import { DicomTableRow } from './dicom-table-row';
+import { TableRow, TableRowColumn } from 'material-ui';
 
 export interface DicomSimpleComparisonTableProps {
     comparisonData: DicomComparisonData[];
@@ -46,7 +47,7 @@ export class DicomSimpleComparisonTable extends React.Component<
                                 tagVR: '',
                                 tagVM: '',
                                 colour: '#000000',
-                                sequence: []      
+                                sequence: []
                             };
                             arr.push(
                                 <DicomTableRow entry={entryHeader} shouldShowTag={true} key={groupIndex} />
@@ -55,11 +56,11 @@ export class DicomSimpleComparisonTable extends React.Component<
 
                                 arr.push(
 
-                                <DicomTableRow
+                                    <DicomTableRow
                                         entry={entry}
                                         shouldShowTag={false}
                                         key={entryIndex + 1000 * (groupIndex + 1)}
-                                />
+                                    />
                                 );
                             });
 
@@ -68,7 +69,13 @@ export class DicomSimpleComparisonTable extends React.Component<
                                 <DicomTableRow entry={group.group[0]} shouldShowTag={true} key={groupIndex} />
                             );
                         }
-
+                        if (arr.length < 1) {
+                            arr.push(
+                                <TableRow key="empty-row-no-differences">
+                                    <TableRowColumn><h3>No differences found</h3></TableRowColumn>
+                                </TableRow>
+                            );
+                        }
                         return arr;
                     },                                [])}
                 </TableBody>
