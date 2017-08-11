@@ -29,7 +29,7 @@ export class ElementOfDeletableList extends React.Component<ElementOfDeletableLi
             <div className="deletableListItem">
                 <div className="td">
                     <ListItem
-                        className="truncate"
+                        className="truncate item"
                         primaryText={this.props.lightFile.fileName}
                         onClick={() => this.selectCurrentFile(this.props.lightFile)}
                     />
