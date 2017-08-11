@@ -42,7 +42,10 @@ export class RecentFileStoreUtil {
             reducerRecentFiles.splice(index, 1);
         } else if (reducerRecentFiles.length >= MAX_RECENT_FILES) {
             // if maximum limit of files exceeded, remove last recent file
-            reducerRecentFiles.pop();
+            let removeFile = reducerRecentFiles.pop();
+            if (removeFile) {
+                this.dbService.removeItem(removeFile.dbKey);
+            }
         }
 
         // store file
