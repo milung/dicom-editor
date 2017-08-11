@@ -56,7 +56,7 @@ export default class MainViewHeader extends React.Component<MainViewHeaderProps,
                 header: state.comparisonActive ? (state.searchExpression ? 'Searching in ' : 'Compare ') :
                     (state.currentFile ? (state.searchExpression ?
                         (state.comparisonActive ? '' : ('Searching in ' + state.currentFile.fileName.split('.')[0])) :
-                        ('Tag viewer of ' + state.currentFile.fileName.split('.')[0])) : 'Tag viewer'),
+                        (state.currentFile.fileName.split('.')[0])) : 'Tag viewer'),
                 headerJoin: state.comparisonActive ? ' and ' : ''
             });
         });

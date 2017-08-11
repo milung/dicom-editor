@@ -31,7 +31,7 @@ export class DicomSimpleTable extends React.Component<DicomSimpleTableProps, Dic
     public render() {
 
         return (
-            <Table selectable={false} headerStyle={{backgroundColor: '#009999'}}>
+            <Table selectable={false} headerStyle={{ backgroundColor: '#009999' }}>
 
                 <TableHeader
                     className="tableHeader"
@@ -80,7 +80,7 @@ export class DicomSimpleTable extends React.Component<DicomSimpleTableProps, Dic
                             entry={entry}
                             key={dasKey}
                             shouldShowTag={true}
-                            margin={(25 * depth).toString() + 'px'}
+                            margin={(20 * (depth + 1)).toString() + 'px'}
                         />
                     );
                 }
