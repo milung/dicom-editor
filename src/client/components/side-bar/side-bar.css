@@ -43,3 +43,8 @@
     overflow:hidden !important;
     text-overflow: ellipsis;
 }
+
+.recent-files-tab {
+  background: #daeded !important;
+  border-bottom: 1.5px solid black;
+}

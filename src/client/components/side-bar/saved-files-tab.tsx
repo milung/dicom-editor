@@ -43,21 +43,22 @@ export default class SavedFilesTab extends React.Component<SavedFilesTabProps, S
         return (
             <div className={this.props.className}>
                 <List style={{ overflowX: 'hidden', overflowY: 'auto' }}>
-
-                    <ListItem
-                        onTouchTap={this.handleRecentFilesToggle}
-                        primaryText="Recent files"
-                        leftIcon={<ActionWatchLater />}
-                        open={this.state.recentFilesOpen}
-                        onNestedListToggle={this.handleRecentFilesToggle}
-                        nestedItems={this.props.recentFiles.map((item, index) => (
-                            <ListItem
-                                key={index}
-                                onClick={() => this.selectCurrentFileFromRecentFile(item)}
-                                primaryText={item.fileName}
-                            />
-                        ))}
-                    />
+                    <div className="recent-files-tab">
+                        <ListItem
+                            onTouchTap={this.handleRecentFilesToggle}
+                            primaryText="Recent files"
+                            leftIcon={<ActionWatchLater />}
+                            open={this.state.recentFilesOpen}
+                            onNestedListToggle={this.handleRecentFilesToggle}
+                            nestedItems={this.props.recentFiles.map((item, index) => (
+                                <ListItem
+                                    key={index}
+                                    onClick={() => this.selectCurrentFileFromRecentFile(item)}
+                                    primaryText={item.fileName}
+                                />
+                            ))}
+                        />
+                    </div>
 
                     <ListItem
                         onTouchTap={this.handleSavedFilesToggle}
