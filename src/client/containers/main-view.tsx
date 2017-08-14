@@ -11,6 +11,9 @@ import { RaisedButton } from 'material-ui';
 import Search from '../components/search-bar';
 import MainViewHeader from './main-view-header';
 
+const IMAGE_VIEWER_TAB_INDEX = 0;
+const TAG_VIEWER_TAB_INDEX = 1;
+
 interface MainViewProps {
   reducer: ApplicationStateReducer;
 }
@@ -22,6 +25,7 @@ interface MainViewState {
   tableMode: TableMode;
   actualBufferData: Uint8Array;
   comparisonActive: boolean;
+  selectedTab: number;
 }
 
 export default class MainView extends React.Component<MainViewProps, MainViewState> {
@@ -41,7 +45,10 @@ export default class MainView extends React.Component<MainViewProps, MainViewSta
       actualBufferData: new Uint8Array(0),
       tableMode: TableMode.SIMPLE,
       comparisonActive: false,
+      selectedTab: TAG_VIEWER_TAB_INDEX
     };
+
+    this.handleSelect = this.handleSelect.bind(this);
   }
 
   public componentDidMount() {
@@ -59,17 +66,28 @@ export default class MainView extends React.Component<MainViewProps, MainViewSta
         loadedFiles: state.loadedFiles ? state.loadedFiles : [],
         actualBufferData: state.currentFile ? state.currentFile.bufferedData : new Uint8Array(0),
         comparisonActive: state.comparisonActive,
+        selectedTab: state.comparisonActive ? TAG_VIEWER_TAB_INDEX : this.state.selectedTab
       });
     });
   }
 
+  handleSelect(index: number) {
+    this.setState({selectedTab: index});
+  }
+
   render() {
     return (
-      <Tabs className="tabs" initialSelectedIndex={1}>
+      <Tabs 
+        className="tabs" 
+        initialSelectedIndex={TAG_VIEWER_TAB_INDEX} 
+        value={this.state.comparisonActive ? TAG_VIEWER_TAB_INDEX : this.state.selectedTab}
+      >
         <Tab
           label="Image viewer"
           disabled={this.state.comparisonActive}
           className={this.state.comparisonActive ? 'disabled-tab' : 'enabled-tab'}
+          onActive={() => this.handleSelect(IMAGE_VIEWER_TAB_INDEX)}
+          value={0}
         >
           <div className="container">
             <h1 className="file-name-h1">
@@ -80,7 +98,11 @@ export default class MainView extends React.Component<MainViewProps, MainViewSta
             <ImageViewer data={this.state.actualBufferData} />
           </div>
         </Tab>
-        <Tab label="Tags">
+        <Tab 
+          label="Tags"
+          onActive={() => this.handleSelect(TAG_VIEWER_TAB_INDEX)}
+          value={1}
+        >
           <div className="container">
             <MainViewHeader reducer={this.props.reducer} />
             <div id="simpleOrHierarchical">
