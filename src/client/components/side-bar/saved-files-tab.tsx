@@ -40,6 +40,9 @@ export default class SavedFilesTab extends React.Component<SavedFilesTabProps, S
     }
 
     render() {
+        let sortedSaved = this.props.savedFiles.sort((fileA, fileB) => {
+            return fileA.fileName.localeCompare(fileB.fileName);
+        });
         return (
             <div className={this.props.className}>
                 <List style={{ overflowX: 'hidden', overflowY: 'auto' }}>
@@ -66,7 +69,7 @@ export default class SavedFilesTab extends React.Component<SavedFilesTabProps, S
                         leftIcon={<ContentSave />}
                         open={this.state.savedFilesOpen}
                         onNestedListToggle={this.handleSavedFilesToggle}
-                        nestedItems={this.props.savedFiles.map((item, index) => {
+                        nestedItems={sortedSaved.map((item, index) => {
                             return (
                                 <ElementOfDeletableList
                                     key={index}
