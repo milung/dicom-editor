@@ -3,7 +3,6 @@ import { DicomEntry, DicomComparisonData } from '../../model/dicom-entry';
 import { DicomTableHeader } from './dicom-table-header';
 import { TableHeader, Table, TableBody } from 'material-ui';
 import { DicomTableRow } from './dicom-table-row';
-import { TableRow, TableRowColumn } from 'material-ui';
 
 export interface DicomSimpleComparisonTableProps {
     comparisonData: DicomComparisonData[];
@@ -67,13 +66,6 @@ export class DicomSimpleComparisonTable extends React.Component<
                         } else if (group.group.length === 1 && this.props.showOnlyDiffs === false) {
                             arr.push(
                                 <DicomTableRow entry={group.group[0]} shouldShowTag={true} key={groupIndex} />
-                            );
-                        }
-                        if (arr.length < 1) {
-                            arr.push(
-                                <TableRow key="empty-row-no-differences">
-                                    <TableRowColumn><h3>No differences found</h3></TableRowColumn>
-                                </TableRow>
                             );
                         }
                         return arr;
