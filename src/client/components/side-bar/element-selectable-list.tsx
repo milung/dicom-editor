@@ -15,7 +15,6 @@ interface ElementOfSelectableListProps {
     checked: boolean;
     color: string;
     checkInform: Function;
-    checkBoxDisabled: boolean;
 }
 
 interface ElementOfSelectableListState {
@@ -54,7 +53,6 @@ export class ElementOfSelectableList extends
                     <Checkbox
                         onCheck={this.handleCheck}
                         checked={this.props.checked}
-                        disabled={this.props.checked ? false : this.props.checkBoxDisabled}
                     />
                 </div>
                 <div className="truncate">

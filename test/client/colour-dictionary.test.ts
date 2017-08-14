@@ -13,13 +13,14 @@ describe('color-dictionary', () => {
         expect(result).to.equal(dict.getColorByIndex(0));
     });
 
-    it('should get third color (as free) in color dictionary', () => {
-        let dict = new ColorDictionary();
-        dict.getFirstFreeColor();
-        dict.getFirstFreeColor();
-        let result = dict.getFirstFreeColor();
-        expect(result).to.equal(dict.getColorByIndex(2));
-    });
+    // zbytocne, kym vieme porovavat len dva subory
+    // it('should get third color (as free) in color dictionary', () => {
+    //     let dict = new ColorDictionary();
+    //     dict.getFirstFreeColor();
+    //     dict.getFirstFreeColor();
+    //     let result = dict.getFirstFreeColor();
+    //     expect(result).to.equal(dict.getColorByIndex(2));
+    // });
 
     it('should get black color (all colors are in use)', () => {
         let dict = new ColorDictionary();

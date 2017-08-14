@@ -55,7 +55,6 @@ export default class LoadedFilesTab extends React.Component<LoadedFilesTabProps,
                                 checked={checked}
                                 color={color}
                                 checkInform={this.changeNumberOfCheckedBoxes}
-                                checkBoxDisabled={this.state.checkedCheckboxes === 2 ? true : false}
                             />
                         );
                     })}

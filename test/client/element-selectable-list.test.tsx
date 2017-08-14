@@ -31,7 +31,6 @@ describe('ElementOfSelectableList', () => {
                     checked={false}
                     color={'red'}
                     checkInform={() => { }}
-                    checkBoxDisabled={false}
                 />
             </MuiThemeProvider>
 
