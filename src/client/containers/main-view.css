@@ -13,10 +13,20 @@
 }
 
 .raisedButton-override { 
-     height: 50% !important; 
+    height: 50% !important; 
 }
 
-h1{
+.disabled-tab {
+    color: grey !important; 
+    cursor: not-allowed !important;
+}
+
+.enabled-tab {
+    color: #009999 !important; 
+    cursor: pointer !important;
+}
+
+.file-name-h1 {
     padding: 2%;
     text-align: center;
 }

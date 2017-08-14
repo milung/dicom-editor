@@ -64,7 +64,7 @@ export default class MainViewHeader extends React.Component<MainViewHeaderProps,
 
     render() {
         return (
-            <h1>{this.state.header + this.state.fileNameOne.split('.')[0] +
+            <h1 className="file-name-h1">{this.state.header + this.state.fileNameOne.split('.')[0] +
                 this.state.headerJoin + this.state.fileNameTwo.split('.')[0]}</h1>
         );
     }

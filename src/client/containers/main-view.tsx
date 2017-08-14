@@ -68,15 +68,19 @@ export default class MainView extends React.Component<MainViewProps, MainViewSta
       <Tabs className="tabs" initialSelectedIndex={1}>
         <Tab
           label="Image viewer"
+          disabled={this.state.comparisonActive}
+          className={this.state.comparisonActive ? 'disabled-tab' : 'enabled-tab'}
         >
           <div className="container">
-            <h1>{this.state.currentFile.fileName.split('.')[0]}</h1>
+            <h1 className="file-name-h1">
+              {
+                this.state.currentFile.timestamp !== 0 ? this.state.currentFile.fileName.split('.')[0] : 'Image viewer'
+              }
+            </h1>
             <ImageViewer data={this.state.actualBufferData} />
           </div>
         </Tab>
-        <Tab
-          label="Tags"
-        >
+        <Tab label="Tags">
           <div className="container">
             <MainViewHeader reducer={this.props.reducer} />
             <div id="simpleOrHierarchical">
