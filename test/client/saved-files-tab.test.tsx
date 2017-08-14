@@ -8,10 +8,22 @@ import SavedFilesTab from '../../src/client/components/side-bar/saved-files-tab'
 import { ColorDictionary } from "../../src/client/utils/colour-dictionary";
 
 describe('saved-files-tab', () => {
-    it('should render saved files tab with two files', () => {
-        let reducer: ApplicationStateReducer = new ApplicationStateReducer();
-        let colorDictionary = new ColorDictionary();
+    it('should render two basic listItems in saved files tab', () => {
+        let element = mount(prepareSavedFileTab([]));
+        expect(element.find('ListItem').length).to.equal(2);
+    });
 
+    it('shoud contains raised button', () => {
+        let element = mount(prepareSavedFileTab([]));
+        expect(element.find('RaisedButton').length).to.equal(1);
+    });
+
+    it('should render empty recent files', () => {
+        let element = mount(prepareSavedFileTab([]));
+        expect(element.find('List').first().find('ListItem').first().prop('nestedItems')).to.deep.equal([]);
+    });
+
+    it('should render saved files tab with two files', () => {
         let files: LightweightFile[] = [
             {
                 fileName: 'name',
@@ -25,26 +37,30 @@ describe('saved-files-tab', () => {
             }
         ];
 
-        let element = mount(
-            <MuiThemeProvider>
-                <SavedFilesTab 
-                    reducer={reducer}
-                    savedFiles={files}
-                    showPopUpOverrideConfirmation={() => {}}
-                    showPopUpDeleteConfirmation={() => {}}
-                    saveFile={() => {}}
-                    className={''}
-                    recentFiles={files}
-                    colorDictionary={colorDictionary}
-                />
-            </MuiThemeProvider>
-        )
-
-        expect(element.find('List').length).to.equal(2);
-        expect(element.find('RaisedButton').length).to.equal(1);
+        let element = mount(prepareSavedFileTab(files));
         expect(element.find('ElementOfDeletableList').length).to.equal(2);
         element.find('ElementOfDeletableList').map((item, index) => {
             expect(item.props()).to.have.property('lightFile', files[index]);
-        })
+        });
     });
 });
+
+function prepareSavedFileTab(files: LightweightFile[]): JSX.Element {
+    let reducer: ApplicationStateReducer = new ApplicationStateReducer();
+    let colorDictionary = new ColorDictionary();
+
+    return (
+        <MuiThemeProvider>
+            <SavedFilesTab
+                reducer={reducer}
+                savedFiles={files}
+                showPopUpOverrideConfirmation={() => { }}
+                showPopUpDeleteConfirmation={() => { }}
+                saveFile={() => { }}
+                className={''}
+                recentFiles={files}
+                colorDictionary={colorDictionary}
+            />
+        </MuiThemeProvider>
+    );
+}

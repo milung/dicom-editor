@@ -87,7 +87,7 @@ export default class MainView extends React.Component<MainViewProps, MainViewSta
           disabled={this.state.comparisonActive}
           className={this.state.comparisonActive ? 'disabled-tab' : 'enabled-tab'}
           onActive={() => this.handleSelect(IMAGE_VIEWER_TAB_INDEX)}
-          value={0}
+          value={IMAGE_VIEWER_TAB_INDEX}
         >
           <div className="container">
             <h1 className="file-name-h1">
@@ -101,7 +101,7 @@ export default class MainView extends React.Component<MainViewProps, MainViewSta
         <Tab 
           label="Tags"
           onActive={() => this.handleSelect(TAG_VIEWER_TAB_INDEX)}
-          value={1}
+          value={TAG_VIEWER_TAB_INDEX}
         >
           <div className="container">
             <MainViewHeader reducer={this.props.reducer} />
