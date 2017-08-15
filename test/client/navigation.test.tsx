@@ -29,18 +29,17 @@ describe('navigation', () => {
         )
 
         expect(element.find('Drawer').find('MenuItem').length).to.equal(2);
-        element.find('MenuItem').map((item, index) => {
+        element.find('Drawer').find('MenuItem').map((item, index) => {
             switch (index) {
                 case 0: {
                     expect(item.props()).to.have.property('primaryText', 'Export');
-                    // console.log(item.props());
+                    break;
                 }
-                // case 1: {
-                //     expect(item.props()).to.have.property('primaryText', 'Save to browser');
-                //     console.log(item.props());
-                // }
+                case 1: {
+                    expect(item.props()).to.have.property('primaryText', 'Save here');
+                    break;
+                }
             }
-
         })
 
     });

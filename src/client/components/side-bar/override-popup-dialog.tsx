@@ -26,7 +26,7 @@ export default class OverridePopUpDialog extends React.Component<OverridePopUpDi
                 handleCancelPopUpDialog={this.props.handleCloseOverrideDialog}
                 handleAction={this.handleOverrideButton}
                 openedPopUpDialog={this.props.openedOverrideDialog}
-                popUpQuestion = "Overwrite the file ?"
+                popUpQuestion="Overwrite the file ?"
                 popUpConfirmText="Overwrite the file"
                 popUpText="There is already a file with this name in the database. Do you want to overwrite it?"
             />
