@@ -5,6 +5,7 @@ import { ExportDialog } from '../export/export-dialog';
 import { ApplicationStateReducer } from '../../application-state';
 import { HeavyweightFile } from '../../model/file-interfaces';
 import { OverridePopUpDialog } from './override-popup-dialog';
+import { ConflictPopUpDialog } from './conflict-popup-dialog';
 import { isFileSavedInDb } from '../../utils/file-store-util';
 import {
     saveFileIntoSavedDb,
@@ -19,20 +20,29 @@ export interface NavigationProps {
 export interface NavigationState {
     sideBarOpen: boolean;
     openedExportDialog: boolean;
+    openedConflictDialog: boolean;
     openedOverrideDialog: boolean;
+    conflictFiles: HeavyweightFile[];
 }
 
 export class Navigation extends React.Component<NavigationProps, NavigationState> {
     public constructor(props: NavigationProps) {
         super(props);
         this.handleCloseExportDialog = this.handleCloseExportDialog.bind(this);
-        this.handleCloseOverrideDialog = this.handleCloseOverrideDialog.bind(this);
+        this.handleCloseOverwriteDialog = this.handleCloseOverwriteDialog.bind(this);
+        this.handleCloseConflictDialog = this.handleCloseConflictDialog.bind(this);
         this.saveFile = this.saveFile.bind(this);
+        this.overwriteAll = this.overwriteAll.bind(this);
+        this.skipAll = this.skipAll.bind(this);
+        this.handleCancelOverwriteDialog = this.handleCancelOverwriteDialog.bind(this);
+        this.showPopUpOverrideConfirmation = this.showPopUpOverrideConfirmation.bind(this);
 
         this.state = {
             sideBarOpen: false,
             openedExportDialog: false,
-            openedOverrideDialog: false
+            openedConflictDialog: false,
+            openedOverrideDialog: false,
+            conflictFiles: []
         };
     }
 
@@ -66,8 +76,18 @@ export class Navigation extends React.Component<NavigationProps, NavigationState
                     <OverridePopUpDialog
                         reducer={this.props.reducer}
                         saveFile={this.saveFile}
-                        handleCloseOverrideDialog={this.handleCloseOverrideDialog}
+                        handleCloseOverrideDialog={this.handleCloseOverwriteDialog}
                         openedOverrideDialog={this.state.openedOverrideDialog}
+                        fileName={this.state.conflictFiles[0] ? this.state.conflictFiles[0].fileName : ''}
+                        handleCancelOverrideDialog={this.handleCancelOverwriteDialog}
+                    />
+                    <ConflictPopUpDialog
+                        handleCloseDialog={this.handleCloseConflictDialog}
+                        overWriteAll={this.overwriteAll}
+                        skipAll={this.skipAll}
+                        decideForEach={this.showPopUpOverrideConfirmation}
+                        numberOfConflicting={this.state.conflictFiles.length}
+                        openedPopUpDialog={this.state.openedConflictDialog}
                     />
                 </Drawer>
 
@@ -104,24 +124,86 @@ export class Navigation extends React.Component<NavigationProps, NavigationState
         });
     }
 
-    private handleCloseOverrideDialog() {
+    private handleCancelOverwriteDialog() {
+        let arr = this.state.conflictFiles;
+        arr.shift();
+        this.setState({
+            conflictFiles: arr
+        });
+        if (this.state.conflictFiles.length === 0) {
+            this.handleCloseOverwriteDialog();
+        }
+    }
+
+    private handleCloseOverwriteDialog() {
         this.setState({
             openedOverrideDialog: false,
+            sideBarOpen: false,
+            conflictFiles: []
+        });
+    }
+
+    private handleCloseConflictDialog() {
+        this.setState({
+            openedConflictDialog: false,
             sideBarOpen: false
         });
     }
 
-    private async handleSaveClick() {
-        let file: HeavyweightFile | undefined = this.props.reducer.getState().currentFile;
-        if (file) {
-            file.timestamp = (new Date()).getTime();
-            let isSaved = await isFileSavedInDb(file);
-            if (!isSaved) {
-                this.saveFile(file);
-            } else {
-                this.showPopUpOverrideConfirmation();
+    private overwriteAll() {
+        this.state.conflictFiles.forEach(file => {
+            this.saveFile(file);
+        });
+    }
+
+    private skipAll() {
+        this.setState({
+            conflictFiles: []
+        });
+    }
+
+    private handleSaveClick() {
+        let toBeSaved = this.props.reducer.getSelectedFiles();
+        if (toBeSaved.length === 0) {
+            let file: HeavyweightFile | undefined = this.props.reducer.getState().currentFile;
+            if (file) {
+                toBeSaved.push(file);
+                this.tryToSaveFiles(toBeSaved);
+            }
+        } else {
+            this.tryToSaveFiles(toBeSaved);
+        }
+    }
+
+    private async tryToSaveFiles(toBeSaved: HeavyweightFile[]) {
+        let inConflict: HeavyweightFile[] = [];
+        for (var i = 0; i < toBeSaved.length; i++) {
+            let success = await this.tryToSaveOneFile(toBeSaved[i]);
+            if (!success) {
+                inConflict.push(toBeSaved[i]);
             }
         }
+        if (inConflict.length === 1) {
+            this.setState({
+                conflictFiles: inConflict,
+                openedOverrideDialog: true
+            });
+        } else if (inConflict.length > 1) {
+            this.setState({
+                openedConflictDialog: true,
+                conflictFiles: inConflict
+            });
+        }
+    }
+
+    private async tryToSaveOneFile(file: HeavyweightFile) {
+        file.timestamp = (new Date()).getTime();
+        let isSaved = await isFileSavedInDb(file);
+        if (!isSaved) {
+            this.saveFile(file);
+            return true;
+        }
+        return false;
     }
 
     /**
@@ -135,6 +217,5 @@ export class Navigation extends React.Component<NavigationProps, NavigationState
         let recentFileUtil: RecentFileStoreUtil = new RecentFileStoreUtil(this.props.reducer);
         recentFileUtil.handleStoringRecentFile(lightFile);
         this.props.reducer.addSavedFile(lightFile);
-        this.handleCloseOverrideDialog();
     }
 }

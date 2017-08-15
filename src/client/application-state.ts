@@ -145,6 +145,14 @@ export class ApplicationStateReducer {
         return freeColor;
     }
 
+    public getSelectedFiles(): HeavyweightFile[] {
+        let selected: HeavyweightFile[] = [];
+        this.currentState.selectedFiles.forEach(file => {
+            selected.push(file.selectedFile);
+        });
+        return selected;
+    }
+
     public setComparisonActive(value: boolean) {
         this.currentState.comparisonActive = value;
         this.stateSubject$.next(this.currentState);

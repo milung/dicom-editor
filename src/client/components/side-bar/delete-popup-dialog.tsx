@@ -28,8 +28,10 @@ export class DeletePopUpDialog extends React.Component<DeletePopUpDialogProps, D
         return (
             <PopUpDialog
                 handleClosePopUpDialog={this.props.handleCloseDeleteDialog}
+                handleCancelPopUpDialog={this.props.handleCloseDeleteDialog}
                 handleAction={this.handleDeleteClick}
                 openedPopUpDialog={this.props.openedDeleteDialog}
+                popUpQuestion="Remove the file from saved ?"
                 popUpConfirmText="Remove the file from saved"
                 popUpText="Are you sure you want to remove the file from saved?"
             />

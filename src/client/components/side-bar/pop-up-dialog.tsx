@@ -2,10 +2,12 @@ import * as React from 'react';
 import { Dialog, FlatButton } from 'material-ui';
 
 export interface PopUpDialogProps {
+    handleCancelPopUpDialog: Function;
     handleClosePopUpDialog: Function;
     handleAction: Function;
     openedPopUpDialog: boolean;
     popUpText: string;
+    popUpQuestion: string;
     popUpConfirmText: string;
 }
 
@@ -19,7 +21,7 @@ export class PopUpDialog extends React.Component<PopUpDialogProps, PopUpDialogSt
             <FlatButton
                 label="Cancel"
                 primary={true}
-                onTouchTap={() => { this.props.handleClosePopUpDialog(); }}
+                onTouchTap={() => { this.props.handleCancelPopUpDialog(); }}
             />
         ),
         (
@@ -39,7 +41,7 @@ export class PopUpDialog extends React.Component<PopUpDialogProps, PopUpDialogSt
         return (
             <div>
                 <Dialog
-                    title={this.props.popUpConfirmText + ' ?'}
+                    title={this.props.popUpQuestion}
                     actions={this.actions}
                     modal={false}
                     open={this.props.openedPopUpDialog}

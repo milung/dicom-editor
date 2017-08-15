@@ -5,8 +5,10 @@ import { ApplicationStateReducer } from '../../application-state';
 interface OverridePopUpDialogProps {
     reducer: ApplicationStateReducer;
     saveFile: Function;
+    handleCancelOverrideDialog: Function;
     handleCloseOverrideDialog: Function;
     openedOverrideDialog: boolean;
+    fileName: string;
 }
 
 interface OverridePopUpDialogState {
@@ -20,22 +22,25 @@ export class OverridePopUpDialog extends React.Component<OverridePopUpDialogProp
     }
 
     render() {
+        var question = 'Overwrite the file ' + this.props.fileName;
         return (
             <PopUpDialog
                 handleClosePopUpDialog={this.props.handleCloseOverrideDialog}
                 handleAction={this.handleOverrideButton}
                 openedPopUpDialog={this.props.openedOverrideDialog}
-                popUpConfirmText="Override the file"
-                popUpText="There is already a file with this name in the database. Do you want to override it?"
+                popUpQuestion={question}
+                popUpConfirmText="Overwrite"
+                popUpText="There is already a file with this name. Do you want to override it?"
+                handleCancelPopUpDialog={this.props.handleCancelOverrideDialog}
             />
         );
     }
 
-    private handleOverrideButton() {
+    private async handleOverrideButton() {
         let file = this.props.reducer.getState().currentFile;
         if (file) {
-            this.props.saveFile(file);
+           this.props.saveFile(file);
         }
-        this.props.handleCloseOverrideDialog();
+        this.props.handleCancelOverrideDialog();
     }
 }
