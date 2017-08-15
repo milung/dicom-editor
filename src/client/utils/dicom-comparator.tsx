@@ -118,3 +118,19 @@ export function compareTwoFiles(file1: SelectedFile, file2: SelectedFile): Dicom
 
     return comparisonEntries;
 }
+
+export function areFilesExactlySame(entries: DicomComparisonData[]): boolean{
+    let counter: number = 0
+    entries.forEach( entry => {
+        if(entry.group[0].colour !== '#000000'){
+            counter++;
+        }
+    })
+
+    if(counter > 0){
+        return false;
+    } else {
+        return true;
+    }
+   
+}
