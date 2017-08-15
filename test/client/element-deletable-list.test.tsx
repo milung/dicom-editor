@@ -21,6 +21,7 @@ describe('ElementOfDeletableList', () => {
                     lightFile={file}
                     showPopUpFunction={() => {}}
                     reducer={reducer}
+                    selectFileFunction={() => {}}
                 />
             </MuiThemeProvider>
 

@@ -1,4 +1,3 @@
-import { RecentFileStoreUtil } from './utils/recent-file-store-util';
 import { HeavyweightFile, LightweightFile, SelectedFile } from './model/file-interfaces';
 import { Observable } from 'rxjs/Observable';
 import { BehaviorSubject } from 'rxjs/BehaviorSubject';
@@ -115,13 +114,6 @@ export class ApplicationStateReducer {
     public updateCurrentFile(file: HeavyweightFile) {
         this.currentState.currentFile = file;
         this.stateSubject$.next(this.currentState);
-    }
-
-    public updateCurrentFromRecentFile(file: LightweightFile) {
-        let fileStorage = new RecentFileStoreUtil(this);
-        fileStorage.getRecentFile(file.dbKey).then(data => {
-            this.addLoadedFiles([data]);
-        });
     }
 
     public addSelectedFile(fileName: string, newColour: string) {

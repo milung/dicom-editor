@@ -7,6 +7,7 @@ import { isFileSavedInDb } from '../../utils/file-store-util';
 import { ActionWatchLater, ContentSave } from 'material-ui/svg-icons';
 import { ColorDictionary } from '../../utils/colour-dictionary';
 import './side-bar.css';
+import { RecentFileStoreUtil } from "../../utils/recent-file-store-util";
 
 interface SavedFilesTabProps {
     reducer: ApplicationStateReducer;
@@ -36,7 +37,8 @@ export default class SavedFilesTab extends React.Component<SavedFilesTabProps, S
         this.handleSaveClick = this.handleSaveClick.bind(this);
         this.handleRecentFilesToggle = this.handleRecentFilesToggle.bind(this);
         this.handleSavedFilesToggle = this.handleSavedFilesToggle.bind(this);
-        this.selectCurrentFileFromRecentFile = this.selectCurrentFileFromRecentFile.bind(this);
+        this.selectCurrentFile = this.selectCurrentFile.bind(this);
+        this.updateCurrentFromRecentFile = this.updateCurrentFromRecentFile.bind(this); 
     }
 
     render() {
@@ -56,7 +58,7 @@ export default class SavedFilesTab extends React.Component<SavedFilesTabProps, S
                             nestedItems={this.props.recentFiles.map((item, index) => (
                                 <ListItem
                                     key={index}
-                                    onClick={() => this.selectCurrentFileFromRecentFile(item)}
+                                    onClick={() => this.selectCurrentFile(item)}
                                     primaryText={item.fileName}
                                 />
                             ))}
@@ -76,6 +78,7 @@ export default class SavedFilesTab extends React.Component<SavedFilesTabProps, S
                                     lightFile={item}
                                     showPopUpFunction={this.props.showPopUpDeleteConfirmation}
                                     reducer={this.props.reducer}
+                                    selectFileFunction={this.selectCurrentFile}
                                 />
                             );
                         })}
@@ -117,11 +120,18 @@ export default class SavedFilesTab extends React.Component<SavedFilesTabProps, S
         });
     }
 
-    private selectCurrentFileFromRecentFile(file: LightweightFile) {
+    private selectCurrentFile(file: LightweightFile) {
+        this.updateCurrentFromRecentFile(file);
         this.props.reducer.removeAllSelectedFiles();
         this.props.reducer.setComparisonActive(false);
         this.props.colorDictionary.reset();
-        this.props.reducer.updateCurrentFromRecentFile(file);
     }
 
+    private updateCurrentFromRecentFile(file: LightweightFile) {
+        let fileStorage = new RecentFileStoreUtil(this.props.reducer);
+        fileStorage.getRecentFile(file.dbKey).then(data => {
+            this.props.reducer.addLoadedFiles([data]);
+        });
+        fileStorage.handleStoringRecentFile(file);
+    }
 }
