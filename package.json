@@ -90,5 +90,12 @@
   },
   "dependencies": {
     "express": "^4.15.3"
+  },
+  "nyc": {
+    "include": [
+      "src/**/*.{ts,tsx}"
+    ],
+    "instrument": false,
+    "sourceMap": false
   }
 }
