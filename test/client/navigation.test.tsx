@@ -146,7 +146,7 @@ describe('navigation', () => {
 
         let fileArray: FileContent = {
             buffer: file,
-            fileName: 'testFile',
+            fileName: 'CT1_UNC.explicit_big_endian',
             fileSize: 532480
         };
 
@@ -154,11 +154,10 @@ describe('navigation', () => {
         let heavyWeightFile = fileService.createHeavyFile(fileArray);
 
 
-        //  console.log(reducer.getState().currentFile);
-        reducer.updateCurrentFile(heavyWeightFile);
-        //console.log(heavyWeightFile);
-        let flag = true;
-
+        reducer.addLoadedFiles([heavyWeightFile]);
+        reducer.addSelectedFile('CT1_UNC.explicit_big_endian', '#000000');
+        var flag = true;
+        
         let element = MuiMountWithContext(
 
             <ExportDialog reducer={reducer} handleClosePopUpDialog={() => { }} openedPopUpDialog={flag} />
