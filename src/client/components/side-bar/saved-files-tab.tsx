@@ -7,7 +7,7 @@ import { isFileSavedInDb } from '../../utils/file-store-util';
 import { ActionWatchLater, ContentSave } from 'material-ui/svg-icons';
 import { ColorDictionary } from '../../utils/colour-dictionary';
 import './side-bar.css';
-import { RecentFileStoreUtil } from "../../utils/recent-file-store-util";
+import { RecentFileStoreUtil } from '../../utils/recent-file-store-util';
 
 interface SavedFilesTabProps {
     reducer: ApplicationStateReducer;
