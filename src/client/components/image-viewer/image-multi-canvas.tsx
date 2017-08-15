@@ -44,46 +44,40 @@ export class ImageMultiCanvas extends React.Component<ImageMultiCanvasProps, Ima
         this.setState({
             sliderActualIndex: 0,
             rightArrowStyle: nextProps.numberOfFrames <= 1 ? disabledArrow : enabledArrow,
-            leftArrowStyle:  disabledArrow
+            leftArrowStyle: disabledArrow
         });
     }
 
     public render() {
         return (
-            <div>
-                 {this.props.numberOfFrames > 0 ? ( 
-                    <div className="image_viewer_container">
-                        <div>
-                            <h3>Image {this.state.sliderActualIndex + 1} of {this.props.numberOfFrames}</h3>
-                        </div>
+            <div className="image_viewer_container">
+                <div>
+                    <h3>Image {this.state.sliderActualIndex + 1} of {this.props.numberOfFrames}</h3>
+                </div>
 
-                        <div className="center" style={{ width: '512px' }}>
-                            <Slider
-                                disabled={this.props.numberOfFrames <= 1 ? true : false}
-                                onChange={(event, newValue) => { this.handleChange(event, newValue); }}
-                                step={1}
-                                value={this.state.sliderActualIndex}
-                                max={this.props.numberOfFrames <= 1 ? 1 : this.props.numberOfFrames - 1}
-                            />
-                        </div>
-                        <div className="image_control">
-                            <div className="arrow_style">
-                                <ArrowLeft
-                                    onClick={() => { this.handleArrowClick('left'); }}
-                                    style={this.state.leftArrowStyle}
-                                />
-                            </div>
-                            <ImageCanvas data={this.props.data} frameIndex={this.state.sliderActualIndex} />
-                            <div className="arrow_style">
-                                <ArrowRight
-                                    onClick={() => { this.handleArrowClick('right'); }}
-                                    style={this.state.rightArrowStyle}
-                                />
-                            </div>
-                        </div>
-                    </div>)
-                     : (<h4>No image loaded</h4>) 
-                }
+                <div className="center" style={{ width: '512px' }}>
+                    <Slider
+                        onChange={(event, newValue) => { this.handleChange(event, newValue); }}
+                        step={1}
+                        value={this.state.sliderActualIndex}
+                        max={this.props.numberOfFrames <= 1 ? 1 : this.props.numberOfFrames - 1}
+                    />
+                </div>
+                <div className="image_control">
+                    <div className="arrow_style">
+                        <ArrowLeft
+                            onClick={() => { this.handleArrowClick('left'); }}
+                            style={this.state.leftArrowStyle}
+                        />
+                    </div>
+                    <ImageCanvas data={this.props.data} frameIndex={this.state.sliderActualIndex} />
+                    <div className="arrow_style">
+                        <ArrowRight
+                            onClick={() => { this.handleArrowClick('right'); }}
+                            style={this.state.rightArrowStyle}
+                        />
+                    </div>
+                </div>
             </div>
         );
     }
