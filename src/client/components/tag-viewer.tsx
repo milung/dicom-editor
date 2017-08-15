@@ -44,7 +44,7 @@ export default class TagViewer extends React.Component<TagViewerProps, TagViewer
         };
     }
 
-    public componentWillReceiveProps(nextProps: TagViewerProps){
+    public componentWillReceiveProps(nextProps: TagViewerProps) {
         let simpleComparisonData: DicomSimpleComparisonData = { dicomComparisonData: [] };
 
         if (nextProps.comparisonActive) {
@@ -52,12 +52,12 @@ export default class TagViewer extends React.Component<TagViewerProps, TagViewer
                 simpleComparisonData = compareTwoFiles(nextProps.files[0], nextProps.files[1]);
 
             }
-        if (areFilesExactlySame(simpleComparisonData.dicomComparisonData)) {
+            if (areFilesExactlySame(simpleComparisonData.dicomComparisonData)) {
                 this.setState({
                     exactlySameFiles: true
                 });
             } else {
-                 this.setState({
+                this.setState({
                     exactlySameFiles: false
                 });
             }
@@ -140,8 +140,8 @@ export default class TagViewer extends React.Component<TagViewerProps, TagViewer
                     labelPosition="right"
                     style={{ margin: 20 }}
                 />
-                <h3 className='file-name-h1'>
-                 Files are exactly the same
+                <h3 className="file-name-h1">
+                    Files are exactly the same
                 </h3>
                 <DicomSimpleComparisonTable
                     comparisonData={data.dicomComparisonData}
@@ -176,8 +176,8 @@ export default class TagViewer extends React.Component<TagViewerProps, TagViewer
                     labelPosition="right"
                     style={{ margin: 20 }}
                 />
-                <h3 className='file-name-h1'>
-                 Files are exactly the same
+                <h3 className="file-name-h1">
+                    Files are exactly the same
                 </h3>
                 <DicomExtendedComparisonTable
                     data={convertSimpleDicomToExtendedComparison(data)}
@@ -199,7 +199,7 @@ export default class TagViewer extends React.Component<TagViewerProps, TagViewer
                         showOnlyDiffs={this.state.showOnlyDiffs}
                     />
                 </div>
-            )
+            );
     }
 
     private showOnlyDiffsOn() {
