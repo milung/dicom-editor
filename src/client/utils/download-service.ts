@@ -1,3 +1,4 @@
+import { HeavyweightFile } from './../model/file-interfaces';
 
 import { ApplicationStateReducer } from '../application-state';
 import { dicomDataToExcel } from './excel-export/dicom-table-exporter';
@@ -19,15 +20,27 @@ export class Downloader {
 
     async download(data: ExportMetadata, reducer: ApplicationStateReducer) {
         var selectedFiles: number = reducer.getState().selectedFiles.length;
+
+        let firstSelected = reducer.getState().selectedFiles[0];
+        let fileToProcess: HeavyweightFile | undefined;
+
+        if (firstSelected) {
+            fileToProcess = firstSelected.selectedFile;
+        } else {
+            fileToProcess = reducer.getState().currentFile;
+            selectedFiles = 1;
+        }
+
         if (data.excel && (!data.image) && (selectedFiles === 1)) {
-            var dataToExcel = reducer.getState().currentFile;
-            if (dataToExcel) {
-                this.downloadOneItem(dicomDataToExcel(dataToExcel), 'Excel');
+            if (fileToProcess) {
+                this.downloadOneItem(dicomDataToExcel(fileToProcess), 'Excel');
             }
         } else if (data.image && (!data.multiframe && !data.excel) && (selectedFiles === 1)) {
-            let dataToProcessing = reducer.getState().selectedFiles[0].selectedFile.bufferedData;
-            await this.renderCanvas(dataToProcessing, 0);
-            await this.renderCanvas(dataToProcessing, 0);
+            if (fileToProcess) {
+                let dataToProcessing = fileToProcess.bufferedData;
+                await this.renderCanvas(dataToProcessing, 0);
+                await this.renderCanvas(dataToProcessing, 0);
+            }
         } else if ((data.excel && data.image) || (data.multiframe && data.image) || (selectedFiles > 1)) {
             let zipper = new Zipper();
             zipper.generateCompleteZip(data, reducer);

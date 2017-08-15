@@ -31,9 +31,24 @@ export class Zipper {
 
     async generateCompleteZip(data: ExportMetadata, reducer: ApplicationStateReducer) {
         this.numberOfFiles = reducer.getState().selectedFiles.length;
+        let filesToProcess: SelectedFile[] = [];
+
+        if (this.numberOfFiles === 0) {
+            let current = reducer.getState().currentFile;
+            if (current) {
+                let selected = {
+                    colour: 'useles',
+                    selectedFile: current
+                };
+                filesToProcess = current ? [selected] : [];
+                this.numberOfFiles = 1;
+            }
+        } else {
+            filesToProcess = reducer.getState().selectedFiles;
+        }
 
         for (var i = 0; i < this.numberOfFiles; i++) {
-            let dataToProcessing: SelectedFile = reducer.getState().selectedFiles[i];
+            let dataToProcessing: SelectedFile = filesToProcess[i];
 
             this.createStructureZip(i + 1);
             await this.zipSelectedFile(data, dataToProcessing.selectedFile, this.numberOfFiles);
@@ -58,7 +73,7 @@ export class Zipper {
             await this.imagesToZip(dataToProcessing);
         } else if ((data.excel) && (numberOfFiles > 1)) {
             await this.excelToZip(dataToProcessing);
-        } 
+        }
     }
 
     private generateZip() {

@@ -4,6 +4,7 @@ import { ApplicationStateReducer } from '../../application-state';
 import { containsImage, isMultiframe } from '../../utils/dicom-validator';
 import { ExportMetadata } from '../../model/export-interfaces';
 import { Downloader } from '../../utils/download-service';
+import { HeavyweightFile } from '../../model/file-interfaces';
 
 export interface ExportDialogProps {
     reducer: ApplicationStateReducer;
@@ -85,13 +86,29 @@ export class ExportDialog extends React.Component<ExportDialogProps, ExportDialo
     }
     public componentWillReceiveProps(nextProps: ExportDialogProps) {
         if (nextProps.openedPopUpDialog) {
-            let tempHeavy = this.props.reducer.getState().selectedFiles[0];
+            let firstSelected = this.props.reducer.getState().selectedFiles[0];
+            let tempHeavy: HeavyweightFile | undefined;
+            let numberOfFiles = this.props.reducer.getState().selectedFiles.length;
+
+            if (firstSelected) {
+                tempHeavy = firstSelected.selectedFile;
+            } else {
+                tempHeavy = this.props.reducer.getState().currentFile;
+                numberOfFiles = 1;
+            }
+
             let hasImage: boolean = false;
             let hasMultipleFrames: boolean = false;
-            
+
             if (tempHeavy) {
-                hasImage = containsImage(tempHeavy.selectedFile.dicomData);
-                hasMultipleFrames = isMultiframe(tempHeavy.selectedFile.dicomData);
+                if (numberOfFiles === 1) {
+                    hasImage = containsImage(tempHeavy.dicomData);
+                    hasMultipleFrames = isMultiframe(tempHeavy.dicomData);
+                } else {
+                    hasImage = true;
+                    hasMultipleFrames = true;
+                }
+
                 this.setState({
                     multiframe: hasMultipleFrames,
                     hasImage: hasImage,
