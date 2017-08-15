@@ -72,14 +72,14 @@ export default class MainView extends React.Component<MainViewProps, MainViewSta
   }
 
   handleSelect(index: number) {
-    this.setState({selectedTab: index});
+    this.setState({ selectedTab: index });
   }
 
   render() {
     return (
-      <Tabs 
-        className="tabs" 
-        initialSelectedIndex={TAG_VIEWER_TAB_INDEX} 
+      <Tabs
+        className="tabs"
+        initialSelectedIndex={TAG_VIEWER_TAB_INDEX}
         value={this.state.comparisonActive ? TAG_VIEWER_TAB_INDEX : this.state.selectedTab}
       >
         <Tab
@@ -92,13 +92,15 @@ export default class MainView extends React.Component<MainViewProps, MainViewSta
           <div className="container">
             <h1 className="file-name-h1">
               {
-                this.state.currentFile.timestamp !== 0 ? this.state.currentFile.fileName.split('.')[0] : 'Image viewer'
+                this.state.currentFile.timestamp !== 0 
+                ? this.getFormattedFileName(this.state.currentFile.fileName) 
+                : 'Image viewer'
               }
             </h1>
             <ImageViewer data={this.state.actualBufferData} />
           </div>
         </Tab>
-        <Tab 
+        <Tab
           label="Tags"
           onActive={() => this.handleSelect(TAG_VIEWER_TAB_INDEX)}
           value={TAG_VIEWER_TAB_INDEX}
@@ -133,5 +135,11 @@ export default class MainView extends React.Component<MainViewProps, MainViewSta
         </Tab>
       </Tabs >
     );
+  }
+
+  private getFormattedFileName(name: string): string {
+    let splitArray = name.split('.');
+    splitArray.splice(-1, 1);
+    return splitArray.join('.');
   }
 }

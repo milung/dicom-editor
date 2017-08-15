@@ -50,13 +50,14 @@ export default class MainViewHeader extends React.Component<MainViewHeaderProps,
                         timestamp: 0
                     },
                 fileNameOne: state.selectedFiles[0] && state.comparisonActive ?
-                    state.selectedFiles[0].selectedFile.fileName : '',
+                    this.getFormattedFileName(state.selectedFiles[0].selectedFile.fileName) : '',
                 fileNameTwo: state.selectedFiles[1] && state.comparisonActive ?
-                    state.selectedFiles[1].selectedFile.fileName : '',
+                    this.getFormattedFileName(state.selectedFiles[1].selectedFile.fileName) : '',
                 header: state.comparisonActive ? (state.searchExpression ? 'Searching in ' : 'Compare ') :
                     (state.currentFile ? (state.searchExpression ?
-                        (state.comparisonActive ? '' : ('Searching in ' + state.currentFile.fileName.split('.')[0])) :
-                        (state.currentFile.fileName.split('.')[0])) : 'Tag viewer'),
+                        (state.comparisonActive ? '' : 
+                        ('Searching in ' + this.getFormattedFileName(state.currentFile.fileName))) :
+                        (this.getFormattedFileName(state.currentFile.fileName))) : 'Tag viewer'),
                 headerJoin: state.comparisonActive ? ' and ' : ''
             });
         });
@@ -64,8 +65,14 @@ export default class MainViewHeader extends React.Component<MainViewHeaderProps,
 
     render() {
         return (
-            <h1 className="file-name-h1">{this.state.header + this.state.fileNameOne.split('.')[0] +
-                this.state.headerJoin + this.state.fileNameTwo.split('.')[0]}</h1>
+            <h1 className="file-name-h1">{this.state.header + this.state.fileNameOne +
+                this.state.headerJoin + this.state.fileNameTwo}</h1>
         );
+    }
+
+    private getFormattedFileName(name: string): string {
+        let splitArray = name.split('.');
+        splitArray.splice(-1, 1);
+        return splitArray.join('.');
     }
 }
