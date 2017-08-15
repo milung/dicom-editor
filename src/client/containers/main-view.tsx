@@ -10,6 +10,7 @@ import Cached from 'material-ui/svg-icons/action/cached';
 import { RaisedButton } from 'material-ui';
 import Search from '../components/search-bar';
 import MainViewHeader from './main-view-header';
+import { EmptyViewer } from '../components/empty-viewer';
 
 const IMAGE_VIEWER_TAB_INDEX = 0;
 const TAG_VIEWER_TAB_INDEX = 1;
@@ -32,6 +33,11 @@ export default class MainView extends React.Component<MainViewProps, MainViewSta
 
   public constructor(props: MainViewProps) {
     super(props);
+
+    this.handleSelect = this.handleSelect.bind(this);
+    this.fillImageContent = this.fillImageContent.bind(this);
+    this.fillTagContent = this.fillTagContent.bind(this);
+
     this.state = {
       currentFile: {
         fileSize: 0,
@@ -47,8 +53,6 @@ export default class MainView extends React.Component<MainViewProps, MainViewSta
       comparisonActive: false,
       selectedTab: TAG_VIEWER_TAB_INDEX
     };
-
-    this.handleSelect = this.handleSelect.bind(this);
   }
 
   public componentDidMount() {
@@ -76,6 +80,15 @@ export default class MainView extends React.Component<MainViewProps, MainViewSta
   }
 
   render() {
+    let imageContent: JSX.Element;
+    let tagContent: JSX.Element;
+    if (this.props.reducer.getState().currentFile) {
+      imageContent = this.fillImageContent();
+      tagContent = this.fillTagContent();
+    } else {
+      imageContent = <EmptyViewer />
+      tagContent = <EmptyViewer />
+    }
     return (
       <Tabs
         className="tabs"
@@ -89,51 +102,63 @@ export default class MainView extends React.Component<MainViewProps, MainViewSta
           onActive={() => this.handleSelect(IMAGE_VIEWER_TAB_INDEX)}
           value={IMAGE_VIEWER_TAB_INDEX}
         >
-          <div className="container">
-            <h1 className="file-name-h1">
-              {
-                this.state.currentFile.timestamp !== 0 
-                ? this.getFormattedFileName(this.state.currentFile.fileName) 
-                : 'Image viewer'
-              }
-            </h1>
-            <ImageViewer data={this.state.actualBufferData} />
-          </div>
+          {imageContent}
         </Tab>
         <Tab
           label="Tags"
           onActive={() => this.handleSelect(TAG_VIEWER_TAB_INDEX)}
           value={TAG_VIEWER_TAB_INDEX}
         >
-          <div className="container">
-            <MainViewHeader reducer={this.props.reducer} />
-            <div id="simpleOrHierarchical">
-              <RaisedButton
-                icon={<Cached className="material-icons" />}
-                primary={true}
-                className="raisedButton-override"
-                label={this.state.tableMode === TableMode.SIMPLE ? 'Hierarchical' : 'Simple'}
-                onClick={() => this.setState({
-                  tableMode:
-                  this.state.tableMode === TableMode.SIMPLE ?
-                    TableMode.EXTENDED : TableMode.SIMPLE
-                })}
-              />
-              <Search reducer={this.props.reducer} />
-            </div>
-          </div>
-
-          <div className="container">
-            <TagViewer
-              files={this.state.selectedFiles}
-              tableMode={this.state.tableMode}
-              currentFile={this.state.currentFile}
-              comparisonActive={this.state.comparisonActive}
-              reducer={this.props.reducer}
-            />
-          </div>
+          {tagContent}
         </Tab>
       </Tabs >
+    );
+  }
+
+  private fillImageContent(): JSX.Element {
+    return (
+      <div className="container">
+        <h1 className="file-name-h1">
+          {
+            this.state.currentFile.timestamp !== 0 ?
+              this.getFormattedFileName(this.state.currentFile.fileName) : 'Image viewer'
+          }
+        </h1>
+        <ImageViewer data={this.state.actualBufferData} />
+      </div>
+    );
+  }
+
+  private fillTagContent(): JSX.Element {
+    return (
+      <div>
+        <div className="container">
+          <MainViewHeader reducer={this.props.reducer} />
+          <div id="simpleOrHierarchical">
+            <RaisedButton
+              icon={<Cached className="material-icons" />}
+              primary={true}
+              className="raisedButton-override"
+              label={this.state.tableMode === TableMode.SIMPLE ? 'Hierarchical' : 'Simple'}
+              onClick={() => this.setState({
+                tableMode:
+                this.state.tableMode === TableMode.SIMPLE ?
+                  TableMode.EXTENDED : TableMode.SIMPLE
+              })}
+            />
+            <Search reducer={this.props.reducer} />
+          </div>
+        </div>
+        <div className="container">
+          <TagViewer
+            files={this.state.selectedFiles}
+            tableMode={this.state.tableMode}
+            currentFile={this.state.currentFile}
+            comparisonActive={this.state.comparisonActive}
+            reducer={this.props.reducer}
+          />
+        </div>
+      </div>
     );
   }
 

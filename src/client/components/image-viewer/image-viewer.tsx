@@ -35,11 +35,7 @@ export default class ImageViewer extends React.Component<ImageViewerProps, {}> {
                 </div>
             );
         }
-
-        return(
-            <div>No image loaded</div>
-        );
-
+        return(<h1>No image</h1>);
     }
 
 }

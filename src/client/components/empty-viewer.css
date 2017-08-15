@@ -1,0 +1,14 @@
+.empty-viewer-wrapper {
+    width: 80%;
+    height: 60vh;
+    margin: 10vh 10vh 10% 10%;
+    border: 4px solid #009999;
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.empty-viewer-text {
+    text-align: center;
+}
