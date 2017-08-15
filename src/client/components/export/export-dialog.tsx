@@ -3,7 +3,7 @@ import { Dialog, FlatButton, Checkbox } from 'material-ui';
 import { ApplicationStateReducer } from '../../application-state';
 import { containsImage, isMultiframe } from '../../utils/dicom-validator';
 import { ExportMetadata } from '../../model/export-interfaces';
-import { download } from '../../utils/download-service';
+import { Downloader } from '../../utils/download-service';
 
 export interface ExportDialogProps {
     reducer: ApplicationStateReducer;
@@ -85,12 +85,13 @@ export class ExportDialog extends React.Component<ExportDialogProps, ExportDialo
     }
     public componentWillReceiveProps(nextProps: ExportDialogProps) {
         if (nextProps.openedPopUpDialog) {
-            let tempHeavy = this.props.reducer.getState().currentFile;
+            let tempHeavy = this.props.reducer.getState().selectedFiles[0];
             let hasImage: boolean = false;
             let hasMultipleFrames: boolean = false;
+            
             if (tempHeavy) {
-                hasImage = containsImage(tempHeavy.dicomData);
-                hasMultipleFrames = isMultiframe(tempHeavy.dicomData);
+                hasImage = containsImage(tempHeavy.selectedFile.dicomData);
+                hasMultipleFrames = isMultiframe(tempHeavy.selectedFile.dicomData);
                 this.setState({
                     multiframe: hasMultipleFrames,
                     hasImage: hasImage,
@@ -98,7 +99,8 @@ export class ExportDialog extends React.Component<ExportDialogProps, ExportDialo
                 });
             } else {
                 this.setState({
-                    isFileLoaded: false
+                    isFileLoaded: false,
+                    hasImage: false
                 });
             }
         }
@@ -118,7 +120,7 @@ export class ExportDialog extends React.Component<ExportDialogProps, ExportDialo
     }
 
     private dummyExport(exportMetadata: ExportMetadata) {
-        download(exportMetadata, this.props.reducer);
+        new Downloader().download(exportMetadata, this.props.reducer);
     }
 
     private clearCheckBoxes() {

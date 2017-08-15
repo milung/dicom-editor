@@ -4,39 +4,66 @@ import { dicomDataToExcel } from './excel-export/dicom-table-exporter';
 import { getImageFile } from './image-file-maker';
 import { ExportMetadata } from '../model/export-interfaces';
 import { Zipper } from '../utils/zip-service';
+var cornerstoneWADOImageLoader = require('../components/image-viewer/cornerstone-library/DCMLoader');
+import * as cornerstone from '../../assets/js/cornerstone-library/cornerstone.js';
 
 /**
- * @description download one file or more files in zip
- * @param data 
+ * @description Download one file excel/image or call zip service for more files
+ * @param data Contains information about what the user wants to download
  * @param reducer 
  */
-export function download(data: ExportMetadata, reducer: ApplicationStateReducer) {
 
-    if (data.excel && (!data.image)) {
-        var dataToExcel = reducer.getState().currentFile;
-        if (dataToExcel) {
-            downloadOneItem(dicomDataToExcel(dataToExcel), 'Excel');
+export class Downloader {
+
+    private actualImage: number = 0;
+
+    async download(data: ExportMetadata, reducer: ApplicationStateReducer) {
+        var selectedFiles: number = reducer.getState().selectedFiles.length;
+        if (data.excel && (!data.image) && (selectedFiles === 1)) {
+            var dataToExcel = reducer.getState().currentFile;
+            if (dataToExcel) {
+                this.downloadOneItem(dicomDataToExcel(dataToExcel), 'Excel');
+            }
+        } else if (data.image && (!data.multiframe && !data.excel) && (selectedFiles === 1)) {
+            let dataToProcessing = reducer.getState().selectedFiles[0].selectedFile.bufferedData;
+            await this.renderCanvas(dataToProcessing, 0);
+            await this.renderCanvas(dataToProcessing, 0);
+        } else if ((data.excel && data.image) || (data.multiframe && data.image) || (selectedFiles > 1)) {
+            let zipper = new Zipper();
+            zipper.generateCompleteZip(data, reducer);
         }
-    } else if (data.image && (!data.multiframe && !data.excel)) {
-        downloadOneItem(getImageFile(), 'Image');
-    } else if ((data.excel && data.image) || (data.multiframe && data.image)) {
-        let zipper = new Zipper();
-        zipper.zipp(data, reducer);
     }
-}
 
-function downloadOneItem(data: Uint8Array, type: string) {
-    var downloadElement = document.createElement('a');
-    document.body.appendChild(downloadElement);
-    var blob = new Blob([data], { type: 'octet/stream' });
-    var url = window.URL.createObjectURL(blob);
-    downloadElement.href = url;
-    if (type === 'Image') {
-        downloadElement.download = 'dicomImage.png';
-    } else if (type === 'Excel') {
-        downloadElement.download = 'dicomData.xlsx';
+    private downloadOneItem(data: Uint8Array, type: string) {
+        var downloadElement = document.createElement('a');
+        document.body.appendChild(downloadElement);
+        var blob = new Blob([data], { type: 'octet/stream' });
+        var url = window.URL.createObjectURL(blob);
+        downloadElement.href = url;
+        if (type === 'Image') {
+            downloadElement.download = 'dicomImage.png';
+        } else if (type === 'Excel') {
+            downloadElement.download = 'dicomData.xlsx';
+        }
+        downloadElement.click();
+        window.URL.revokeObjectURL(url);
+        downloadElement.remove();
     }
-    downloadElement.click();
-    window.URL.revokeObjectURL(url);
-    downloadElement.remove();
+
+    private async renderCanvas(data: Uint8Array, frameIndex: number) {
+        var imageElement = document.getElementById('dicomImage') as Element;
+        var fileNew = new Blob([data], { type: 'File' });
+
+        var imageId = cornerstoneWADOImageLoader.wadouri.fileManager.add(fileNew);
+        imageId = imageId + '?frame=' + frameIndex;
+        var self = this;
+        await cornerstone.loadImage(imageId).then(function (image: Object) {
+            var viewport = cornerstone.getDefaultViewport(imageElement.children[0], image);
+            cornerstone.displayImage(imageElement, image, viewport);
+            self.actualImage++;
+            if (self.actualImage > 1) {
+                self.downloadOneItem(getImageFile(), 'Image');
+            }
+        });
+    }
 }
