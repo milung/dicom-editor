@@ -13,6 +13,11 @@ import {
 } from '../../utils/file-store-util';
 import { RecentFileStoreUtil } from '../../utils/recent-file-store-util';
 
+const SINGLE_FILE_SAVE_TEXT = 'Save file';
+const SINGLE_FILE_EXPORT_TEXT = 'Export file';
+const MULTI_FILES_SAVE_TEXT = 'Save selected files';
+const MULTI_FILES_EXPORT_TEXT = 'Export selected files';
+
 export interface NavigationProps {
     reducer: ApplicationStateReducer;
 }
@@ -23,6 +28,8 @@ export interface NavigationState {
     openedConflictDialog: boolean;
     openedOverrideDialog: boolean;
     conflictFiles: HeavyweightFile[];
+    exportItemText: string;
+    saveItemText: string;
 }
 
 export class Navigation extends React.Component<NavigationProps, NavigationState> {
@@ -42,8 +49,28 @@ export class Navigation extends React.Component<NavigationProps, NavigationState
             openedExportDialog: false,
             openedConflictDialog: false,
             openedOverrideDialog: false,
-            conflictFiles: []
+            conflictFiles: [],
+            exportItemText: SINGLE_FILE_EXPORT_TEXT,
+            saveItemText: SINGLE_FILE_SAVE_TEXT
         };
+    }
+
+    public componentDidMount() {
+        this.props.reducer.state$.subscribe(state => {
+            let filesCount = this.props.reducer.getState().selectedFiles.length;
+
+            // if there are no selected files, we take current file so count is 1
+            if (!filesCount && this.props.reducer.getState().currentFile) {
+                filesCount = 1;
+            }
+
+            let exportText = filesCount > 0 ? MULTI_FILES_EXPORT_TEXT : SINGLE_FILE_EXPORT_TEXT;
+            let saveText = filesCount > 0 ? MULTI_FILES_SAVE_TEXT : SINGLE_FILE_SAVE_TEXT;
+            this.setState({
+                exportItemText: exportText,
+                saveItemText: saveText
+            });
+        });
     }
 
     public render() {
@@ -61,11 +88,11 @@ export class Navigation extends React.Component<NavigationProps, NavigationState
                     </div>
                     <div id="dicom-title"><span>DICOM VIEWER</span></div>
                     <MenuItem
-                        primaryText="Export"
+                        primaryText={this.state.exportItemText}
                         onClick={() => this.showExportDialog()}
                     />
                     <MenuItem
-                        primaryText="Save here"
+                        primaryText={this.state.saveItemText}
                         onClick={() => this.handleSaveClick()}
                     />
                     <ExportDialog
