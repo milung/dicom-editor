@@ -90,6 +90,10 @@
   version "6.0.85"
   resolved "https://registry.yarnpkg.com/@types/node/-/node-6.0.85.tgz#ec02bfe54a61044f2be44f13b389c6a0e8ee05ae"
 
+"@types/prop-types@^15.5.1":
+  version "15.5.1"
+  resolved "https://registry.yarnpkg.com/@types/prop-types/-/prop-types-15.5.1.tgz#1ecf52621299e65b855374337fb11fd2d1066fc1"
+
 "@types/react-addons-linked-state-mixin@*":
   version "0.14.18"
   resolved "https://registry.yarnpkg.com/@types/react-addons-linked-state-mixin/-/react-addons-linked-state-mixin-0.14.18.tgz#6977ae59e19aa0ce3a5d7a9e057961aaf1afe959"
@@ -1756,12 +1760,6 @@ expand-range@^1.8.1:
   resolved "https://registry.yarnpkg.com/expand-range/-/expand-range-1.8.2.tgz#a299effd335fe2721ebae8e257ec79644fc85337"
   dependencies:
     fill-range "^2.1.0"
-
-express-http-to-https@^1.1.2:
-  version "1.1.2"
-  resolved "https://registry.yarnpkg.com/express-http-to-https/-/express-http-to-https-1.1.2.tgz#e4626da2fe9433d8665e487e14f5f5fa0fc7b59d"
-  dependencies:
-    express "^4.15.3"
 
 express@^4.13.3, express@^4.15.3:
   version "4.15.3"
