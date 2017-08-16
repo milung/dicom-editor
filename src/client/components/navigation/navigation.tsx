@@ -28,12 +28,12 @@ export interface NavigationState {
 
 const enabledMenuItemStyle = {
     color: 'black'
-}
+};
 
 const disabledMenuItemStyle = {
     color: 'gray',
     cursor: 'not-allowed'
-}
+};
 
 export class Navigation extends React.Component<NavigationProps, NavigationState> {
     private saver: MultiSave;
