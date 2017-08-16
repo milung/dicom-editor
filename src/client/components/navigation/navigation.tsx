@@ -229,19 +229,24 @@ export class Navigation extends React.Component<NavigationProps, NavigationState
     }
 
     private handleCompareClick() {
-        this.props.reducer.setComparisonActive(true);
-        this.setState({ sideBarOpen: !this.state.sideBarOpen });
+        if (!this.state.compareItem.disabled) {
+            this.props.reducer.setComparisonActive(true);
+            this.setState({ sideBarOpen: !this.state.sideBarOpen });
+        }
     }
 
     private handleUnloadClick() {
-        let filesToUnload = this.props.reducer.getSelectedFiles();
-        if (filesToUnload.length === 0) {
-            let current = this.props.reducer.getState().currentFile;
-            if (current) {
-                filesToUnload = [current];
+        if (!this.state.unloadItem.disabled) {
+
+            let filesToUnload = this.props.reducer.getSelectedFiles();
+            if (filesToUnload.length === 0) {
+                let current = this.props.reducer.getState().currentFile;
+                if (current) {
+                    filesToUnload = [current];
+                }
             }
+            this.props.reducer.removeLoadedFiles(filesToUnload);
+            this.setState({ sideBarOpen: !this.state.sideBarOpen });
         }
-        this.props.reducer.removeLoadedFiles(filesToUnload);
-        this.setState({ sideBarOpen: !this.state.sideBarOpen });
     }
 }
