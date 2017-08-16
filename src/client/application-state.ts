@@ -107,7 +107,6 @@ export class ApplicationStateReducer {
 
     public updateRecentFiles(files: LightweightFile[]) {
         this.currentState.recentFiles = files;
-
         this.stateSubject$.next(this.currentState);
     }
 
@@ -135,6 +134,15 @@ export class ApplicationStateReducer {
         this.stateSubject$.next(this.currentState);
 
         return freeColor;
+    }
+
+    public resetColors(color: string) {
+        this.currentState.selectedFiles.forEach(selectedFile => {
+            if (selectedFile.colour === 'black') {
+                selectedFile.colour = color;
+                this.stateSubject$.next(this.currentState);
+            }
+        });
     }
 
     public getSelectedFiles(): HeavyweightFile[] {
@@ -187,4 +195,5 @@ export class ApplicationStateReducer {
         });
         this.currentState.loadedFiles.unshift(file);
     }
+
 }

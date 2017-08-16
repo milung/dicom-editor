@@ -110,7 +110,12 @@ export default class LoadedFilesTab extends React.Component<LoadedFilesTabProps,
         if (addition) {
             this.setState({ checkedCheckboxes: this.state.checkedCheckboxes + 1 });
         } else {
-            this.setState({ checkedCheckboxes: this.state.checkedCheckboxes - 1 });
+            let checked = this.state.checkedCheckboxes - 1;
+            this.setState({ checkedCheckboxes: checked });
+            if (checked === 2) {
+                this.props.reducer.resetColors(this.props.colorDictionary.getFirstFreeColor());
+            }
         }
     }
+
 }
