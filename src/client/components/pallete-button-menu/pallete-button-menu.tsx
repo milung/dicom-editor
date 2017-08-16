@@ -77,6 +77,7 @@ export class PalleteButtonMenu extends React.Component<PalleteButtonMenuProps, P
                         label={currentAction.text}
                         onClick={this.handleMainClick}
                         primary={true}
+                        disabled={currentAction.disabled}
                     />
 
                     {arrowElement}
