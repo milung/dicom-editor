@@ -8,6 +8,7 @@ import { OverridePopUpDialog } from './override-popup-dialog';
 import { ConflictPopUpDialog } from './conflict-popup-dialog';
 import { NavigationMenuUtil, ApplicationMenuItem } from './navigation-menu-util';
 import { MultiSave } from './save-multiple-files';
+import { ActionCompareArrows, FileFileDownload, ContentRemoveCircle, ContentSave } from 'material-ui/svg-icons';
 
 export interface NavigationProps {
     reducer: ApplicationStateReducer;
@@ -23,6 +24,15 @@ export interface NavigationState {
     exportItem: ApplicationMenuItem;
     saveItem: ApplicationMenuItem;
     unloadItem: ApplicationMenuItem;
+}
+
+const enabledMenuItemStyle = {
+    color: 'black'
+}
+
+const disabledMenuItemStyle = {
+    color: 'gray',
+    cursor: 'not-allowed'
 }
 
 export class Navigation extends React.Component<NavigationProps, NavigationState> {
@@ -99,24 +109,32 @@ export class Navigation extends React.Component<NavigationProps, NavigationState
                     </div>
                     <div id="dicom-title"><span>DICOM VIEWER</span></div>
                     <MenuItem
+                        style={this.state.exportItem.disabled ? disabledMenuItemStyle : enabledMenuItemStyle}
                         primaryText={this.state.exportItem.text}
                         onClick={() => this.showExportDialog()}
                         disabled={this.state.exportItem.disabled}
+                        leftIcon={<FileFileDownload />}
                     />
                     <MenuItem
+                        style={this.state.saveItem.disabled ? disabledMenuItemStyle : enabledMenuItemStyle}
                         primaryText={this.state.saveItem.text}
                         onClick={() => this.saver.handleSaveClick(this.state.saveItem.disabled)}
                         disabled={this.state.saveItem.disabled}
+                        leftIcon={<ContentSave />}
                     />
                     <MenuItem
+                        style={this.state.compareItem.disabled ? disabledMenuItemStyle : enabledMenuItemStyle}
                         primaryText={this.state.compareItem.text}
                         onClick={() => this.handleCompareClick()}
                         disabled={this.state.compareItem.disabled}
+                        leftIcon={<ActionCompareArrows />}
                     />
                     <MenuItem
+                        style={this.state.unloadItem.disabled ? disabledMenuItemStyle : enabledMenuItemStyle}
                         primaryText={this.state.unloadItem.text}
                         onClick={() => this.handleUnloadClick()}
                         disabled={this.state.unloadItem.disabled}
+                        leftIcon={<ContentRemoveCircle />}
                     />
                     <ExportDialog
                         reducer={this.props.reducer}
