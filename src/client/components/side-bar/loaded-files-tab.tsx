@@ -218,6 +218,13 @@ export default class LoadedFilesTab extends React.Component<LoadedFilesTabProps,
     }
 
     private handleUnloadFiles() {
-        this.props.reducer.removeLoadedFiles(this.props.reducer.getSelectedFiles());
+        let filesToUnload = this.props.reducer.getSelectedFiles();
+        if (filesToUnload.length === 0) {
+            let current = this.props.reducer.getState().currentFile;
+            if (current) {
+                filesToUnload = [current];
+            }
+        }
+        this.props.reducer.removeLoadedFiles(filesToUnload);
     }
 }

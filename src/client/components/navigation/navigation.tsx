@@ -41,6 +41,7 @@ export class Navigation extends React.Component<NavigationProps, NavigationState
         this.skipAll = this.skipAll.bind(this);
         this.handleCancelOverwriteDialog = this.handleCancelOverwriteDialog.bind(this);
         this.showPopUpOverrideConfirmation = this.showPopUpOverrideConfirmation.bind(this);
+        this.handleUnloadClick = this.handleUnloadClick.bind(this);
 
         this.state = {
             sideBarOpen: false,
@@ -107,6 +108,11 @@ export class Navigation extends React.Component<NavigationProps, NavigationState
                         primaryText={this.state.saveItem.text}
                         onClick={() => this.handleSaveClick()}
                         disabled={this.state.saveItem.disabled}
+                    />
+                    <MenuItem
+                        primaryText={this.state.unloadItem.text}
+                        onClick={() => this.handleUnloadClick()}
+                        disabled={this.state.unloadItem.disabled}
                     />
                     <ExportDialog
                         reducer={this.props.reducer}
@@ -216,6 +222,18 @@ export class Navigation extends React.Component<NavigationProps, NavigationState
             this.tryToSaveFiles(toBeSaved);
         }
 
+    }
+
+    private handleUnloadClick() {
+        let filesToUnload = this.props.reducer.getSelectedFiles();
+        if (filesToUnload.length === 0) {
+            let current = this.props.reducer.getState().currentFile;
+            if (current) {
+                filesToUnload = [current];
+            }
+        }
+        this.props.reducer.removeLoadedFiles(filesToUnload);
+        this.setState({ sideBarOpen: !this.state.sideBarOpen });
     }
 
     private async tryToSaveFiles(toBeSaved: HeavyweightFile[]) {
