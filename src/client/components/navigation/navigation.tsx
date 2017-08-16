@@ -30,6 +30,8 @@ export interface NavigationState {
     conflictFiles: HeavyweightFile[];
     exportItemText: string;
     saveItemText: string;
+    exportEnabled: boolean;
+    saveEnabled: boolean;
 }
 
 export class Navigation extends React.Component<NavigationProps, NavigationState> {
@@ -51,7 +53,9 @@ export class Navigation extends React.Component<NavigationProps, NavigationState
             openedOverrideDialog: false,
             conflictFiles: [],
             exportItemText: SINGLE_FILE_EXPORT_TEXT,
-            saveItemText: SINGLE_FILE_SAVE_TEXT
+            saveItemText: SINGLE_FILE_SAVE_TEXT,
+            exportEnabled: false,
+            saveEnabled: false
         };
     }
 
@@ -64,11 +68,28 @@ export class Navigation extends React.Component<NavigationProps, NavigationState
                 filesCount = 1;
             }
 
-            let exportText = filesCount > 1 ? MULTI_FILES_EXPORT_TEXT : SINGLE_FILE_EXPORT_TEXT;
-            let saveText = filesCount > 1 ? MULTI_FILES_SAVE_TEXT : SINGLE_FILE_SAVE_TEXT;
+            let exportEnabled: boolean = true;
+            let saveEnabled: boolean = true;
+            let exportText: string;
+            let saveText: string;
+
+            if (filesCount > 1) {
+                exportText = MULTI_FILES_EXPORT_TEXT;
+                saveText = MULTI_FILES_SAVE_TEXT;
+            } else {
+                exportText = SINGLE_FILE_EXPORT_TEXT;
+                saveText = SINGLE_FILE_SAVE_TEXT;
+                if (filesCount === 0) {
+                    exportEnabled = false;
+                    saveEnabled = false;
+                }
+            }
+
             this.setState({
                 exportItemText: exportText,
-                saveItemText: saveText
+                saveItemText: saveText,
+                exportEnabled: exportEnabled,
+                saveEnabled: saveEnabled
             });
         });
     }
@@ -90,10 +111,12 @@ export class Navigation extends React.Component<NavigationProps, NavigationState
                     <MenuItem
                         primaryText={this.state.exportItemText}
                         onClick={() => this.showExportDialog()}
+                        disabled={!this.state.exportEnabled}
                     />
                     <MenuItem
                         primaryText={this.state.saveItemText}
                         onClick={() => this.handleSaveClick()}
+                        disabled={!this.state.saveEnabled}
                     />
                     <ExportDialog
                         reducer={this.props.reducer}
@@ -130,9 +153,11 @@ export class Navigation extends React.Component<NavigationProps, NavigationState
     }
 
     private showExportDialog() {
-        this.setState({
-            openedExportDialog: true
-        });
+        if (this.state.exportEnabled) {
+            this.setState({
+                openedExportDialog: true
+            });
+        }
     }
 
     private handleCloseExportDialog() {
@@ -190,16 +215,17 @@ export class Navigation extends React.Component<NavigationProps, NavigationState
     }
 
     private handleSaveClick() {
-        let toBeSaved = this.props.reducer.getSelectedFiles();
-        if (toBeSaved.length === 0) {
-            let file: HeavyweightFile | undefined = this.props.reducer.getState().currentFile;
-            if (file) {
-                toBeSaved.push(file);
-                this.tryToSaveFiles(toBeSaved);
+        if (this.state.saveEnabled) {
+            let toBeSaved = this.props.reducer.getSelectedFiles();
+            if (toBeSaved.length === 0) {
+                let file: HeavyweightFile | undefined = this.props.reducer.getState().currentFile;
+                if (file) {
+                    toBeSaved.push(file);
+                }
             }
-        } else {
             this.tryToSaveFiles(toBeSaved);
         }
+
     }
 
     private async tryToSaveFiles(toBeSaved: HeavyweightFile[]) {
