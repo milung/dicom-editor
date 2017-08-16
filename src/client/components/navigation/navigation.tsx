@@ -64,8 +64,8 @@ export class Navigation extends React.Component<NavigationProps, NavigationState
                 filesCount = 1;
             }
 
-            let exportText = filesCount > 0 ? MULTI_FILES_EXPORT_TEXT : SINGLE_FILE_EXPORT_TEXT;
-            let saveText = filesCount > 0 ? MULTI_FILES_SAVE_TEXT : SINGLE_FILE_SAVE_TEXT;
+            let exportText = filesCount > 1 ? MULTI_FILES_EXPORT_TEXT : SINGLE_FILE_EXPORT_TEXT;
+            let saveText = filesCount > 1 ? MULTI_FILES_SAVE_TEXT : SINGLE_FILE_SAVE_TEXT;
             this.setState({
                 exportItemText: exportText,
                 saveItemText: saveText
