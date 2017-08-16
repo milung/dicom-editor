@@ -5,11 +5,13 @@ import { ColorDictionary } from '../../utils/colour-dictionary';
 import './dicom-table.css';
 
 var ExpandIcon = require('react-icons/lib/md/keyboard-arrow-down');
+var CollapseIcon = require('react-icons/lib/md/keyboard-arrow-up');
 
 export interface DicomSequenceRowProps {
     entry: DicomEntry;
     handleClick?: () => void;
     margin?: string;
+    expanded: boolean;
 }
 
 export interface DicomSequenceRowState {
@@ -25,21 +27,19 @@ export class DicomSequenceRow extends React.Component<DicomSequenceRowProps, Dic
     }
 
     public render() {
-        let tableRowStyle = { color: this.props.entry.colour, backgroundColor: 'rgb(199, 213, 237)' };
-        let tagStyle = this.props.margin ? { paddingLeft: this.props.margin, color: '#000000' } : { color: '#000000' };
-        let tableRowColumnStyle = {
-            whiteSpace: 'normal',
-            wordWrap: 'break-word'
-        };
+        let tableRowStyle = { color: this.props.entry.colour };
+        let tagStyle = this.props.margin ? { paddingLeft: this.props.margin } : {};
         let tag = this.props.entry.tagGroup + ', ' + this.props.entry.tagElement;
-        let rowClass = 'tagBorder';
+        let icon = this.props.expanded ?
+            <CollapseIcon className="expandable-icon" />
+            : <ExpandIcon className="expandable-icon" />;
         return (
-            <TableRow style={tableRowStyle} className={rowClass} onRowClick={this.props.handleClick}>
-                <TableRowColumn style={tagStyle}>
-                    <ExpandIcon className="expandable-icon" width="2em" height="2em"/>{tag}
+            <TableRow style={tableRowStyle} className={'sequence-table-row'} onRowClick={this.props.handleClick}>
+                <TableRowColumn style={tagStyle} className={'table-row-tag-column'}>
+                    {icon}{tag}
                 </TableRowColumn>
-                <TableRowColumn style={tableRowColumnStyle}>{this.props.entry.tagName}</TableRowColumn>
-                <TableRowColumn style={tableRowColumnStyle}>{this.props.entry.tagValue}</TableRowColumn>
+                <TableRowColumn className={'table-row-column'}>{this.props.entry.tagName}</TableRowColumn>
+                <TableRowColumn className={'table-row-column'}>{this.props.entry.tagValue}</TableRowColumn>
                 <TableRowColumn>{this.props.entry.tagVR}</TableRowColumn>
                 <TableRowColumn>{this.props.entry.tagVM}</TableRowColumn>
             </TableRow>

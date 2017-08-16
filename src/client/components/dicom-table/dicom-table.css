@@ -10,15 +10,29 @@ background-color: #00BCD4;
     border-top: 2px solid rgb(0, 0, 0);
 }
 
+.sequence-table-row {
+    border-top: 2px solid rgb(0, 0, 0);
+    cursor: pointer;
+    background-color: #daeded;
+}
+
+.table-row-column {
+    white-space: normal;
+    word-wrap: break-word;
+}
+
+.table-row-tag-column {
+    color: black;
+}
+
 .expandable-icon {
-    margin-left: -20px;
+    margin-left: -5px;
+    width: 2em;
+    height: 2em;
 }
 
 .plain-link {
    cursor: pointer;
-   /*display: flex;
-   justify-content: center;
-   align-items: center;*/
 }
 
 .plain-link:hover {

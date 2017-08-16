@@ -67,6 +67,7 @@ export class DicomSimpleTable extends React.Component<DicomSimpleTableProps, Dic
                             key={dasKey}
                             handleClick={() => this.handleSequenceClick(entry)}
                             margin={(20 * (depth + 1)).toString() + 'px'}
+                            expanded={this.state.expandedSequences[entry.tagGroup + entry.tagElement]}
                         />
                     );
 
