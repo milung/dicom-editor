@@ -12,6 +12,7 @@ import { ExportDialog } from '../export/export-dialog';
 import { MultiSave } from '../navigation/save-multiple-files';
 import { ConflictPopUpDialog } from '../navigation/conflict-popup-dialog';
 import { OverridePopUpDialog } from '../navigation/override-popup-dialog';
+import { switchCurrentLoadedFile } from '../../utils/loaded-files-store-util';
 
 interface LoadedFilesTabProps {
     reducer: ApplicationStateReducer;
@@ -211,6 +212,8 @@ export default class LoadedFilesTab extends React.Component<LoadedFilesTabProps,
         this.setState({
             checkedCheckboxes: 0
         });
+        // db needs to update the currently selected file
+        switchCurrentLoadedFile(file);
     }
 
     private changeNumberOfCheckedBoxes(addition: boolean) {

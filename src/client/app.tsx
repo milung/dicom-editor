@@ -10,11 +10,13 @@ import { ApplicationStateReducer } from './application-state';
 import { RecentFileStoreUtil } from './utils/recent-file-store-util';
 import { loadSavedFiles } from './utils/file-store-util';
 import { Navigation } from './components/navigation/navigation';
+import { loadLoadedFiles } from './utils/loaded-files-store-util';
 
 let reducer = new ApplicationStateReducer();
 let fileStorage = new RecentFileStoreUtil(reducer);
 fileStorage.loadRecentFiles();
 loadSavedFiles(reducer);
+loadLoadedFiles(reducer);
 
 interface AppState {
   open: boolean;

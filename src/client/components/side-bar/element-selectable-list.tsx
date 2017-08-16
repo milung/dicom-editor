@@ -74,7 +74,9 @@ export class ElementOfSelectableList extends
     }
 
     private isCurrentFile() {
-        if (this.props.reducer.getState().currentFile === this.props.item) {
+        let currFile = this.props.reducer.getState().currentFile;
+        if (currFile !== undefined && currFile.fileName === this.props.item.fileName &&
+            currFile.fileSize === this.props.item.fileSize) {
             return true;
         } else {
             return false;

@@ -2,6 +2,7 @@ import { PalleteItem } from './components/pallete-button-menu/pallete-button-men
 import { HeavyweightFile, LightweightFile, SelectedFile } from './model/file-interfaces';
 import { Observable } from 'rxjs/Observable';
 import { BehaviorSubject } from 'rxjs/BehaviorSubject';
+import { deleteFileFromLoaded, switchCurrentLoadedFile } from './utils/loaded-files-store-util';
 
 export interface ApplicationState {
     recentFiles: LightweightFile[];
@@ -75,7 +76,7 @@ export class ApplicationStateReducer {
     public removeLoadedFiles(files: HeavyweightFile[]) {
         files.forEach(file => {
             let index = this.currentState.loadedFiles.indexOf(file);
-
+            deleteFileFromLoaded(file, this);
             if (index >= 0) {
                 this.currentState.loadedFiles.splice(index, 1);
             }
@@ -89,6 +90,7 @@ export class ApplicationStateReducer {
                 } else {
                     this.updateCurrentFile(this.currentState.loadedFiles[0]);
                 }
+                switchCurrentLoadedFile(this.currentState.currentFile);
             }
             this.stateSubject$.next(this.currentState);
         });
