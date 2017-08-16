@@ -42,6 +42,7 @@ export class Navigation extends React.Component<NavigationProps, NavigationState
         this.handleCancelOverwriteDialog = this.handleCancelOverwriteDialog.bind(this);
         this.showPopUpOverrideConfirmation = this.showPopUpOverrideConfirmation.bind(this);
         this.handleUnloadClick = this.handleUnloadClick.bind(this);
+        this.handleCompareClick = this.handleCompareClick.bind(this);
 
         this.state = {
             sideBarOpen: false,
@@ -108,6 +109,11 @@ export class Navigation extends React.Component<NavigationProps, NavigationState
                         primaryText={this.state.saveItem.text}
                         onClick={() => this.handleSaveClick()}
                         disabled={this.state.saveItem.disabled}
+                    />
+                    <MenuItem
+                        primaryText={this.state.compareItem.text}
+                        onClick={() => this.handleCompareClick()}
+                        disabled={this.state.compareItem.disabled}
                     />
                     <MenuItem
                         primaryText={this.state.unloadItem.text}
@@ -233,6 +239,11 @@ export class Navigation extends React.Component<NavigationProps, NavigationState
             }
         }
         this.props.reducer.removeLoadedFiles(filesToUnload);
+        this.setState({ sideBarOpen: !this.state.sideBarOpen });
+    }
+
+    private handleCompareClick() {
+        this.props.reducer.setComparisonActive(true);
         this.setState({ sideBarOpen: !this.state.sideBarOpen });
     }
 
