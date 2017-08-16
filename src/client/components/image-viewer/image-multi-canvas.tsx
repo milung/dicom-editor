@@ -40,6 +40,14 @@ export class ImageMultiCanvas extends React.Component<ImageMultiCanvasProps, Ima
         this.handleChange = this.handleChange.bind(this);
     }
 
+    public componentWillReceiveProps(nextProps: ImageMultiCanvasProps) {
+        this.setState({
+            sliderActualIndex: 0,
+            rightArrowStyle: enabledArrow,
+            leftArrowStyle: disabledArrow
+        });
+    }
+
     public render() {
         return (
             <div className="image_viewer_container">
@@ -77,10 +85,12 @@ export class ImageMultiCanvas extends React.Component<ImageMultiCanvasProps, Ima
     private handleChange(newValue: number) {
         if (newValue === 0) {
             this.setState({
-                leftArrowStyle: disabledArrow
+                leftArrowStyle: disabledArrow,
+                rightArrowStyle: enabledArrow
             });
         } else if (newValue === this.props.numberOfFrames - 1) {
             this.setState({
+                leftArrowStyle: enabledArrow,
                 rightArrowStyle: disabledArrow
             });
         } else {
