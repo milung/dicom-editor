@@ -18,7 +18,6 @@ interface ElementOfSelectableListProps {
 }
 
 interface ElementOfSelectableListState {
-    currentColor: string;
 }
 
 export class ElementOfSelectableList extends
@@ -27,21 +26,17 @@ export class ElementOfSelectableList extends
     constructor(props: ElementOfSelectableListProps) {
         super(props);
         this.handleCheck = this.handleCheck.bind(this);
-        this.state = { currentColor: 'black' };
+        this.handleRemoveClick = this.handleRemoveClick.bind(this);
+        this.handleColorChanging = this.handleColorChanging.bind(this);
     }
 
     handleCheck(e: object, isInputChecked: boolean) {
         if (isInputChecked) {
             let newColor = this.props.colorDictionary.getFirstFreeColor();
             this.props.reducer.addSelectedFile(this.props.item.fileName, newColor);
-            this.setState({ currentColor: newColor });
             this.props.checkInform(true);
         } else {
-            let freeColor = this.props.reducer.removeSelectedFile(this.props.item.fileName);
-            this.props.reducer.setComparisonActive(false);
-            this.props.colorDictionary.freeColor(freeColor);
-            this.setState({ currentColor: 'black' });
-            this.props.checkInform(false);
+            this.handleColorChanging();
         }
     }
 
@@ -59,14 +54,18 @@ export class ElementOfSelectableList extends
                     <ListItem
                         onClick={() => this.props.selectFunction(this.props.item)}
                         primaryText={this.props.item.fileName}
-                        style={{ color: this.props.color || this.state.currentColor }}
+                        style={
+                            this.props.reducer.getState().comparisonActive ?
+                                { color: this.props.color } :
+                                { color: 'black' }
+                        }
                     />
                 </div>
 
                 <div className="clear-icon-container">
                     <ClearIcon
                         className="clearIcon"
-                        onClick={() => this.props.reducer.removeLoadedFiles([this.props.item])}
+                        onClick={() => this.handleRemoveClick()}
                     />
                 </div>
 
@@ -80,5 +79,24 @@ export class ElementOfSelectableList extends
         } else {
             return false;
         }
+    }
+
+    private handleRemoveClick() {
+        this.props.reducer.removeLoadedFiles([this.props.item]);
+        this.handleColorChanging();
+    }
+
+    private handleColorChanging() {
+        let selectedFiles = this.props.reducer.getSelectedFiles();
+        let indexOfFile = selectedFiles.indexOf(this.props.item);
+
+        if (indexOfFile !== -1 && this.props.reducer.getState().selectedFiles[indexOfFile].colour !== 'black') {
+            this.props.reducer.setComparisonActive(false);
+            this.props.reducer.updateCurrentFile(this.props.reducer.getSelectedFiles()[0]);
+        }
+
+        let freeColor = this.props.reducer.removeSelectedFile(this.props.item.fileName);
+        this.props.colorDictionary.freeColor(freeColor);
+        this.props.checkInform(false);
     }
 }

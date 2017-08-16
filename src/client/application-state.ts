@@ -136,7 +136,7 @@ export class ApplicationStateReducer {
         return freeColor;
     }
 
-    public resetColors(color: string) {
+    public changeColors(color: string) {
         this.currentState.selectedFiles.forEach(selectedFile => {
             if (selectedFile.colour === 'black') {
                 selectedFile.colour = color;
@@ -152,7 +152,7 @@ export class ApplicationStateReducer {
         });
         return selected;
     }
-
+    
     public setComparisonActive(value: boolean) {
         this.currentState.comparisonActive = value;
         this.stateSubject$.next(this.currentState);
