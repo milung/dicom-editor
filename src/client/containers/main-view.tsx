@@ -164,7 +164,9 @@ export default class MainView extends React.Component<MainViewProps, MainViewSta
 
   private getFormattedFileName(name: string): string {
     let splitArray = name.split('.');
-    splitArray.splice(-1, 1);
+    if (splitArray[splitArray.length - 1] === 'dcm') {
+      splitArray.splice(-1, 1);
+    }
     return splitArray.join('.');
   }
 }

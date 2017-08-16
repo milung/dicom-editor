@@ -55,8 +55,8 @@ export default class MainViewHeader extends React.Component<MainViewHeaderProps,
                     this.getFormattedFileName(state.selectedFiles[1].selectedFile.fileName) : '',
                 header: state.comparisonActive ? (state.searchExpression ? 'Searching in ' : 'Compare ') :
                     (state.currentFile ? (state.searchExpression ?
-                        (state.comparisonActive ? '' : 
-                        ('Searching in ' + this.getFormattedFileName(state.currentFile.fileName))) :
+                        (state.comparisonActive ? '' :
+                            ('Searching in ' + this.getFormattedFileName(state.currentFile.fileName))) :
                         (this.getFormattedFileName(state.currentFile.fileName))) : 'Tag viewer'),
                 headerJoin: state.comparisonActive ? ' and ' : ''
             });
@@ -72,7 +72,9 @@ export default class MainViewHeader extends React.Component<MainViewHeaderProps,
 
     private getFormattedFileName(name: string): string {
         let splitArray = name.split('.');
-        splitArray.splice(-1, 1);
+        if (splitArray[splitArray.length - 1] === 'dcm') {
+            splitArray.splice(-1, 1);
+        }
         return splitArray.join('.');
     }
 }
