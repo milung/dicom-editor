@@ -1,4 +1,3 @@
-
 import { ApplicationStateReducer } from '../application-state';
 import { dicomDataToExcel } from './excel-export/dicom-table-exporter';
 import { getImageFile } from './image-file-maker';
@@ -49,11 +48,17 @@ export class Zipper {
 
         for (var i = 0; i < this.numberOfFiles; i++) {
             let dataToProcessing: SelectedFile = filesToProcess[i];
-
             this.createStructureZip(i + 1);
+            await this.sleep(2500);
             await this.zipSelectedFile(data, dataToProcessing.selectedFile, this.numberOfFiles);
         }
         await this.generateZip();
+    }
+
+    async sleep(time: number) {
+        return new Promise((resolve) => {
+            setTimeout(() => resolve(), time);
+        });
     }
 
     private createStructureZip(numberFolder: number) {
@@ -84,14 +89,16 @@ export class Zipper {
 
     private async imagesToZip(dataToProcessing: HeavyweightFile) {
         let dicomReader: DicomReader = new DicomReader();
-
         if (dataToProcessing) {
             this.numFrames = dicomReader.getNumberOfFrames(dataToProcessing.bufferedData);
 
             for (var num = 0; num <= this.numFrames - 1; num++) {
+                await this.sleep(500);
                 await this.renderCanvas(dataToProcessing.bufferedData, num);
             }
+            await this.sleep(500);
             await this.renderCanvas(dataToProcessing.bufferedData, 0);
+            await this.sleep(500);
         }
     }
 
@@ -114,12 +121,12 @@ export class Zipper {
             var viewport = cornerstone.getDefaultViewport(imageElement.children[0], image);
             cornerstone.displayImage(imageElement, image, viewport);
             self.multiFrameZip();
+
         });
     }
 
     private multiFrameZip() {
-        var numberPicture = this.numberPicture;
-        if (numberPicture > 0) {
+        if (this.numberPicture > 0) {
             this.dicomImage.file(
                 'dicomImage' + this.numberPicture.toString() + '.png', getImageFile(), { binary: true });
         }
