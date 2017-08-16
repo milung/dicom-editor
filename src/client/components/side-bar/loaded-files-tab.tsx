@@ -1,10 +1,13 @@
 import * as React from 'react';
-import { RaisedButton, List } from 'material-ui';
+import { List } from 'material-ui';
 import { ElementOfSelectableList } from './element-selectable-list';
 import { HeavyweightFile, SelectedFile } from '../../model/file-interfaces';
 import { ApplicationStateReducer } from '../../application-state';
 import { ColorDictionary } from '../../utils/colour-dictionary';
 import './side-bar.css';
+import { PalleteButtonMenu, PalleteItem } from '../pallete-button-menu/pallete-button-menu';
+import { ActionCompareArrows, FileFileDownload, ContentSave, ContentRemoveCircle } from 'material-ui/svg-icons';
+import { NavigationMenuUtil } from '../navigation/navigation-menu-util';
 
 interface LoadedFilesTabProps {
     reducer: ApplicationStateReducer;
@@ -16,13 +19,47 @@ interface LoadedFilesTabProps {
 
 interface LoadedFilesTabState {
     checkedCheckboxes: number;
+    comparePalleteItem: PalleteItem;
+    exportPalleteItem: PalleteItem;
+    savePalleteItem: PalleteItem;
+    unloadPalleteItem: PalleteItem;
 }
 
+/* tslint:disable */
 export default class LoadedFilesTab extends React.Component<LoadedFilesTabProps, LoadedFilesTabState> {
-
     constructor(props: LoadedFilesTabProps) {
         super(props);
-        this.state = { checkedCheckboxes: 0 };
+        this.state = {
+            checkedCheckboxes: 0,
+
+            comparePalleteItem: {
+                text: 'Compare files',
+                onClick: () => { this.handleCompareClick(); },
+                icon: (<ActionCompareArrows />),
+                disabled: true
+            },
+
+            exportPalleteItem: {
+                text: 'Export file',
+                onClick: () => { },
+                icon: (<FileFileDownload />),
+                disabled: true
+            },
+
+            savePalleteItem: {
+                text: 'Save file',
+                onClick: () => { },
+                icon: (<ContentSave />),
+                disabled: true
+            },
+
+            unloadPalleteItem: {
+                text: 'Unload file',
+                onClick: () => { },
+                icon: (<ContentRemoveCircle />),
+                disabled: true
+            }
+        };
 
         this.changeNumberOfCheckedBoxes = this.changeNumberOfCheckedBoxes.bind(this);
         this.getColor = this.getColor.bind(this);
@@ -34,6 +71,34 @@ export default class LoadedFilesTab extends React.Component<LoadedFilesTabProps,
     public componentDidMount() {
         this.setState({
             checkedCheckboxes: this.props.selectedFiles.length === 0 ? 0 : this.state.checkedCheckboxes
+        });
+
+        this.props.reducer.state$.subscribe(state => {
+            let menuUtil = new NavigationMenuUtil(state);
+            let newMenu = menuUtil.getActualMenu();
+
+            let newCompareItem = this.state.comparePalleteItem;
+            newCompareItem.text = newMenu.compareItem.text;
+            newCompareItem.disabled = newMenu.compareItem.disabled;
+
+            let newExportItem = this.state.exportPalleteItem;
+            newExportItem.text = newMenu.exportItem.text;
+            newExportItem.disabled = newMenu.exportItem.disabled;
+
+            let newSaveItem = this.state.savePalleteItem;
+            newSaveItem.text = newMenu.saveItem.text;
+            newSaveItem.disabled = newMenu.saveItem.disabled;
+
+            let newUnloadItem = this.state.unloadPalleteItem;
+            newUnloadItem.text = newMenu.unloadItem.text;
+            newUnloadItem.disabled = newMenu.unloadItem.disabled;
+
+            this.setState({
+                comparePalleteItem: newCompareItem,
+                exportPalleteItem: newExportItem,
+                savePalleteItem: newSaveItem,
+                unloadPalleteItem: newUnloadItem
+            });
         });
     }
 
@@ -59,18 +124,12 @@ export default class LoadedFilesTab extends React.Component<LoadedFilesTabProps,
                         );
                     })}
                 </List>
-                <RaisedButton
-                    className="compare-button"
-                    label="Compare files"
-                    onClick={this.handleCompareClick}
-                    primary={true}
-                    disabled={this.props.selectedFiles.length === 2 ? false : true}
-                />
+                {this.renderPalleteButton()}
             </div>
         );
     }
 
-    public handleCompareClick(event: object) {
+    public handleCompareClick() {
         this.props.reducer.setComparisonActive(true);
     }
 
@@ -118,4 +177,19 @@ export default class LoadedFilesTab extends React.Component<LoadedFilesTabProps,
         }
     }
 
+    private renderPalleteButton(): JSX.Element {
+        return (
+            <div className="compare-button">
+                <PalleteButtonMenu
+                    items={[
+                        this.state.exportPalleteItem,
+                        this.state.savePalleteItem,
+                        this.state.comparePalleteItem,
+                        this.state.unloadPalleteItem
+                    ]}
+                />
+            </div>
+
+        );
+    }
 }

@@ -99,6 +99,7 @@ export default class SideBar extends React.Component<SideBarProps, SideBarState>
                         />
                     </Tab>
                 </Tabs>
+                
                 <OverridePopUpDialog
                     reducer={this.props.reducer}
                     saveFile={this.saveFile}

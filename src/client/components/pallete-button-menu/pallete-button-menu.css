@@ -1,0 +1,25 @@
+.pallete-buttons-container {
+    display: flex;
+}
+
+.pallete-arrow-button {
+    cursor: pointer;
+    flex-grow: 1;
+    text-align: center;
+    margin-top: auto;
+    margin-bottom: auto;
+}
+
+.pallete-menu-button {
+    flex-grow: 8;
+}
+
+.pallete-arrow-self {
+    width: 2em !important;
+    height: 2em !important; 
+}
+
+.pallete-tools-container {
+    background: #daeded !important;
+    border: 1px solid black;
+}
