@@ -56,7 +56,7 @@ describe('navigation', () => {
             </MuiThemeProvider>
         )
 
-        expect(element.find('Drawer').find('MenuItem').length).to.equal(2);
+        expect(element.find('Drawer').find('MenuItem').length).to.equal(4);
         element.find('Drawer').find('MenuItem').map((item, index) => {
             switch (index) {
                 case 0: {
@@ -65,6 +65,14 @@ describe('navigation', () => {
                 }
                 case 1: {
                     expect(item.props()).to.have.property('primaryText', 'Save file');
+                    break;
+                }
+                case 2: {
+                    expect(item.props()).to.have.property('primaryText', 'Compare selected files');
+                    break;
+                }
+                case 3: {
+                    expect(item.props()).to.have.property('primaryText', 'Unload file');
                     break;
                 }
             }
