@@ -48,7 +48,7 @@ describe('navigation', () => {
 
     });
 
-    it('should render navigation in drawer with "Export" and "Save to browser" menu item', () => {
+    it('should render navigation in drawer with "Export file" and "Save file" menu item', () => {
         let reducer = new ApplicationStateReducer();
         let element = mount(
             <MuiThemeProvider>
@@ -60,11 +60,11 @@ describe('navigation', () => {
         element.find('Drawer').find('MenuItem').map((item, index) => {
             switch (index) {
                 case 0: {
-                    expect(item.props()).to.have.property('primaryText', 'Export');
+                    expect(item.props()).to.have.property('primaryText', 'Export file');
                     break;
                 }
                 case 1: {
-                    expect(item.props()).to.have.property('primaryText', 'Save here');
+                    expect(item.props()).to.have.property('primaryText', 'Save file');
                     break;
                 }
             }
