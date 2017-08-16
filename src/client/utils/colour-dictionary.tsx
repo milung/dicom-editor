@@ -1,12 +1,7 @@
 export class ColorDictionary {
     private colorDictionary = [
         { color: '#00BB00', usage: 0 },
-        { color: '#BB0000', usage: 0 } // , zatial zakomentovanie, pokial vieme porovnavat len dva subory
-        // { color: '#0000BB', usage: 0 },
-        // { color: '#BB00BB', usage: 0 },
-        // { color: '#BBBB00', usage: 0 },
-        // { color: '#00BBBB', usage: 0 },
-        // { color: '#000000', usage: 0 }
+        { color: '#BB0000', usage: 0 }
     ];
 
     public getColorByIndex(index: number) {
