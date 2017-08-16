@@ -9,6 +9,9 @@ import { PalleteButtonMenu, PalleteItem } from '../pallete-button-menu/pallete-b
 import { ActionCompareArrows, FileFileDownload, ContentSave, ContentRemoveCircle } from 'material-ui/svg-icons';
 import { NavigationMenuUtil } from '../navigation/navigation-menu-util';
 import { ExportDialog } from '../export/export-dialog';
+import { MultiSave } from '../navigation/save-multiple-files';
+import { ConflictPopUpDialog } from '../navigation/conflict-popup-dialog';
+import { OverridePopUpDialog } from '../navigation/override-popup-dialog';
 
 interface LoadedFilesTabProps {
     reducer: ApplicationStateReducer;
@@ -25,15 +28,23 @@ interface LoadedFilesTabState {
     savePalleteItem: PalleteItem;
     unloadPalleteItem: PalleteItem;
     openExportDialog: boolean;
+    conflictFiles: HeavyweightFile[];
+    openedConflictDialog: boolean;
+    openedOverrideDialog: boolean;
 }
 
 /* tslint:disable */
 export default class LoadedFilesTab extends React.Component<LoadedFilesTabProps, LoadedFilesTabState> {
+    private saver: MultiSave;
+
     constructor(props: LoadedFilesTabProps) {
         super(props);
         this.state = {
             checkedCheckboxes: 0,
             openExportDialog: false,
+            openedConflictDialog: false,
+            openedOverrideDialog: false,
+            conflictFiles: [],
 
             comparePalleteItem: {
                 text: 'Compare files',
@@ -51,7 +62,7 @@ export default class LoadedFilesTab extends React.Component<LoadedFilesTabProps,
 
             savePalleteItem: {
                 text: 'Save file',
-                onClick: () => { },
+                onClick: () => { this.saver.handleSaveClick(this.state.savePalleteItem.disabled) },
                 icon: (<ContentSave />),
                 disabled: true
             },
@@ -72,6 +83,15 @@ export default class LoadedFilesTab extends React.Component<LoadedFilesTabProps,
         this.handleCompareClick = this.handleCompareClick.bind(this);
         this.isChecked = this.isChecked.bind(this);
         this.selectCurrentFile = this.selectCurrentFile.bind(this);
+        this.handleCloseOverwriteDialog = this.handleCloseOverwriteDialog.bind(this);
+        this.handleCloseConflictDialog = this.handleCloseConflictDialog.bind(this);
+        this.overwriteAll = this.overwriteAll.bind(this);
+        this.skipAll = this.skipAll.bind(this);
+        this.handleCancelOverwriteDialog = this.handleCancelOverwriteDialog.bind(this);
+        this.showPopUpOverrideConfirmation = this.showPopUpOverrideConfirmation.bind(this);
+        this.handleOneConflict = this.handleOneConflict.bind(this);
+        this.handleMoreConflicts = this.handleMoreConflicts.bind(this);
+        this.saver = new MultiSave(this.props.reducer, this.handleOneConflict, this.handleMoreConflicts);
     }
 
     public componentDidMount() {
@@ -136,6 +156,22 @@ export default class LoadedFilesTab extends React.Component<LoadedFilesTabProps,
                     reducer={this.props.reducer}
                     handleClosePopUpDialog={this.handleCloseExportDialog}
                     openedPopUpDialog={this.state.openExportDialog}
+                />
+                <OverridePopUpDialog
+                    reducer={this.props.reducer}
+                    saveFile={this.saver.saveFile}
+                    handleCloseOverrideDialog={this.handleCloseOverwriteDialog}
+                    openedOverrideDialog={this.state.openedOverrideDialog}
+                    fileName={this.state.conflictFiles[0] ? this.state.conflictFiles[0].fileName : ''}
+                    handleCancelOverrideDialog={this.handleCancelOverwriteDialog}
+                />
+                <ConflictPopUpDialog
+                    handleCloseDialog={this.handleCloseConflictDialog}
+                    overWriteAll={this.overwriteAll}
+                    skipAll={this.skipAll}
+                    decideForEach={this.showPopUpOverrideConfirmation}
+                    numberOfConflicting={this.state.conflictFiles.length}
+                    openedPopUpDialog={this.state.openedConflictDialog}
                 />
             </div>
         );
@@ -226,5 +262,61 @@ export default class LoadedFilesTab extends React.Component<LoadedFilesTabProps,
             }
         }
         this.props.reducer.removeLoadedFiles(filesToUnload);
+    }
+    
+    private handleOneConflict(inConflict: HeavyweightFile[]) {
+        this.setState({
+            conflictFiles: inConflict,
+            openedOverrideDialog: true
+        });
+    }
+
+    private handleMoreConflicts(inConflict: HeavyweightFile[]) {
+        this.setState({
+            openedConflictDialog: true,
+            conflictFiles: inConflict
+        });
+    }
+
+    private handleCloseOverwriteDialog() {
+        this.setState({
+            openedOverrideDialog: false,
+            conflictFiles: []
+        });
+    }
+
+    private handleCloseConflictDialog() {
+        this.setState({
+            openedConflictDialog: false,
+        });
+    }
+
+    private overwriteAll() {
+        this.state.conflictFiles.forEach(file => {
+            this.saver.saveFile(file);
+        });
+    }
+
+    private skipAll() {
+        this.setState({
+            conflictFiles: []
+        });
+    }
+
+    private showPopUpOverrideConfirmation() {
+        this.setState({
+            openedOverrideDialog: true
+        });
+    }
+
+    private handleCancelOverwriteDialog() {
+        let arr = this.state.conflictFiles;
+        arr.shift();
+        this.setState({
+            conflictFiles: arr
+        });
+        if (this.state.conflictFiles.length === 0) {
+            this.handleCloseOverwriteDialog();
+        }
     }
 }
