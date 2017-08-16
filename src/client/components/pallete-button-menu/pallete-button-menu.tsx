@@ -60,7 +60,7 @@ export class PalleteButtonMenu extends React.Component<PalleteButtonMenuProps, P
                     <List>
                         {this.props.items.map((item, index) => (
                             <ListItem
-                                style={{ paddingLeft: '15px' }}
+                                style={item.disabled ? { color: 'gray', cursor: 'not-allowed' } : { color: 'black' }}
                                 key={index}
                                 onClick={() => this.handleItemClick(item)}
                                 primaryText={item.text}
