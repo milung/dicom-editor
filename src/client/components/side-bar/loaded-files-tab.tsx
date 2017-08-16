@@ -58,12 +58,13 @@ export default class LoadedFilesTab extends React.Component<LoadedFilesTabProps,
 
             unloadPalleteItem: {
                 text: 'Unload file',
-                onClick: () => { },
+                onClick: () => { this.handleUnloadFiles() },
                 icon: (<ContentRemoveCircle />),
                 disabled: true
             }
         };
 
+        this.handleUnloadFiles = this.handleUnloadFiles.bind(this);
         this.handleOpenExportDialog = this.handleOpenExportDialog.bind(this);
         this.handleCloseExportDialog = this.handleCloseExportDialog.bind(this);
         this.changeNumberOfCheckedBoxes = this.changeNumberOfCheckedBoxes.bind(this);
@@ -210,9 +211,13 @@ export default class LoadedFilesTab extends React.Component<LoadedFilesTabProps,
         });
     }
 
-     private handleOpenExportDialog() {
+    private handleOpenExportDialog() {
         this.setState({
             openExportDialog: true
         });
+    }
+
+    private handleUnloadFiles() {
+        this.props.reducer.removeLoadedFiles(this.props.reducer.getSelectedFiles());
     }
 }
