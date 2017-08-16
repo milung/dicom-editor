@@ -8,6 +8,7 @@ import './side-bar.css';
 import { PalleteButtonMenu, PalleteItem } from '../pallete-button-menu/pallete-button-menu';
 import { ActionCompareArrows, FileFileDownload, ContentSave, ContentRemoveCircle } from 'material-ui/svg-icons';
 import { NavigationMenuUtil } from '../navigation/navigation-menu-util';
+import { ExportDialog } from '../export/export-dialog';
 
 interface LoadedFilesTabProps {
     reducer: ApplicationStateReducer;
@@ -23,6 +24,7 @@ interface LoadedFilesTabState {
     exportPalleteItem: PalleteItem;
     savePalleteItem: PalleteItem;
     unloadPalleteItem: PalleteItem;
+    openExportDialog: boolean;
 }
 
 /* tslint:disable */
@@ -31,6 +33,7 @@ export default class LoadedFilesTab extends React.Component<LoadedFilesTabProps,
         super(props);
         this.state = {
             checkedCheckboxes: 0,
+            openExportDialog: false,
 
             comparePalleteItem: {
                 text: 'Compare files',
@@ -41,7 +44,7 @@ export default class LoadedFilesTab extends React.Component<LoadedFilesTabProps,
 
             exportPalleteItem: {
                 text: 'Export file',
-                onClick: () => { },
+                onClick: () => { this.handleOpenExportDialog() },
                 icon: (<FileFileDownload />),
                 disabled: true
             },
@@ -61,6 +64,8 @@ export default class LoadedFilesTab extends React.Component<LoadedFilesTabProps,
             }
         };
 
+        this.handleOpenExportDialog = this.handleOpenExportDialog.bind(this);
+        this.handleCloseExportDialog = this.handleCloseExportDialog.bind(this);
         this.changeNumberOfCheckedBoxes = this.changeNumberOfCheckedBoxes.bind(this);
         this.getColor = this.getColor.bind(this);
         this.handleCompareClick = this.handleCompareClick.bind(this);
@@ -125,6 +130,12 @@ export default class LoadedFilesTab extends React.Component<LoadedFilesTabProps,
                     })}
                 </List>
                 {this.renderPalleteButton()}
+
+                <ExportDialog
+                    reducer={this.props.reducer}
+                    handleClosePopUpDialog={this.handleCloseExportDialog}
+                    openedPopUpDialog={this.state.openExportDialog}
+                />
             </div>
         );
     }
@@ -191,5 +202,17 @@ export default class LoadedFilesTab extends React.Component<LoadedFilesTabProps,
             </div>
 
         );
+    }
+
+    private handleCloseExportDialog() {
+        this.setState({
+            openExportDialog: false
+        });
+    }
+
+     private handleOpenExportDialog() {
+        this.setState({
+            openExportDialog: true
+        });
     }
 }
