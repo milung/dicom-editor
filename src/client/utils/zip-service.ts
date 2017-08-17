@@ -49,7 +49,6 @@ export class Zipper {
         for (var i = 0; i < this.numberOfFiles; i++) {
             let dataToProcessing: SelectedFile = filesToProcess[i];
             this.createStructureZip(i + 1);
-            await this.sleep(2500);
             await this.zipSelectedFile(data, dataToProcessing.selectedFile, this.numberOfFiles);
         }
         await this.generateZip();
@@ -76,7 +75,7 @@ export class Zipper {
             await this.imagesToZip(dataToProcessing);
         } else if ((!data.excel) && (data.image)) {
             await this.imagesToZip(dataToProcessing);
-        } else if ((data.excel) && (numberOfFiles > 1)) {
+        } else if ((data.excel) && (!data.image)) {
             await this.excelToZip(dataToProcessing);
         }
     }
@@ -93,12 +92,12 @@ export class Zipper {
             this.numFrames = dicomReader.getNumberOfFrames(dataToProcessing.bufferedData);
 
             for (var num = 0; num <= this.numFrames - 1; num++) {
-                await this.sleep(500);
+                await this.sleep(150);
                 await this.renderCanvas(dataToProcessing.bufferedData, num);
             }
-            await this.sleep(500);
+            await this.sleep(150);
             await this.renderCanvas(dataToProcessing.bufferedData, 0);
-            await this.sleep(500);
+            await this.sleep(150);
         }
     }
 
