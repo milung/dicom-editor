@@ -13,11 +13,6 @@ describe('saved-files-tab', () => {
         expect(element.find('ListItem').length).to.equal(2);
     });
 
-    it('shoud contains raised button', () => {
-        let element = mount(prepareSavedFileTab([]));
-        expect(element.find('RaisedButton').length).to.equal(1);
-    });
-
     it('should render empty recent files', () => {
         let element = mount(prepareSavedFileTab([]));
         expect(element.find('List').first().find('ListItem').first().prop('nestedItems')).to.deep.equal([]);

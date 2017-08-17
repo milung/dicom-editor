@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { ApplicationStateReducer } from '../../application-state';
-import { List, RaisedButton, ListItem } from 'material-ui';
+import { List, ListItem } from 'material-ui';
 import { ElementOfDeletableList } from './element-deletable-list';
 import { LightweightFile, HeavyweightFile } from '../../model/file-interfaces';
 import { isFileSavedInDb } from '../../utils/file-store-util';
@@ -84,13 +84,6 @@ export default class SavedFilesTab extends React.Component<SavedFilesTabProps, S
                         })}
                     />
                 </List>
-                <RaisedButton
-                    className="compare-button"
-                    label="Save current file"
-                    onClick={this.handleSaveClick}
-                    primary={true}
-                    disabled={this.props.reducer.getState().currentFile ? false : true}
-                />
             </div>
         );
     }
