@@ -18,7 +18,7 @@ export class ConflictPopUpDialog extends React.Component<ConflictPopUpDialogProp
     private actions = [
         (
             <FlatButton
-                label="SkipAll"
+                label="Skip all"
                 primary={true}
                 onTouchTap={() => { this.props.skipAll(); this.props.handleCloseDialog(); }}
             />
