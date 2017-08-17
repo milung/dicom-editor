@@ -79,6 +79,7 @@ export class ApplicationStateReducer {
             deleteFileFromLoaded(file, this);
             if (index >= 0) {
                 this.currentState.loadedFiles.splice(index, 1);
+                this.removeSelectedFile(file.fileName);
             }
 
             // if there are some files behind deleted index, load first one of them
@@ -132,9 +133,12 @@ export class ApplicationStateReducer {
 
     public removeSelectedFile(fileName: string): string {
         let indexToRemove = this.findSelectedFileIndexByName(fileName);
-        let freeColor = this.currentState.selectedFiles[indexToRemove].colour;
 
-        this.currentState.selectedFiles.splice(indexToRemove, 1);
+        let freeColor = '';
+        if (indexToRemove >= 0) {
+            freeColor = this.currentState.selectedFiles[indexToRemove].colour;
+            this.currentState.selectedFiles.splice(indexToRemove, 1);
+        }
         this.stateSubject$.next(this.currentState);
 
         return freeColor;
@@ -156,7 +160,7 @@ export class ApplicationStateReducer {
         });
         return selected;
     }
-    
+
     public setComparisonActive(value: boolean) {
         this.currentState.comparisonActive = value;
         this.stateSubject$.next(this.currentState);
