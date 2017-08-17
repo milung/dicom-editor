@@ -51,4 +51,23 @@ describe('LoadedFilesTab', () => {
 
     expect(wrapper.find('ElementOfSelectableList').length).to.equal(2);
   });
+
+  // it('first two checked items should have a color', ()=>{
+  //     let reducer = new ApplicationStateReducer();
+  //     let props = prepareDefaultTestProps(reducer);
+
+  //     const wrapper = mount(
+  //       <MuiThemeProvider>
+  //         <LoadedFilesTab
+  //           reducer={props.reducer}
+  //           loadedFiles={[prepareTestFile(), prepareTestFile()]}
+  //           selectedFiles={props.selectedFiles}
+  //           colorDictionary={props.colorDictionary}
+  //           className={props.className} 
+  //         />
+  //       </MuiThemeProvider>
+  //     );
+
+  //     expect(wrapper.find('ElementOfSelectableList').first).to.have.props(color: 'black');
+  // });
 });

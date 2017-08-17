@@ -12,3 +12,11 @@
 .empty-viewer-text {
     text-align: center;
 }
+
+.file-input {
+    display: none;
+}
+
+.select-file-btn {
+    margin-top: 3em; 
+}
