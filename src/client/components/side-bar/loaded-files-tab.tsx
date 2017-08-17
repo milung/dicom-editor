@@ -235,6 +235,8 @@ export default class LoadedFilesTab extends React.Component<LoadedFilesTabProps,
                         this.state.comparePalleteItem,
                         this.state.unloadPalleteItem
                     ]}
+                    currentAction={this.props.reducer.getState().palleteMenuAction}
+                    storeCurrentAction={(item: PalleteItem) => {this.props.reducer.getState().palleteMenuAction = item; }}
                 />
             </div>
 

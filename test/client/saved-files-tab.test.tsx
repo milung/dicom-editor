@@ -5,7 +5,7 @@ import { MuiThemeProvider } from 'material-ui/styles';
 import { ApplicationStateReducer } from '../../src/client/application-state';
 import { LightweightFile } from '../../src/client/model/file-interfaces';
 import SavedFilesTab from '../../src/client/components/side-bar/saved-files-tab';
-import { ColorDictionary } from "../../src/client/utils/colour-dictionary";
+import { ColorDictionary } from '../../src/client/utils/colour-dictionary';
 
 describe('saved-files-tab', () => {
     it('should render two basic listItems in saved files tab', () => {

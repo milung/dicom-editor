@@ -12,6 +12,8 @@ export interface PalleteItem {
 
 export interface PalleteButtonMenuProps {
     items: PalleteItem[];
+    currentAction?: PalleteItem;
+    storeCurrentAction: Function;
 }
 
 export interface PalleteButtonMenuState {
@@ -87,6 +89,14 @@ export class PalleteButtonMenu extends React.Component<PalleteButtonMenuProps, P
         );
     }
 
+    public componentWillReceiveProps(nextProps:  PalleteButtonMenuProps) {
+        if (nextProps.currentAction) {
+            this.setState({
+                currentAction: nextProps.currentAction
+            });
+        }
+    }
+
     private handleMainClick() {
         if (this.state.currentAction) {
             this.state.currentAction.onClick();
@@ -103,7 +113,7 @@ export class PalleteButtonMenu extends React.Component<PalleteButtonMenuProps, P
                 currentAction: item,
                 open: false
             });
-
+            this.props.storeCurrentAction(item);
             item.onClick();
         }
 

@@ -1,3 +1,4 @@
+import { PalleteItem } from './components/pallete-button-menu/pallete-button-menu';
 import { HeavyweightFile, LightweightFile, SelectedFile } from './model/file-interfaces';
 import { Observable } from 'rxjs/Observable';
 import { BehaviorSubject } from 'rxjs/BehaviorSubject';
@@ -11,6 +12,7 @@ export interface ApplicationState {
     comparisonActive: boolean;
     savedFiles: LightweightFile[];
     searchExpression: string;
+    palleteMenuAction?: PalleteItem;
 }
 
 export class ApplicationStateReducer {
