@@ -32,4 +32,12 @@ export class ColorDictionary {
             this.colorDictionary[index].usage = 0;
         }
     }
+
+    public setColorAsUsed(color: string) {
+        for (var index = 0; index < this.colorDictionary.length; index++) {
+            if (this.colorDictionary[index].color === color) {
+                this.colorDictionary[index].usage = 1;
+            }
+        }  
+    }
 }

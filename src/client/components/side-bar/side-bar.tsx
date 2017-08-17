@@ -16,6 +16,7 @@ import LoadedFilesTab from './loaded-files-tab';
 import SavedFilesTab from './saved-files-tab';
 import OverridePopUpDialog from './override-popup-dialog';
 import { DeletePopUpDialog } from './delete-popup-dialog';
+// import { loadLoadedFiles } from '../../utils/loaded-files-store-util';
 
 export interface SideBarProps {
     reducer: ApplicationStateReducer;
@@ -54,6 +55,16 @@ export default class SideBar extends React.Component<SideBarProps, SideBarState>
         this.showPopUpOverrideConfirmation = this.showPopUpOverrideConfirmation.bind(this);
         this.showPopUpDeleteConfirmation = this.showPopUpDeleteConfirmation.bind(this);
         this.saveFile = this.saveFile.bind(this);
+        // .then(() => {
+        //     loadSelectedFiles(this.props.reducer, this.colorDictionary).then(() => {
+        //         loadComparisonActive().then(result => {
+        //             if (result === true) {
+        //                 this.props.reducer.setComparisonActive(true);
+        //             }
+        //         });
+
+        //     });
+        // });
     }
 
     public componentDidMount() {

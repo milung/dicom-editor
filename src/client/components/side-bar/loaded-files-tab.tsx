@@ -12,7 +12,10 @@ import { ExportDialog } from '../export/export-dialog';
 import { MultiSave } from '../navigation/save-multiple-files';
 import { ConflictPopUpDialog } from '../navigation/conflict-popup-dialog';
 import { OverridePopUpDialog } from '../navigation/override-popup-dialog';
-import { switchCurrentLoadedFile } from '../../utils/loaded-files-store-util';
+import {
+    switchCurrentLoadedFile, storeComparisonActive,
+    deleteAllSelectedFilesFromDB, storeSelectedCompareFilesToDB
+} from '../../utils/loaded-files-store-util';
 
 interface LoadedFilesTabProps {
     reducer: ApplicationStateReducer;
@@ -180,7 +183,18 @@ export default class LoadedFilesTab extends React.Component<LoadedFilesTabProps,
 
     public handleCompareClick() {
         this.props.reducer.setComparisonActive(true);
+        storeSelectedCompareFilesToDB(
+            this.props.reducer.getState().selectedFiles[0],
+            this.props.reducer.getState().selectedFiles[1]);
+        storeComparisonActive(true);
     }
+
+    // private getFilesToBeCompared(files: SelectedFile[]){
+    //     result
+    //     files.forEach( file => {
+    //         if(file.colour ===)
+    //     })
+    // }
 
     private isChecked(file: HeavyweightFile) {
         const ll = this.props.selectedFiles.length;
@@ -214,6 +228,8 @@ export default class LoadedFilesTab extends React.Component<LoadedFilesTabProps,
         });
         // db needs to update the currently selected file
         switchCurrentLoadedFile(file);
+        storeComparisonActive(false);
+        deleteAllSelectedFilesFromDB(this.props.reducer);
     }
 
     private changeNumberOfCheckedBoxes(addition: boolean) {

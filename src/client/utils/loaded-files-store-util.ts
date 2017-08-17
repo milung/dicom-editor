@@ -1,15 +1,79 @@
-import { HeavyweightFile } from './../model/file-interfaces';
+import { HeavyweightFile, SelectedFile } from './../model/file-interfaces';
 import * as localForage from 'localforage';
 import { ApplicationStateReducer } from '../application-state';
 import DbService from './db-service';
+import { ColorDictionary } from './colour-dictionary';
 
 let dbService = new DbService({
     driver: localForage.INDEXEDDB,
     name: 'DICOM viewer',
     version: 1.0,
     storeName: 'loadedFilesStore',
-    description: 'Storage loaded files'
+    description: 'Storage for loaded files'
 });
+
+let dbServiceSelectedFiles = new DbService({
+    driver: localForage.INDEXEDDB,
+    name: 'DICOM viewer',
+    version: 1.0,
+    storeName: 'selectedFilesStore',
+    description: 'Storage for selected files'
+});
+
+export interface LightweightSelectedFile {
+    fileName: string;
+    fileSize: number;
+    color: string;
+}
+
+export async function storeSelectedFileToDB(file: HeavyweightFile, colour: string) {
+    let lightFile: LightweightSelectedFile = {
+        fileName: file.fileName,
+        fileSize: file.fileSize,
+        color: colour
+    };
+    
+    dbServiceSelectedFiles.setItem(lightFile.fileName + lightFile.fileSize, lightFile);
+}
+
+export async function deleteSelectedFileFromDB(file: HeavyweightFile) {
+    dbServiceSelectedFiles.removeItem(file.fileName + file.fileSize);
+}
+
+export async function storeSelectedCompareFilesToDB(file: SelectedFile, file2: SelectedFile) {
+    storeSelectedFileToDB(file.selectedFile, file.colour);
+    storeSelectedFileToDB(file2.selectedFile, file2.colour);
+}
+
+export async function deleteAllSelectedFilesFromDB(reducer: ApplicationStateReducer) {
+    let keys = [''];
+    reducer.getState().selectedFiles.forEach(file => {
+        keys.push(file.selectedFile.fileName + file.selectedFile.fileSize);
+    });
+    dbService.removeItems(keys);
+}
+
+export async function loadSelectedFiles(reducer: ApplicationStateReducer, colorDictonary: ColorDictionary) {
+   let lightSelectedFiles: LightweightSelectedFile[] = await dbServiceSelectedFiles.getAll<LightweightSelectedFile>();
+   // console.log(colorDictonary);
+   lightSelectedFiles.forEach(lightFile => {
+      reducer.addSelectedFile(lightFile.fileName, lightFile.color);
+      if (lightFile.color !== '#000000') {
+        colorDictonary.setColorAsUsed(lightFile.color);
+      }
+   });
+  // console.log(colorDictonary);
+}
+
+export async function storeComparisonActive(comparisonActive: boolean) {
+    dbServiceSelectedFiles.setItem('compareModeActive', comparisonActive);
+}
+
+export async function loadComparisonActive(): Promise<boolean> {
+    return new Promise<boolean>((resolve, reject) => {
+        resolve(dbServiceSelectedFiles.getItem('compareModeActive'));
+    });
+}
 
 /**
  * @description Handles storing of loaded file into loaded files DB and app state.
@@ -54,7 +118,7 @@ export async function switchCurrentLoadedFile(file: HeavyweightFile) {
 /**
  * @description Load all files stored in indexedDB DICOMviewer in table loadedFilesStore.
  */
-export async function loadLoadedFiles(reducer: ApplicationStateReducer) {
+export async function loadLoadedFiles (reducer: ApplicationStateReducer) {
     let files: HeavyweightFile[] = await dbService.getAll<HeavyweightFile>();
     let currentFile: HeavyweightFile = await dbService.getItem<HeavyweightFile>('currentFileStorageKey');
 
@@ -77,4 +141,12 @@ export function deleteFileFromLoaded(file: HeavyweightFile, reducer: Application
     } else {
         dbService.removeItem(file.fileName + file.fileSize);
     }
+}
+
+export function deleteAllLoadedFilesFromDB(reducer: ApplicationStateReducer) {
+    let keys = ['currentFileStorageKey'];
+    reducer.getState().loadedFiles.forEach(file => {
+        keys.push(file.fileName + file.fileSize);
+    });
+    dbService.removeItems(keys);
 }

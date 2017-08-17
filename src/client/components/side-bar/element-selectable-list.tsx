@@ -35,8 +35,10 @@ export class ElementOfSelectableList extends
             let newColor = this.props.colorDictionary.getFirstFreeColor();
             this.props.reducer.addSelectedFile(this.props.item.fileName, newColor);
             this.props.checkInform(true);
+            // storeSelectedFileToDB(this.props.item, newColor);
         } else {
             this.handleColorChanging();
+            // deleteSelectedFileFromDB(this.props.item);
         }
     }
 
