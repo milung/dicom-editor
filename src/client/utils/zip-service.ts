@@ -50,6 +50,7 @@ export class Zipper {
             let dataToProcessing: SelectedFile = filesToProcess[i];
             this.createStructureZip(i + 1);
             await this.zipSelectedFile(data, dataToProcessing.selectedFile, this.numberOfFiles);
+            reducer.setCurentExportFileNumber(i + 1);
         }
         await this.generateZip();
     }

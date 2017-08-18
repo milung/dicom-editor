@@ -227,7 +227,7 @@ describe('ApplicationStateReducer -> removeLoadedFiles()', () => {
             }
         ]
         reducer.addLoadedFiles(files);
-        
+
         reducer.removeLoadedFiles([files[0]]);
 
         expect(reducer.getState().loadedFiles.length).to.equal(1);
@@ -242,6 +242,7 @@ describe('ApplicationStateReducer -> getState()', () => {
         let state = reducer.getState();
 
         let expectedState: ApplicationState = {
+            curentExportFileNumber: 0,
             recentFiles: [],
             loadedFiles: [],
             currentFile: undefined,
@@ -295,6 +296,7 @@ describe('ApplicationStateReducer -> getState()', () => {
         reducer.addLoadedFiles(files);
 
         let expectedState: ApplicationState = {
+            curentExportFileNumber: 0,
             recentFiles: [],
             loadedFiles: [files[1], files[0]],
             selectedFiles: [],

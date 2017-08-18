@@ -14,6 +14,7 @@ export interface ApplicationState {
     savedFiles: LightweightFile[];
     searchExpression: string;
     palleteMenuAction?: PalleteItem;
+    curentExportFileNumber: number;
 }
 
 export class ApplicationStateReducer {
@@ -26,6 +27,7 @@ export class ApplicationStateReducer {
 
     public constructor() {
         this.currentState = {
+            curentExportFileNumber: 0,
             recentFiles: [],
             loadedFiles: [],
             currentFile: undefined,
@@ -172,6 +174,11 @@ export class ApplicationStateReducer {
 
     public setSearchExpression(searchExpression: string) {
         this.currentState.searchExpression = searchExpression;
+        this.stateSubject$.next(this.currentState);
+    }
+
+    public setCurentExportFileNumber(value: number) {
+        this.currentState.curentExportFileNumber = value;
         this.stateSubject$.next(this.currentState);
     }
 

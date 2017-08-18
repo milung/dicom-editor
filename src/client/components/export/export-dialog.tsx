@@ -5,6 +5,7 @@ import { containsImage, isMultiframe } from '../../utils/dicom-validator';
 import { ExportMetadata } from '../../model/export-interfaces';
 import { Downloader } from '../../utils/download-service';
 import { HeavyweightFile } from '../../model/file-interfaces';
+import { ProgresBarDialog } from '../progres-bar-dialog';
 
 export interface ExportDialogProps {
     reducer: ApplicationStateReducer;
@@ -18,10 +19,12 @@ export interface ExportDialogState {
     multiframe: boolean;
     hasImage: boolean;
     isFileLoaded: boolean;
+    openProgresDialog: boolean;
+    currentFileIndex: number;
 }
 
 export class ExportDialog extends React.Component<ExportDialogProps, ExportDialogState> {
-
+    private numberOfFiles: number;
     private actions = [
         (
             <FlatButton
@@ -42,11 +45,13 @@ export class ExportDialog extends React.Component<ExportDialogProps, ExportDialo
     constructor(props: ExportDialogProps) {
         super(props);
         this.state = {
+            currentFileIndex: 0,
             exportImage: false,
             exportTags: false,
             multiframe: false,
             hasImage: false,
-            isFileLoaded: false
+            isFileLoaded: false,
+            openProgresDialog: false,
         };
 
     }
@@ -81,27 +86,45 @@ export class ExportDialog extends React.Component<ExportDialogProps, ExportDialo
                     />
 
                 </Dialog>
+                <ProgresBarDialog
+                    open={this.state.openProgresDialog}
+                    maxValue={this.numberOfFiles}
+                    currentValue={this.props.reducer.getState().curentExportFileNumber}
+                    handleCloseDialog={() => { this.setState({ openProgresDialog: false }); }}
+                />
             </div>
         );
+    }
+    public componentDidMount() {
+        this.props.reducer.state$.subscribe(state => {
+            let openProgres: boolean = false;
+            if ((this.numberOfFiles !== state.curentExportFileNumber) && this.numberOfFiles > 0) {
+                openProgres = true;
+            }
+            this.setState({
+                currentFileIndex: state.curentExportFileNumber,
+                openProgresDialog: openProgres
+            });
+        });
     }
     public componentWillReceiveProps(nextProps: ExportDialogProps) {
         if (nextProps.openedPopUpDialog) {
             let firstSelected = this.props.reducer.getState().selectedFiles[0];
             let tempHeavy: HeavyweightFile | undefined;
-            let numberOfFiles = this.props.reducer.getState().selectedFiles.length;
+            this.numberOfFiles = this.props.reducer.getState().selectedFiles.length;
 
             if (firstSelected) {
                 tempHeavy = firstSelected.selectedFile;
             } else {
                 tempHeavy = this.props.reducer.getState().currentFile;
-                numberOfFiles = 1;
+                this.numberOfFiles = 1;
             }
 
             let hasImage: boolean = false;
             let hasMultipleFrames: boolean = false;
 
             if (tempHeavy) {
-                if (numberOfFiles === 1) {
+                if (this.numberOfFiles === 1) {
                     hasImage = containsImage(tempHeavy.dicomData);
                     hasMultipleFrames = isMultiframe(tempHeavy.dicomData);
                 } else {
@@ -134,6 +157,8 @@ export class ExportDialog extends React.Component<ExportDialogProps, ExportDialo
         this.dummyExport(exportMetadata);
         this.clearCheckBoxes();
         this.props.handleClosePopUpDialog();
+        this.setState({ openProgresDialog: true });
+        this.props.reducer.getState().curentExportFileNumber = 0;
     }
 
     private dummyExport(exportMetadata: ExportMetadata) {

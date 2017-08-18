@@ -37,7 +37,6 @@ interface LoadedFilesTabState {
     openedOverrideDialog: boolean;
 }
 
-/* tslint:disable */
 export default class LoadedFilesTab extends React.Component<LoadedFilesTabProps, LoadedFilesTabState> {
     private saver: MultiSave;
 
@@ -59,21 +58,21 @@ export default class LoadedFilesTab extends React.Component<LoadedFilesTabProps,
 
             exportPalleteItem: {
                 text: 'Export file',
-                onClick: () => { this.handleOpenExportDialog() },
+                onClick: () => { this.handleOpenExportDialog(); },
                 icon: (<FileFileDownload />),
                 disabled: true
             },
 
             savePalleteItem: {
                 text: 'Save file',
-                onClick: () => { this.saver.handleSaveClick(this.state.savePalleteItem.disabled) },
+                onClick: () => { this.saver.handleSaveClick(this.state.savePalleteItem.disabled); },
                 icon: (<ContentSave />),
                 disabled: true
             },
 
             unloadPalleteItem: {
                 text: 'Unload file',
-                onClick: () => { this.handleUnloadFiles() },
+                onClick: () => { this.handleUnloadFiles(); },
                 icon: (<ContentRemoveCircle />),
                 disabled: true
             }
@@ -255,7 +254,9 @@ export default class LoadedFilesTab extends React.Component<LoadedFilesTabProps,
                         this.state.unloadPalleteItem
                     ]}
                     currentAction={this.props.reducer.getState().palleteMenuAction}
-                    storeCurrentAction={(item: PalleteItem) => {this.props.reducer.getState().palleteMenuAction = item; }}
+                    storeCurrentAction={(item: PalleteItem) => {
+                        this.props.reducer.getState().palleteMenuAction = item;
+                    }}
                 />
             </div>
 
@@ -284,7 +285,7 @@ export default class LoadedFilesTab extends React.Component<LoadedFilesTabProps,
         }
         this.props.reducer.removeLoadedFiles(filesToUnload);
     }
-    
+
     private handleOneConflict(inConflict: HeavyweightFile[]) {
         this.setState({
             conflictFiles: inConflict,
