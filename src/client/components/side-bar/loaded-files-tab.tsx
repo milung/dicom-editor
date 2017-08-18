@@ -23,6 +23,7 @@ interface LoadedFilesTabProps {
     selectedFiles: SelectedFile[];
     colorDictionary: ColorDictionary;
     className: string;
+    initialCheckedCheckboxes: number;
 }
 
 interface LoadedFilesTabState {
@@ -43,7 +44,7 @@ export default class LoadedFilesTab extends React.Component<LoadedFilesTabProps,
     constructor(props: LoadedFilesTabProps) {
         super(props);
         this.state = {
-            checkedCheckboxes: 0,
+            checkedCheckboxes: this.props.initialCheckedCheckboxes,
             openExportDialog: false,
             openedConflictDialog: false,
             openedOverrideDialog: false,
@@ -95,6 +96,11 @@ export default class LoadedFilesTab extends React.Component<LoadedFilesTabProps,
         this.handleOneConflict = this.handleOneConflict.bind(this);
         this.handleMoreConflicts = this.handleMoreConflicts.bind(this);
         this.saver = new MultiSave(this.props.reducer, this.handleOneConflict, this.handleMoreConflicts);
+    }
+    public componentWillReceiveProps(nextProps: LoadedFilesTabProps) {
+        this.setState({
+            checkedCheckboxes: nextProps.initialCheckedCheckboxes
+        });
     }
 
     public componentDidMount() {
@@ -238,6 +244,7 @@ export default class LoadedFilesTab extends React.Component<LoadedFilesTabProps,
             let checked = this.state.checkedCheckboxes - 1;
             this.setState({ checkedCheckboxes: checked });
             if (checked === 2) {
+                this.props.reducer.changeColors(this.props.colorDictionary.getFirstFreeColor());
                 this.props.reducer.changeColors(this.props.colorDictionary.getFirstFreeColor());
             }
         }

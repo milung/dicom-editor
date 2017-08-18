@@ -10,14 +10,28 @@ import { ApplicationStateReducer } from './application-state';
 import { RecentFileStoreUtil } from './utils/recent-file-store-util';
 import { loadSavedFiles } from './utils/file-store-util';
 import { Navigation } from './components/navigation/navigation';
-import { loadLoadedFiles } from './utils/loaded-files-store-util';
+import { ColorDictionary } from './utils/colour-dictionary';
+import { loadLoadedFiles, loadComparisonActive, loadSelectedFiles } from './utils/loaded-files-store-util';
 
 let reducer = new ApplicationStateReducer();
 let fileStorage = new RecentFileStoreUtil(reducer);
 fileStorage.loadRecentFiles();
 loadSavedFiles(reducer);
-loadLoadedFiles(reducer);
 
+let colorDictionary = new ColorDictionary();
+
+loadLoadedFiles(reducer).then(() => {
+      loadSelectedFiles(reducer, colorDictionary).then(() => {
+        loadComparisonActive().then(result => {
+          if (result === true) {
+            reducer.setComparisonActive(true);
+          }
+          // this.forceUpdate();
+        });
+
+      });
+    });
+  
 interface AppState {
   open: boolean;
 }
@@ -59,7 +73,7 @@ export default class App extends React.Component<{}, AppState> {
                 <Route exact path="/volumes" render={() => (<VolumesPage />)} />
               </Switch>*/}
             </div>
-            <SideBar reducer={reducer} />
+            <SideBar reducer={reducer} colorDictionary={colorDictionary} />
           </div>
         </FileDropZone>
       </div>

@@ -18,4 +18,5 @@ export interface HeavyweightFile extends FileInterface {
 export interface SelectedFile {
     selectedFile: HeavyweightFile;
     colour: string;
+    compared?: boolean;
 }

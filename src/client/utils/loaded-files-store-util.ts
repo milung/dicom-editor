@@ -24,15 +24,17 @@ export interface LightweightSelectedFile {
     fileName: string;
     fileSize: number;
     color: string;
+    compared?: boolean;
 }
 
-export async function storeSelectedFileToDB(file: HeavyweightFile, colour: string) {
+export async function storeSelectedFileToDB(file: SelectedFile) {
     let lightFile: LightweightSelectedFile = {
-        fileName: file.fileName,
-        fileSize: file.fileSize,
-        color: colour
+        fileName: file.selectedFile.fileName,
+        fileSize: file.selectedFile.fileSize,
+        color: file.colour,
+        compared: file.compared
     };
-    
+
     dbServiceSelectedFiles.setItem(lightFile.fileName + lightFile.fileSize, lightFile);
 }
 
@@ -41,8 +43,11 @@ export async function deleteSelectedFileFromDB(file: HeavyweightFile) {
 }
 
 export async function storeSelectedCompareFilesToDB(file: SelectedFile, file2: SelectedFile) {
-    storeSelectedFileToDB(file.selectedFile, file.colour);
-    storeSelectedFileToDB(file2.selectedFile, file2.colour);
+
+    file.compared = true;
+    file2.compared = true;
+    storeSelectedFileToDB(file);
+    storeSelectedFileToDB(file2);
 }
 
 export async function deleteAllSelectedFilesFromDB(reducer: ApplicationStateReducer) {
@@ -54,15 +59,26 @@ export async function deleteAllSelectedFilesFromDB(reducer: ApplicationStateRedu
 }
 
 export async function loadSelectedFiles(reducer: ApplicationStateReducer, colorDictonary: ColorDictionary) {
-   let lightSelectedFiles: LightweightSelectedFile[] = await dbServiceSelectedFiles.getAll<LightweightSelectedFile>();
-   // console.log(colorDictonary);
-   lightSelectedFiles.forEach(lightFile => {
-      reducer.addSelectedFile(lightFile.fileName, lightFile.color);
-      if (lightFile.color !== '#000000') {
-        colorDictonary.setColorAsUsed(lightFile.color);
-      }
-   });
-  // console.log(colorDictonary);
+    let lightSelectedFiles: LightweightSelectedFile[] = await dbServiceSelectedFiles.getAll<LightweightSelectedFile>();
+    // console.log(colorDictonary);
+    let comparedFiles: LightweightSelectedFile[] = [];
+    let selectedFiles: LightweightSelectedFile[] = [];
+    lightSelectedFiles.forEach(lightFile => {
+
+        if (lightFile.compared === true) {
+            comparedFiles.push(lightFile);
+            colorDictonary.setColorAsUsed(lightFile.color);
+        } else {
+            selectedFiles.push(lightFile);
+        }
+    });
+    comparedFiles.forEach(file => {
+        reducer.addSelectedFile(file.fileName, file.color);
+    });
+
+    selectedFiles.forEach(file => {
+        reducer.addSelectedFile(file.fileName, file.color);
+    });
 }
 
 export async function storeComparisonActive(comparisonActive: boolean) {
@@ -106,19 +122,22 @@ export async function storeFilesToDB(reducer: ApplicationStateReducer) {
 export async function switchCurrentLoadedFile(file: HeavyweightFile) {
     const currentFileKey = 'currentFileStorageKey';
 
-    const lastCurrentFile: HeavyweightFile = await dbService.getItem<HeavyweightFile>(currentFileKey);
+    try {
+        const lastCurrentFile: HeavyweightFile = await dbService.getItem<HeavyweightFile>(currentFileKey);
 
-    dbService.setItem(currentFileKey, file);
-    dbService.removeItem(file.fileName + file.fileSize);
-    if (!((lastCurrentFile === undefined) || (lastCurrentFile === null))) {
-        dbService.setItem(lastCurrentFile.fileName + lastCurrentFile.fileSize, lastCurrentFile);  
-    }
+        await dbService.setItem(currentFileKey, file);
+        await dbService.removeItem(file.fileName + file.fileSize);
+        if (!((lastCurrentFile === undefined) || (lastCurrentFile === null))) {
+            await dbService.setItem(lastCurrentFile.fileName + lastCurrentFile.fileSize, lastCurrentFile);
+        }
+        // tslint:disable-next-line
+    } catch (e) { }
 }
 
 /**
  * @description Load all files stored in indexedDB DICOMviewer in table loadedFilesStore.
  */
-export async function loadLoadedFiles (reducer: ApplicationStateReducer) {
+export async function loadLoadedFiles(reducer: ApplicationStateReducer) {
     let files: HeavyweightFile[] = await dbService.getAll<HeavyweightFile>();
     let currentFile: HeavyweightFile = await dbService.getItem<HeavyweightFile>('currentFileStorageKey');
 
@@ -126,21 +145,24 @@ export async function loadLoadedFiles (reducer: ApplicationStateReducer) {
     reducer.updateCurrentFile(currentFile);
 }
 
-export function deleteFileFromLoaded(file: HeavyweightFile, reducer: ApplicationStateReducer) {
-    const currentFileKey = 'currentFileStorageKey';
-    let fileKey = '';
-    const currFile = reducer.getState().currentFile;
-    if (currFile !== undefined) {
-        fileKey = currFile.fileName + currFile.fileSize;
-    } else {
-        return;
-    }
+export async function deleteFileFromLoaded(file: HeavyweightFile, reducer: ApplicationStateReducer) {
+    try {
+        const currentFileKey = 'currentFileStorageKey';
+        let fileKey = '';
+        const currFile = reducer.getState().currentFile;
+        if (currFile !== undefined) {
+            fileKey = currFile.fileName + currFile.fileSize;
+        } else {
+            return;
+        }
 
-    if (file.fileName + file.fileSize === fileKey) {
-        dbService.removeItem(currentFileKey);
-    } else {
-        dbService.removeItem(file.fileName + file.fileSize);
-    }
+        if (file.fileName + file.fileSize === fileKey) {
+            await dbService.removeItem(currentFileKey);
+        } else {
+            await dbService.removeItem(file.fileName + file.fileSize);
+        }
+        // tslint:disable-next-line
+    } catch (e) { }
 }
 
 export function deleteAllLoadedFilesFromDB(reducer: ApplicationStateReducer) {

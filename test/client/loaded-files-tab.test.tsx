@@ -27,7 +27,9 @@ describe('LoadedFilesTab', () => {
           loadedFiles={props.loadedFiles}
           selectedFiles={props.selectedFiles}
           colorDictionary={props.colorDictionary}
-          className={props.className} />
+          className={props.className}
+          initialCheckedCheckboxes={0}
+          />
       </MuiThemeProvider>
     );
 
@@ -45,7 +47,9 @@ describe('LoadedFilesTab', () => {
           loadedFiles={[prepareTestFile(), prepareTestFile()]}
           selectedFiles={props.selectedFiles}
           colorDictionary={props.colorDictionary}
-          className={props.className} />
+          className={props.className}
+          initialCheckedCheckboxes={0}
+          />
       </MuiThemeProvider>
     );
 

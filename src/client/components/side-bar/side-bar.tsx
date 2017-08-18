@@ -16,10 +16,10 @@ import LoadedFilesTab from './loaded-files-tab';
 import SavedFilesTab from './saved-files-tab';
 import OverridePopUpDialog from './override-popup-dialog';
 import { DeletePopUpDialog } from './delete-popup-dialog';
-// import { loadLoadedFiles } from '../../utils/loaded-files-store-util';
 
 export interface SideBarProps {
     reducer: ApplicationStateReducer;
+    colorDictionary: ColorDictionary;
 }
 
 export interface SideBarState {
@@ -33,7 +33,6 @@ export interface SideBarState {
 }
 
 export default class SideBar extends React.Component<SideBarProps, SideBarState> {
-    private colorDictionary: ColorDictionary;
 
     public constructor(props: SideBarProps) {
         super(props);
@@ -48,23 +47,12 @@ export default class SideBar extends React.Component<SideBarProps, SideBarState>
             fileInPopUp: undefined
         };
 
-        this.colorDictionary = new ColorDictionary();
-
         this.handleCloseOverrideDialog = this.handleCloseOverrideDialog.bind(this);
         this.handleCloseDeleteDialog = this.handleCloseDeleteDialog.bind(this);
         this.showPopUpOverrideConfirmation = this.showPopUpOverrideConfirmation.bind(this);
         this.showPopUpDeleteConfirmation = this.showPopUpDeleteConfirmation.bind(this);
         this.saveFile = this.saveFile.bind(this);
-        // .then(() => {
-        //     loadSelectedFiles(this.props.reducer, this.colorDictionary).then(() => {
-        //         loadComparisonActive().then(result => {
-        //             if (result === true) {
-        //                 this.props.reducer.setComparisonActive(true);
-        //             }
-        //         });
-
-        //     });
-        // });
+        
     }
 
     public componentDidMount() {
@@ -93,8 +81,9 @@ export default class SideBar extends React.Component<SideBarProps, SideBarState>
                             reducer={this.props.reducer}
                             loadedFiles={this.state.loadedFiles}
                             selectedFiles={this.state.selectedFiles}
-                            colorDictionary={this.colorDictionary}
+                            colorDictionary={this.props.colorDictionary}
                             className={'tab-container'}
+                            initialCheckedCheckboxes={this.props.reducer.getState().selectedFiles.length}
                         />
                     </Tab>
                     <Tab label="Saved">
@@ -105,7 +94,7 @@ export default class SideBar extends React.Component<SideBarProps, SideBarState>
                             showPopUpDeleteConfirmation={this.showPopUpDeleteConfirmation}
                             saveFile={this.saveFile}
                             recentFiles={this.state.recentFiles}
-                            colorDictionary={this.colorDictionary}
+                            colorDictionary={this.props.colorDictionary}
                             className={'tab-container'}
                         />
                     </Tab>

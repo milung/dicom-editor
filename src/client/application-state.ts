@@ -147,12 +147,13 @@ export class ApplicationStateReducer {
     }
 
     public changeColors(color: string) {
-        this.currentState.selectedFiles.forEach(selectedFile => {
-            if (selectedFile.colour === 'black') {
-                selectedFile.colour = color;
+        for (var file of this.currentState.selectedFiles) {
+            if (file.colour === 'black') {
+                file.colour = color;
                 this.stateSubject$.next(this.currentState);
+                break;
             }
-        });
+        }
     }
 
     public getSelectedFiles(): HeavyweightFile[] {
