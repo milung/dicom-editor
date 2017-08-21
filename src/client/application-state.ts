@@ -2,7 +2,7 @@ import { PalleteItem } from './components/pallete-button-menu/pallete-button-men
 import { HeavyweightFile, LightweightFile, SelectedFile } from './model/file-interfaces';
 import { Observable } from 'rxjs/Observable';
 import { BehaviorSubject } from 'rxjs/BehaviorSubject';
-import { deleteFileFromLoaded, switchCurrentLoadedFile } from './utils/loaded-files-store-util';
+import { deleteFileFromLoaded, switchCurrentLoadedFile, updateSelectedFile } from './utils/loaded-files-store-util';
 
 export interface ApplicationState {
     recentFiles: LightweightFile[];
@@ -151,6 +151,7 @@ export class ApplicationStateReducer {
             if (file.colour === 'black') {
                 file.colour = color;
                 this.stateSubject$.next(this.currentState);
+                updateSelectedFile(file);
                 break;
             }
         }

@@ -172,3 +172,8 @@ export function deleteAllLoadedFilesFromDB(reducer: ApplicationStateReducer) {
     });
     dbService.removeItems(keys);
 }
+
+export function updateSelectedFile(file: SelectedFile) {
+    deleteSelectedFileFromDB(file.selectedFile);
+    storeSelectedFileToDB(file);
+}

@@ -26,6 +26,9 @@ loadLoadedFiles(reducer).then(() => {
           if (result === true) {
             reducer.setComparisonActive(true);
           }
+          reducer.getState().selectedFiles.forEach(file => {
+            colorDictionary.setColorAsUsed(file.colour);
+          })
           // this.forceUpdate();
         });
 

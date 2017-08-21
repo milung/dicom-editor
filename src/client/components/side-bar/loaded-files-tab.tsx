@@ -14,7 +14,7 @@ import { ConflictPopUpDialog } from '../navigation/conflict-popup-dialog';
 import { OverridePopUpDialog } from '../navigation/override-popup-dialog';
 import {
     switchCurrentLoadedFile, storeComparisonActive,
-    deleteAllSelectedFilesFromDB, storeSelectedCompareFilesToDB
+    deleteAllSelectedFilesFromDB, storeSelectedCompareFilesToDB, deleteFileFromLoaded
 } from '../../utils/loaded-files-store-util';
 
 interface LoadedFilesTabProps {
@@ -138,6 +138,7 @@ export default class LoadedFilesTab extends React.Component<LoadedFilesTabProps,
     }
 
     render() {
+        console.log('Checked boxes: ' + this.state.checkedCheckboxes);
         return (
             <div className={this.props.className}>
                 <List style={{ overflowX: 'hidden', overflowY: 'auto' }}>
@@ -238,6 +239,7 @@ export default class LoadedFilesTab extends React.Component<LoadedFilesTabProps,
     }
 
     private changeNumberOfCheckedBoxes(addition: boolean) {
+        
         if (addition) {
             this.setState({ checkedCheckboxes: this.state.checkedCheckboxes + 1 });
         } else {
@@ -248,6 +250,7 @@ export default class LoadedFilesTab extends React.Component<LoadedFilesTabProps,
                 this.props.reducer.changeColors(this.props.colorDictionary.getFirstFreeColor());
             }
         }
+        console.log('Changed number of checkboxes: ' + this.state.checkedCheckboxes);
     }
 
     private renderPalleteButton(): JSX.Element {
@@ -286,11 +289,20 @@ export default class LoadedFilesTab extends React.Component<LoadedFilesTabProps,
         let filesToUnload = this.props.reducer.getSelectedFiles();
         if (filesToUnload.length === 0) {
             let current = this.props.reducer.getState().currentFile;
+            
             if (current) {
-                filesToUnload = [current];
+                filesToUnload = [current]; 
             }
         }
+        this.props.reducer.getState().selectedFiles.forEach( file => {
+            this.props.colorDictionary.freeColor(file.colour);
+        });
         this.props.reducer.removeLoadedFiles(filesToUnload);
+        this.props.reducer.setComparisonActive(false);
+        deleteAllSelectedFilesFromDB(this.props.reducer);
+        filesToUnload.forEach( file => {
+            deleteFileFromLoaded(file, this.props.reducer);
+        });
     }
 
     private handleOneConflict(inConflict: HeavyweightFile[]) {
