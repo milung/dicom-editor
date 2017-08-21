@@ -21,6 +21,7 @@ export interface ExportDialogState {
     isFileLoaded: boolean;
     openProgresDialog: boolean;
     currentFileIndex: number;
+    exportActive: boolean;
 }
 
 export class ExportDialog extends React.Component<ExportDialogProps, ExportDialogState> {
@@ -30,7 +31,10 @@ export class ExportDialog extends React.Component<ExportDialogProps, ExportDialo
             <FlatButton
                 label="Cancel"
                 primary={true}
-                onTouchTap={() => { this.clearCheckBoxes(); this.props.handleClosePopUpDialog(); }}
+                onTouchTap={() => {
+                    this.clearCheckBoxes(); this.props.handleClosePopUpDialog();
+                }}
+
             />
         ),
         (
@@ -45,6 +49,7 @@ export class ExportDialog extends React.Component<ExportDialogProps, ExportDialo
     constructor(props: ExportDialogProps) {
         super(props);
         this.state = {
+            exportActive: false,
             currentFileIndex: 0,
             exportImage: false,
             exportTags: false,
@@ -98,7 +103,8 @@ export class ExportDialog extends React.Component<ExportDialogProps, ExportDialo
     public componentDidMount() {
         this.props.reducer.state$.subscribe(state => {
             let openProgres: boolean = false;
-            if ((this.numberOfFiles !== state.curentExportFileNumber) && this.numberOfFiles > 0) {
+            if ((this.numberOfFiles !== state.curentExportFileNumber) && this.numberOfFiles > 0 
+                &&  this.state.exportActive === true) {
                 openProgres = true;
             }
             this.setState({
@@ -148,7 +154,7 @@ export class ExportDialog extends React.Component<ExportDialogProps, ExportDialo
     }
 
     private handleExport() {
-
+        this.setState({exportActive: true});
         let exportMetadata: ExportMetadata = {
             excel: this.state.exportTags,
             image: this.state.exportImage,
