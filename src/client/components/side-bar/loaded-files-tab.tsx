@@ -138,7 +138,6 @@ export default class LoadedFilesTab extends React.Component<LoadedFilesTabProps,
     }
 
     render() {
-        console.log('Checked boxes: ' + this.state.checkedCheckboxes);
         return (
             <div className={this.props.className}>
                 <List style={{ overflowX: 'hidden', overflowY: 'auto' }}>
@@ -250,7 +249,6 @@ export default class LoadedFilesTab extends React.Component<LoadedFilesTabProps,
                 this.props.reducer.changeColors(this.props.colorDictionary.getFirstFreeColor());
             }
         }
-        console.log('Changed number of checkboxes: ' + this.state.checkedCheckboxes);
     }
 
     private renderPalleteButton(): JSX.Element {

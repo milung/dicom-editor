@@ -28,7 +28,7 @@ loadLoadedFiles(reducer).then(() => {
           }
           reducer.getState().selectedFiles.forEach(file => {
             colorDictionary.setColorAsUsed(file.colour);
-          })
+          });
           // this.forceUpdate();
         });
 

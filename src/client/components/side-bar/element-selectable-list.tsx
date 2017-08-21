@@ -5,7 +5,10 @@ import { ApplicationStateReducer } from '../../application-state';
 import './element-selectable-list.css';
 import './side-bar.css';
 import { ColorDictionary } from '../../utils/colour-dictionary';
-import { storeSelectedFileToDB, deleteSelectedFileFromDB, deleteFileFromLoaded, storeComparisonActive } from '../../utils/loaded-files-store-util';
+import {
+    storeSelectedFileToDB, deleteSelectedFileFromDB,
+    deleteFileFromLoaded, storeComparisonActive
+} from '../../utils/loaded-files-store-util';
 var ClearIcon = require('react-icons/lib/md/clear');
 
 interface ElementOfSelectableListProps {
@@ -32,13 +35,13 @@ export class ElementOfSelectableList extends
     }
 
     handleCheck(e: object, isInputChecked: boolean) {
-        
+
         if (isInputChecked) {
             let newColor = this.props.colorDictionary.getFirstFreeColor();
             this.props.reducer.addSelectedFile(this.props.item.fileName, newColor);
             this.props.checkInform(true);
             storeSelectedFileToDB(this.props.reducer.getState()
-            .selectedFiles[this.props.reducer.getState().selectedFiles.length - 1]);
+                .selectedFiles[this.props.reducer.getState().selectedFiles.length - 1]);
         } else {
             this.handleColorChanging();
             deleteSelectedFileFromDB(this.props.item);
@@ -88,11 +91,11 @@ export class ElementOfSelectableList extends
             return false;
         }
     }
-  
+
     private handleRemoveClick() {
         this.handleColorChanging();
         this.props.reducer.removeLoadedFiles([this.props.item]);
-        if(this.props.color !== 'black'){
+        if (this.props.color !== 'black') {
             this.props.reducer.setComparisonActive(false);
             storeComparisonActive(false);
         }
