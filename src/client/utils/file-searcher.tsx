@@ -67,7 +67,7 @@ export class FileSearcher {
                         tagVM: row.tagVM,
                         colour: row.colour,
                         sequence: res
-                    }
+                    };
                     matchedRows.push(result);
                 }
             } else {
