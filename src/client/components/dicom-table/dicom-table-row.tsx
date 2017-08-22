@@ -3,7 +3,7 @@ import { TableRow, TableRowColumn, TextField } from 'material-ui';
 import { DicomEntry } from '../../model/dicom-entry';
 import { ColorDictionary } from '../../utils/colour-dictionary';
 import './dicom-table.css';
-import { EditorModeEdit, ActionDone } from 'material-ui/svg-icons';
+import { EditorModeEdit, ActionDone, ActionDelete } from 'material-ui/svg-icons';
 
 var fileDownload = require('react-file-download');
 
@@ -14,6 +14,7 @@ export interface DicomTableRowProps {
     editMode?: boolean;
     handleEnterEditing?: () => void;
     handleExitEditing?: Function;
+    handleDeletingEntry?: () => void;
 }
 
 export interface DicomTableRowState {
@@ -75,6 +76,7 @@ export class DicomTableRow extends React.Component<DicomTableRowProps, DicomTabl
         // Edit mode
 
         let firstIcon;
+        let secondIcon;
         let valueCell;
         let vrCell;
 
@@ -99,7 +101,7 @@ export class DicomTableRow extends React.Component<DicomTableRowProps, DicomTabl
                             }
                         }
                         onKeyPress={(event) => {
-                            if (event.key == 'Enter') {
+                            if (event.key === 'Enter') {
                                 this.handleExitEdit();
                             }
                         }}
@@ -121,7 +123,7 @@ export class DicomTableRow extends React.Component<DicomTableRowProps, DicomTabl
                             }
                         }
                         onKeyPress={(event) => {
-                            if (event.key == 'Enter') {
+                            if (event.key === 'Enter') {
                                 this.handleExitEdit();
                             }
                         }}
@@ -136,6 +138,12 @@ export class DicomTableRow extends React.Component<DicomTableRowProps, DicomTabl
                     onClick={this.props.handleEnterEditing}
                 />
             );
+            secondIcon = (
+                <ActionDelete
+                    className="row-icon row-icon-delete"
+                    onClick={this.props.handleDeletingEntry}
+                />
+            );
             valueCell = <TableRowColumn style={tableRowColumnStyle}>{ele}</TableRowColumn>;
             vrCell = <TableRowColumn>{this.props.entry.tagVR}</TableRowColumn>;
         }
@@ -144,6 +152,7 @@ export class DicomTableRow extends React.Component<DicomTableRowProps, DicomTabl
             <TableRow style={tableRowStyle} className={rowClass} >
                 <TableRowColumn style={tagStyle}>
                     {firstIcon}
+                    {secondIcon}
                     {tag}
                 </TableRowColumn>
                 <TableRowColumn style={tableRowColumnStyle}>{this.props.entry.tagName}</TableRowColumn>

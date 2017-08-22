@@ -88,6 +88,7 @@ export class DicomSimpleTable extends React.Component<DicomSimpleTableProps, Dic
                             editMode={this.state.entryBeingEdited === entry}
                             handleEnterEditing={() => { this.handleEditEntryClick(entry); }}
                             handleExitEditing={this.handleExitEditingClick}
+                            handleDeletingEntry={() => { this.handleDeletingRow(entry); }}
                         />
                     );
                 }
@@ -118,5 +119,10 @@ export class DicomSimpleTable extends React.Component<DicomSimpleTableProps, Dic
         this.setState({
             entryBeingEdited: undefined
         });
+    }
+
+    private handleDeletingRow(entry: DicomEntry) {
+        console.log('deleting:');
+        console.log(entry);
     }
 }

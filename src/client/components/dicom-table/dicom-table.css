@@ -72,3 +72,7 @@ background-color: #00BCD4;
 .row-icon-edit {
     fill: #3385ff !important;
 }
+
+.row-icon-delete {
+    fill: #ff3333 !important;
+}
