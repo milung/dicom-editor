@@ -49,7 +49,8 @@ export class Zipper {
 
         for (var i = 0; i < this.numberOfFiles; i++) {
             let dataToProcessing: SelectedFile = filesToProcess[i];
-            this.createStructureZip(i + 1, data);
+            let nameFile: string = dataToProcessing.selectedFile.fileName;
+            this.createStructureZip(nameFile, data);
             await this.zipSelectedFile(data, dataToProcessing.selectedFile, this.numberOfFiles);
             reducer.setCurentExportFileNumber(i + 1);
         }
@@ -62,15 +63,15 @@ export class Zipper {
         });
     }
 
-    private createStructureZip(numberFolder: number, data: ExportMetadata) {
+    private createStructureZip(nameFile: string, data: ExportMetadata) {
         if (data.image) {
-            this.dicomImage = this.zip.folder('File' + numberFolder).folder('DicomImage');
+            this.dicomImage = this.zip.folder(nameFile).folder('DicomImage');
         }
         if (data.excel) {
-            this.dicomData = this.zip.folder('File' + numberFolder).folder('DicomData');
+            this.dicomData = this.zip.folder(nameFile).folder('DicomData');
         }
-        if (data.dicom) {
-            this.dicomFile = this.zip.folder('File' + numberFolder).folder('DicomFile');
+        if (data.dicom) { 
+            this.dicomFile = this.zip.folder(nameFile).folder('DicomFile');
         }
     }
 
@@ -136,7 +137,6 @@ export class Zipper {
             var viewport = cornerstone.getDefaultViewport(imageElement.children[0], image);
             cornerstone.displayImage(imageElement, image, viewport);
             self.multiFrameZip();
-
         });
     }
 

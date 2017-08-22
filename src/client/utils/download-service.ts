@@ -37,22 +37,24 @@ export class Downloader {
             zipper.generateCompleteZip(data, reducer);
         } else if (data.excel) {
             if (fileToProcess) {
-                this.downloadOneItem(dicomDataToExcel(fileToProcess), 'Excel');
+                await this.downloadOneItem(dicomDataToExcel(fileToProcess), 'Excel', reducer);
+                await reducer.setCurentExportFileNumber(1);
             }
         } else if (data.image) {
             if (fileToProcess) {
                 let dataToProcessing = fileToProcess.bufferedData;
-                await this.renderCanvas(dataToProcessing, 0);
-                await this.renderCanvas(dataToProcessing, 0);
+                await this.renderCanvas(dataToProcessing, 0, reducer);
+                await this.renderCanvas(dataToProcessing, 0, reducer);
             }
         } else if (data.dicom) {
             if (fileToProcess) {
-                this.downloadOneItem(fileToProcess.bufferedData, 'Dicom');
+                await this.downloadOneItem(fileToProcess.bufferedData, 'Dicom', reducer);
+                await reducer.setCurentExportFileNumber(1);
             }
         }
     }
 
-    private downloadOneItem(data: Uint8Array, type: string) {
+    private async downloadOneItem(data: Uint8Array, type: string, reducer: ApplicationStateReducer) {
         var downloadElement = document.createElement('a');
         document.body.appendChild(downloadElement);
         var blob = new Blob([data], { type: 'octet/stream' });
@@ -69,10 +71,10 @@ export class Downloader {
 
         downloadElement.click();
         window.URL.revokeObjectURL(url);
-        downloadElement.remove();
+        await downloadElement.remove();
     }
 
-    private async renderCanvas(data: Uint8Array, frameIndex: number) {
+    private async renderCanvas(data: Uint8Array, frameIndex: number, reducer: ApplicationStateReducer) {
         var imageElement = document.getElementById('dicomImage') as Element;
         var fileNew = new Blob([data], { type: 'File' });
 
@@ -84,7 +86,8 @@ export class Downloader {
             cornerstone.displayImage(imageElement, image, viewport);
             self.actualImage++;
             if (self.actualImage > 1) {
-                self.downloadOneItem(getImageFile(), 'Image');
+                self.downloadOneItem(getImageFile(), 'Image', reducer);
+                reducer.setCurentExportFileNumber(1);
             }
         });
     }
