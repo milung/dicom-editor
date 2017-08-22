@@ -3,7 +3,7 @@ import { ApplicationStateReducer } from '../../src/client/application-state';
 import { HeavyweightFile } from '../../src/client/model/file-interfaces';
 import { DicomComparisonData } from '../../src/client/model/dicom-entry';
 import { expect } from 'chai';
-import { prepareSimpleTestComparisionData, prepareTestFile } from "./test-utils";
+import { prepareSimpleTestComparisionData, prepareTestFile, prepareTestFileWithSequence } from "./test-utils";
 
 describe('FileSearcher -> searchFile() ->', () => {
     it('search on empty file', () => {
@@ -143,6 +143,40 @@ describe('FileSearcher -> searchFile() ->', () => {
         expect(fs.searchFile().entries.length).to.equal(0);
     });
 
+    it('sequence search returns sequence', () => {
+        let reducer = new ApplicationStateReducer();
+        let testFile = prepareTestFileWithSequence();
+        reducer.updateCurrentFile(testFile);
+        reducer.setSearchExpression('Sequence name');
+
+        let fs = new FileSearcher(reducer);
+        expect(fs.searchFile().entries.length).to.equal(1);
+        expect(fs.searchFile().entries[0].tagName).to.equal('Sequence name');
+    });
+
+    it('sequence name search returns whole sequence', () => {
+        let reducer = new ApplicationStateReducer();
+        let testFile = prepareTestFileWithSequence();
+        reducer.updateCurrentFile(testFile);
+        reducer.setSearchExpression('Sequence name');
+
+        let fs = new FileSearcher(reducer);
+        let res = fs.searchFile();
+        expect(res.entries[0].sequence.length).to.equal(1);
+        expect(res.entries[0].sequence[0].tagName).to.equal('Test name');
+    });
+
+    it('sequence children search returns children nested in sequence', () => {
+        let reducer = new ApplicationStateReducer();
+        let testFile = prepareTestFileWithSequence();
+        reducer.updateCurrentFile(testFile);
+        reducer.setSearchExpression('Test name');
+
+        let fs = new FileSearcher(reducer);
+        let res = fs.searchFile();
+        expect(res.entries[0].tagName).to.equal('Sequence name');
+        expect(res.entries[0].sequence[0].tagName).to.equal('Test name');
+    });
 });
 
 describe('FileSearcher -> searchCompareData() ->', () => {
@@ -174,7 +208,7 @@ describe('FileSearcher -> searchCompareData() ->', () => {
 
     it('find no match', () => {
         let reducer = new ApplicationStateReducer();
-        let data  = prepareSimpleTestComparisionData();
+        let data = prepareSimpleTestComparisionData();
         reducer.setSearchExpression('xxx');
 
         let fs = new FileSearcher(reducer);
@@ -190,22 +224,22 @@ describe('FileSearcher -> searchCompareData() ->', () => {
         expect(fs.searchCompareData(data).dicomComparisonData.length).to.equal(1);
     });
 
-    it ('search for tagElement and tagGroup without comma or space', ()=> {
+    it('search for tagElement and tagGroup without comma or space', () => {
         let reducer = new ApplicationStateReducer();
         let data = prepareSimpleTestComparisionData();
         reducer.setSearchExpression('00010002');
 
         let fs = new FileSearcher(reducer);
-        expect(fs.searchCompareData(data).dicomComparisonData.length).to.equal(1); 
-    } );
+        expect(fs.searchCompareData(data).dicomComparisonData.length).to.equal(1);
+    });
 
-    it ('search in tagElement and tagGroup as in one string', ()=> {
+    it('search in tagElement and tagGroup as in one string', () => {
         let reducer = new ApplicationStateReducer();
         let data = prepareSimpleTestComparisionData();
         reducer.setSearchExpression('1000');
 
         let fs = new FileSearcher(reducer);
-        expect(fs.searchCompareData(data).dicomComparisonData.length).to.equal(1); 
-    } );
+        expect(fs.searchCompareData(data).dicomComparisonData.length).to.equal(1);
+    });
 
 });
