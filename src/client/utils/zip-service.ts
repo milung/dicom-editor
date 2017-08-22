@@ -23,6 +23,7 @@ export class Zipper {
 
     private dicomImage: JSZip;
     private dicomData: JSZip;
+    private dicomFile: JSZip;
 
     private numFrames: number = 0;
     private numberPicture: number = 0;
@@ -48,7 +49,7 @@ export class Zipper {
 
         for (var i = 0; i < this.numberOfFiles; i++) {
             let dataToProcessing: SelectedFile = filesToProcess[i];
-            this.createStructureZip(i + 1);
+            this.createStructureZip(i + 1, data);
             await this.zipSelectedFile(data, dataToProcessing.selectedFile, this.numberOfFiles);
             reducer.setCurentExportFileNumber(i + 1);
         }
@@ -61,23 +62,31 @@ export class Zipper {
         });
     }
 
-    private createStructureZip(numberFolder: number) {
-        this.dicomImage = this.zip.folder('File' + numberFolder).folder('DicomImage');
-        this.dicomData = this.zip.folder('File' + numberFolder).folder('DicomData');
+    private createStructureZip(numberFolder: number, data: ExportMetadata) {
+        if (data.image) {
+            this.dicomImage = this.zip.folder('File' + numberFolder).folder('DicomImage');
+        }
+        if (data.excel) {
+            this.dicomData = this.zip.folder('File' + numberFolder).folder('DicomData');
+        }
+        if (data.dicom) {
+            this.dicomFile = this.zip.folder('File' + numberFolder).folder('DicomFile');
+        }
     }
 
     private async zipSelectedFile(
-        data: ExportMetadata, dataToProcessing: HeavyweightFile, numberOfFiles: number) {
+        data: ExportMetadata, dataToProcess: HeavyweightFile, numberOfFiles: number) {
 
         this.numberPicture = 0;
-
-        if (data.excel && data.image) {
-            await this.excelToZip(dataToProcessing);
-            await this.imagesToZip(dataToProcessing);
-        } else if ((!data.excel) && (data.image)) {
-            await this.imagesToZip(dataToProcessing);
-        } else if ((data.excel) && (!data.image)) {
-            await this.excelToZip(dataToProcessing);
+        
+        if (data.excel) {
+            await this.excelToZip(dataToProcess);
+        }
+        if (data.dicom) {
+            await this.dicomToZip(dataToProcess);
+        }
+        if (data.image) {
+            await this.imagesToZip(dataToProcess);
         }
     }
 
@@ -87,24 +96,30 @@ export class Zipper {
         });
     }
 
-    private async imagesToZip(dataToProcessing: HeavyweightFile) {
+    private async imagesToZip(dataToProcess: HeavyweightFile) {
         let dicomReader: DicomReader = new DicomReader();
-        if (dataToProcessing) {
-            this.numFrames = dicomReader.getNumberOfFrames(dataToProcessing.bufferedData);
+        if (dataToProcess) {
+            this.numFrames = dicomReader.getNumberOfFrames(dataToProcess.bufferedData);
 
             for (var num = 0; num <= this.numFrames - 1; num++) {
                 await this.sleep(150);
-                await this.renderCanvas(dataToProcessing.bufferedData, num);
+                await this.renderCanvas(dataToProcess.bufferedData, num);
             }
             await this.sleep(150);
-            await this.renderCanvas(dataToProcessing.bufferedData, 0);
+            await this.renderCanvas(dataToProcess.bufferedData, 0);
             await this.sleep(150);
         }
     }
 
-    private async excelToZip(dataToProcessing: HeavyweightFile) {
-        if (dataToProcessing) {
-            this.dicomData.file('dicomData.xlsx', dicomDataToExcel(dataToProcessing), { binary: true });
+    private async excelToZip(dataToProcess: HeavyweightFile) {
+        if (dataToProcess) {
+            this.dicomData.file('dicomData.xlsx', dicomDataToExcel(dataToProcess), { binary: true });
+        }
+    }
+
+    private async dicomToZip(dataToProcess: HeavyweightFile) {
+        if (dataToProcess) {
+            this.dicomFile.file(dataToProcess.fileName + '.dcm', dataToProcess.bufferedData, { binary: true });
         }
     }
 

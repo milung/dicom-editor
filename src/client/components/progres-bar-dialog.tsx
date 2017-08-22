@@ -20,7 +20,7 @@ export class ProgresBarDialog extends React.Component<ProgresBarDialogProps, Pro
     public render() {
         return (
             <Dialog
-                title={'Download in progres'}
+                title={'Download in progress'}
                 modal={true}
                 open={this.props.open}
                 onRequestClose={() => { this.props.handleCloseDialog(); }}

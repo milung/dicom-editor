@@ -16,6 +16,7 @@ export interface ExportDialogProps {
 export interface ExportDialogState {
     exportImage: boolean;
     exportTags: boolean;
+    exportDicom: boolean;
     multiframe: boolean;
     hasImage: boolean;
     isFileLoaded: boolean;
@@ -53,6 +54,7 @@ export class ExportDialog extends React.Component<ExportDialogProps, ExportDialo
             currentFileIndex: 0,
             exportImage: false,
             exportTags: false,
+            exportDicom: false,
             multiframe: false,
             hasImage: false,
             isFileLoaded: false,
@@ -87,6 +89,15 @@ export class ExportDialog extends React.Component<ExportDialogProps, ExportDialo
                             this.setState({ exportTags: !this.state.exportTags });
                         }}
                         checked={this.state.exportTags}
+                        disabled={!this.state.isFileLoaded}
+                    />
+
+                    <Checkbox
+                        label="Dicom"
+                        onCheck={() => {
+                            this.setState({ exportDicom: !this.state.exportDicom });
+                        }}
+                        checked={this.state.exportDicom}
                         disabled={!this.state.isFileLoaded}
                     />
 
@@ -158,7 +169,8 @@ export class ExportDialog extends React.Component<ExportDialogProps, ExportDialo
         let exportMetadata: ExportMetadata = {
             excel: this.state.exportTags,
             image: this.state.exportImage,
-            multiframe: this.state.multiframe
+            multiframe: this.state.multiframe,
+            dicom: this.state.exportDicom
         };
         this.dummyExport(exportMetadata);
         this.clearCheckBoxes();

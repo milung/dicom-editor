@@ -31,19 +31,24 @@ export class Downloader {
             selectedFiles = 1;
         }
 
-        if (data.excel && (!data.image) && (selectedFiles === 1)) {
+        if ((data.excel && data.image) || (data.dicom && data.excel) || (data.dicom && data.image) ||
+            (data.multiframe && data.image) || (selectedFiles > 1)) {
+            let zipper = new Zipper();
+            zipper.generateCompleteZip(data, reducer);
+        } else if (data.excel) {
             if (fileToProcess) {
                 this.downloadOneItem(dicomDataToExcel(fileToProcess), 'Excel');
             }
-        } else if (data.image && (!data.multiframe && !data.excel) && (selectedFiles === 1)) {
+        } else if (data.image) {
             if (fileToProcess) {
                 let dataToProcessing = fileToProcess.bufferedData;
                 await this.renderCanvas(dataToProcessing, 0);
                 await this.renderCanvas(dataToProcessing, 0);
             }
-        } else if ((data.excel && data.image) || (data.multiframe && data.image) || (selectedFiles > 1)) {
-            let zipper = new Zipper();
-            zipper.generateCompleteZip(data, reducer);
+        } else if (data.dicom) {
+            if (fileToProcess) {
+                this.downloadOneItem(fileToProcess.bufferedData, 'Dicom');
+            }
         }
     }
 
@@ -53,11 +58,15 @@ export class Downloader {
         var blob = new Blob([data], { type: 'octet/stream' });
         var url = window.URL.createObjectURL(blob);
         downloadElement.href = url;
+        
         if (type === 'Image') {
             downloadElement.download = 'dicomImage.png';
         } else if (type === 'Excel') {
             downloadElement.download = 'dicomData.xlsx';
+        } else if (type === 'Dicom') {
+            downloadElement.download = 'dicomFile.dcm';
         }
+
         downloadElement.click();
         window.URL.revokeObjectURL(url);
         downloadElement.remove();
