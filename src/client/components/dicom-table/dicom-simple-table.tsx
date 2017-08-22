@@ -11,6 +11,7 @@ export interface DicomSimpleTableProps {
 
 export interface DicomSimpleTableState {
     expandedSequences: {};
+    entryBeingEdited?: DicomEntry;
 }
 
 // This component displays a table of all entries belonging to a single module
@@ -26,6 +27,8 @@ export class DicomSimpleTable extends React.Component<DicomSimpleTableProps, Dic
                 this.state.expandedSequences[entry.tagGroup + entry.tagElement] = false;
             }
         });
+
+        this.handleExitEditingClick = this.handleExitEditingClick.bind(this);
     }
 
     public render() {
@@ -82,6 +85,9 @@ export class DicomSimpleTable extends React.Component<DicomSimpleTableProps, Dic
                             key={dasKey + Math.random()}
                             shouldShowTag={true}
                             margin={(20 * (depth + 1)).toString() + 'px'}
+                            editMode={this.state.entryBeingEdited === entry}
+                            handleEnterEditing={() => { this.handleEditEntryClick(entry); }}
+                            handleExitEditing={this.handleExitEditingClick}
                         />
                     );
                 }
@@ -99,5 +105,18 @@ export class DicomSimpleTable extends React.Component<DicomSimpleTableProps, Dic
             tempDict[entry.tagGroup + entry.tagElement] = true;
         }
         this.setState({ expandedSequences: tempDict });
+    }
+
+    private handleEditEntryClick(entry: DicomEntry) {
+        this.setState({
+            entryBeingEdited: entry
+        });
+    }
+
+    private handleExitEditingClick(newEntry: DicomEntry) {
+        console.log(newEntry);
+        this.setState({
+            entryBeingEdited: undefined
+        });
     }
 }
