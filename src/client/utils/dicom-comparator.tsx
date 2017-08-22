@@ -3,6 +3,8 @@ import { SelectedFile } from '../model/file-interfaces';
 
 function createEntryCopy(entry: DicomEntry): DicomEntry {
     let entryCopy: DicomEntry = {
+        offset: entry.offset,
+        byteLength: entry.byteLength,
         tagGroup: entry.tagGroup,
         tagElement: entry.tagElement,
         tagName: entry.tagName,
@@ -55,6 +57,8 @@ export function compareTwoFiles(file1: SelectedFile, file2: SelectedFile): Dicom
         if (commonMap[entry.tagGroup + entry.tagElement] === undefined) {
             commonMap[entry.tagGroup + entry.tagElement] = [
                 {
+                    offset: entry.offset,
+                    byteLength: entry.byteLength,
                     tagGroup: entry.tagGroup,
                     tagElement: entry.tagElement,
                     tagName: entry.tagName,
@@ -64,6 +68,8 @@ export function compareTwoFiles(file1: SelectedFile, file2: SelectedFile): Dicom
                     colour: file2.colour
                 },
                 {
+                    offset: entry.offset,
+                    byteLength: entry.byteLength,
                     tagGroup: entry.tagGroup,
                     tagElement: entry.tagElement,
                     tagName: 'Missing name',
@@ -80,6 +86,8 @@ export function compareTwoFiles(file1: SelectedFile, file2: SelectedFile): Dicom
         if (commonMap[entry.tagGroup + entry.tagElement] === undefined) {
             commonMap[entry.tagGroup + entry.tagElement] = [
                 {
+                    offset: entry.offset,
+                    byteLength: entry.byteLength,
                     tagGroup: entry.tagGroup,
                     tagElement: entry.tagElement,
                     tagName: entry.tagName,
@@ -89,6 +97,8 @@ export function compareTwoFiles(file1: SelectedFile, file2: SelectedFile): Dicom
                     colour: file1.colour
                 },
                 {
+                    offset: entry.offset,
+                    byteLength: entry.byteLength,
                     tagGroup: entry.tagGroup,
                     tagElement: entry.tagElement,
                     tagName: 'Missing name',

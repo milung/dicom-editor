@@ -86,8 +86,8 @@ export default class MainView extends React.Component<MainViewProps, MainViewSta
       imageContent = this.fillImageContent();
       tagContent = this.fillTagContent();
     } else {
-      imageContent = <EmptyViewer reducer={this.props.reducer}/>;
-      tagContent = <EmptyViewer reducer={this.props.reducer}/>;
+      imageContent = <EmptyViewer reducer={this.props.reducer} />;
+      tagContent = <EmptyViewer reducer={this.props.reducer} />;
     }
     return (
       <Tabs

@@ -11,6 +11,8 @@ const arrayTest = {
     'Module 1':
     [
         {
+            offset: 12345,
+            byteLength: 0,
             tagGroup: '0008',
             tagElement: '0145',
             tagName: 'PatientName',
@@ -21,6 +23,8 @@ const arrayTest = {
             sequence: []
         },
         {
+            offset: 12345,
+            byteLength: 0,
             tagGroup: '0008',
             tagElement: '1548',
             tagName: 'PatientAge',
@@ -35,6 +39,8 @@ const arrayTest = {
     'Module 2':
     [
         {
+            offset: 12345,
+            byteLength: 0,
             tagGroup: '0010',
             tagElement: '0145',
             tagName: 'PatientName',
@@ -45,6 +51,8 @@ const arrayTest = {
             sequence: []
         },
         {
+            offset: 12345,
+            byteLength: 0,
             tagGroup: '0010',
             tagElement: '1548',
             tagName: 'PatientAge',
@@ -59,6 +67,8 @@ const arrayTest = {
 
 
 const dicomTestEntry = {
+    offset: 12345,
+    byteLength: 0,
     tagGroup: '0152',
     tagElement: '0145',
     tagName: 'PatientName',
@@ -72,6 +82,8 @@ const dicomTestEntry = {
 const dicomTestEntries =
     [
         {
+            offset: 12345,
+            byteLength: 0,
             tagGroup: '0152',
             tagElement: '0145',
             tagName: 'PatientName',
@@ -82,6 +94,8 @@ const dicomTestEntries =
             sequence: []
         },
         {
+            offset: 12345,
+            byteLength: 0,
             tagGroup: '0010',
             tagElement: '1548',
             tagName: 'PatientAge',
@@ -92,6 +106,8 @@ const dicomTestEntries =
             sequence: []
         },
         {
+            offset: 12345,
+            byteLength: 0,
             tagGroup: '0152',
             tagElement: '0145',
             tagName: 'PatientName',
@@ -102,6 +118,8 @@ const dicomTestEntries =
             sequence: []
         },
         {
+            offset: 12345,
+            byteLength: 0,
             tagGroup: '0010',
             tagElement: '1548',
             tagName: 'PatientAge',
@@ -115,6 +133,8 @@ const dicomTestEntries =
 
 const dicomSequenceTestEntry = [
     {
+        offset: 12345,
+        byteLength: 0,
         tagGroup: '0152',
         tagElement: '0145',
         tagName: 'PatientName',
@@ -125,6 +145,8 @@ const dicomSequenceTestEntry = [
         sequence:
         [
             {
+                offset: 12345,
+                byteLength: 0,
                 tagGroup: '0152',
                 tagElement: '0146',
                 tagName: 'PatientName',
@@ -135,6 +157,8 @@ const dicomSequenceTestEntry = [
                 sequence: []
             },
             {
+                offset: 12345,
+                byteLength: 0,
                 tagGroup: '0152',
                 tagElement: '0147',
                 tagName: 'PatientGender',
@@ -145,6 +169,8 @@ const dicomSequenceTestEntry = [
                 sequence: []
             },
             {
+                offset: 12345,
+                byteLength: 0,
                 tagGroup: '0152',
                 tagElement: '0147',
                 tagName: 'PatientDiet',
@@ -163,6 +189,8 @@ const comparisonData = [
         group:
         [
             {
+                offset: 12345,
+                byteLength: 0,
                 tagGroup: '0152',
                 tagElement: '0146',
                 tagName: 'PatientName',
@@ -173,6 +201,8 @@ const comparisonData = [
                 sequence: []
             },
             {
+                offset: 12345,
+                byteLength: 0,
                 tagGroup: '0152',
                 tagElement: '0146',
                 tagName: 'PatientName',
@@ -189,6 +219,8 @@ const comparisonData = [
     {
         group: [
             {
+                offset: 12345,
+                byteLength: 0,
                 tagGroup: '0152',
                 tagElement: '0146',
                 tagName: 'PatientName',
@@ -199,6 +231,8 @@ const comparisonData = [
                 sequence: []
             },
             {
+                offset: 12345,
+                byteLength: 0,
                 tagGroup: '0152',
                 tagElement: '0146',
                 tagName: 'PatientName',
@@ -215,6 +249,8 @@ const comparisonData = [
     {
         group: [
             {
+                offset: 12345,
+                byteLength: 0,
                 tagGroup: '0152',
                 tagElement: '0146',
                 tagName: 'PatientName',
@@ -234,6 +270,8 @@ const comparisonDataNoDiffs = [
     {
         group: [
             {
+                offset: 12345,
+                byteLength: 0,
                 tagGroup: '0152',
                 tagElement: '0146',
                 tagName: 'PatientName',
@@ -250,6 +288,8 @@ const comparisonDataNoDiffs = [
     {
         group: [
             {
+                offset: 12345,
+                byteLength: 0,
                 tagGroup: '0152',
                 tagElement: '0146',
                 tagName: 'PatientName',
@@ -269,6 +309,8 @@ const comparisonHeaderData = [
     {
         group: [
             {
+                offset: 12345,
+                byteLength: 0,
                 tagGroup: '0152',
                 tagElement: '0146',
                 tagName: 'PatientName',
@@ -285,6 +327,8 @@ const comparisonHeaderData = [
     {
         group: [
             {
+                offset: 12345,
+                byteLength: 0,
                 tagGroup: '0152',
                 tagElement: '0146',
                 tagName: 'PatientName',

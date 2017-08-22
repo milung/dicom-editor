@@ -2,11 +2,14 @@ import { DicomSimpleData } from './../model/dicom-entry';
 import { DicomEntry } from '../model/dicom-entry';
 import { dicomDictionary } from './dicom-dictionary';
 import { convertFileToArrayBuffer } from './file-converter';
-// import { translateTagGroup } from './group-name-translator';
 
 import * as dicomParser from 'dicom-parser';
 
 const SOP_CLASS_TAG = '00080016';
+
+export function getValueMultiplicity(value: string) {
+    return value === undefined ? 0 : (value.toString().match(/\\/g) || []).length + 1;
+}
 
 export class DicomReader {
 
@@ -21,10 +24,6 @@ export class DicomReader {
         });
     }
 
-    public getValueMultiplicity(value: string) {
-        return value === undefined ? 0 : (value.toString().match(/\\/g) || []).length + 1;
-    }
-
     /**
      * Parses ArrayBuffer with DicomReader
      * @param bytes ArrayBuffer to parse
@@ -37,7 +36,6 @@ export class DicomReader {
         let dataset;
         try {
             dataset = dicomParser.parseDicom(bytes);
-
             let freshData = this.createEntries(dataset);
             data.entries = data.entries.concat(freshData.entries);
 
@@ -90,7 +88,7 @@ export class DicomReader {
      * @return {DicomSimpleData} that is ready for table
      */
     // tslint:disable-next-line
-    private createEntries(dataset: any): DicomSimpleData { 
+    private createEntries(dataset: any): DicomSimpleData {
         let data: DicomSimpleData = {
             entries: []
         };
@@ -123,7 +121,6 @@ export class DicomReader {
             } else if (tagElement.vr === 'AT') {
                 value = dataset.attributeTag(tag);
                 value = '(' + value.slice(1, 5) + ', ' + value.slice(5, 9) + ')';
-
             } else if (tagElement.vr === 'SQ') {
                 for (var i = 0; i < tagElement.items.length; i++) {
                     tempSequence = tempSequence.concat(this.createEntries(
@@ -135,14 +132,18 @@ export class DicomReader {
             } else {
                 value = dataset.string(tag, undefined);
             }
-            const VM = this.getValueMultiplicity(value);
+            const VM = getValueMultiplicity(value);
 
             const fullTag = `${firstHalf}${latterHalf}`;
 
             const name = dicomDictionary[fullTag];
             const VR = tagElement.vr;
+            const offset = tagElement.dataOffset - 8;
+            const byteLength = tagElement.length + 8;
 
             let entry: DicomEntry = {
+                offset: offset,
+                byteLength: byteLength,
                 tagGroup: firstHalf,
                 tagElement: latterHalf,
                 // need to get second item, because of dicom dictionary structure

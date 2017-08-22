@@ -19,6 +19,8 @@ export function prepareTestFile(): HeavyweightFile {
 
 export function prepareDicomEntry(): DicomEntry {
     return {
+        offset: 12456,
+        byteLength: 10,
         tagGroup: '0001',
         tagElement: '0002',
         tagName: 'Test name',

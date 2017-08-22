@@ -11,6 +11,8 @@ describe('file-store convertHeavyToLight', () => {
             dicomData: {
                 entries: [
                     {
+                        offset: 123456,
+                        byteLength: 3,
                         tagGroup: 'gr',
                         tagElement: '52',
                         tagName: 'name',

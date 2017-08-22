@@ -18,6 +18,8 @@ describe('dicom-entry-converter', () => {
         let dicomSimple: DicomSimpleData = {
             entries: [
                 {
+                    offset: 12345,
+                    byteLength: 0,
                     tagGroup: '0008',
                     tagElement: '0012',
                     tagName: 'MY TAG',
@@ -28,6 +30,8 @@ describe('dicom-entry-converter', () => {
                     sequence: []
                 },
                 {
+                    offset: 12345,
+                    byteLength: 0,
                     tagGroup: '0007',
                     tagElement: '0016',
                     tagName: 'MY TAG',
@@ -38,6 +42,8 @@ describe('dicom-entry-converter', () => {
                     sequence: []
                 },
                 {
+                    offset: 12345,
+                    byteLength: 0,
                     tagGroup: '0012',
                     tagElement: '0012',
                     tagName: 'MY TAG',
@@ -53,6 +59,8 @@ describe('dicom-entry-converter', () => {
         let expectedDicomExtended: DicomExtendedData = {
             'SOP Common': [
                 {
+                    offset: 12345,
+                    byteLength: 0,
                     colour: '#000000',
                     sequence: [],
                     tagElement: '0012',
@@ -65,6 +73,8 @@ describe('dicom-entry-converter', () => {
             ],
             'Protocol Context': [
                 {
+                    offset: 12345,
+                    byteLength: 0,
                     tagGroup: '0008',
                     tagElement: '0012',
                     tagName: 'MY TAG',
@@ -77,6 +87,8 @@ describe('dicom-entry-converter', () => {
             ],  
             'Undefined module group': [
                 {
+                    offset: 12345,
+                    byteLength: 0,
                     tagGroup: '0007',
                     tagElement: '0016',
                     tagName: 'MY TAG',
@@ -87,6 +99,8 @@ describe('dicom-entry-converter', () => {
                     sequence: []
                 },
                 {
+                    offset: 12345,
+                    byteLength: 0,
                     tagGroup: '0012',
                     tagElement: '0012',
                     tagName: 'MY TAG',
@@ -128,6 +142,8 @@ describe('dicom-entry-converter-sortDicomEntries', () => {
 
         let originalEntries: DicomEntry[] = [
             {
+                offset: 12345,
+                byteLength: 0,
                 tagGroup: '0008',
                 tagElement: '0002',
                 tagName: 'TAG-NAME',
@@ -138,6 +154,8 @@ describe('dicom-entry-converter-sortDicomEntries', () => {
                 sequence: []
             },
             {
+                offset: 12345,
+                byteLength: 0,
                 tagGroup: '0008',
                 tagElement: '0004',
                 tagName: 'TAG-NAME',
@@ -149,6 +167,8 @@ describe('dicom-entry-converter-sortDicomEntries', () => {
 
             },
             {
+                offset: 12345,
+                byteLength: 0,
                 tagGroup: '0008',
                 tagElement: '0001',
                 tagName: 'TAG-NAME',
@@ -160,6 +180,8 @@ describe('dicom-entry-converter-sortDicomEntries', () => {
 
             },
             {
+                offset: 12345,
+                byteLength: 0,
                 tagGroup: '0002',
                 tagElement: '0004',
                 tagName: 'TAG-NAME',
@@ -171,6 +193,8 @@ describe('dicom-entry-converter-sortDicomEntries', () => {
 
             },
             {
+                offset: 12345,
+                byteLength: 0,
                 tagGroup: '0003',
                 tagElement: '0006',
                 tagName: 'TAG-NAME',
@@ -185,6 +209,8 @@ describe('dicom-entry-converter-sortDicomEntries', () => {
 
         let expectedEntries: DicomEntry[] = [
             {
+                offset: 12345,
+                byteLength: 0,
                 tagGroup: '0002',
                 tagElement: '0004',
                 tagName: 'TAG-NAME',
@@ -196,6 +222,8 @@ describe('dicom-entry-converter-sortDicomEntries', () => {
 
             },
             {
+                offset: 12345,
+                byteLength: 0,
                 tagGroup: '0003',
                 tagElement: '0006',
                 tagName: 'TAG-NAME',
@@ -207,6 +235,8 @@ describe('dicom-entry-converter-sortDicomEntries', () => {
 
             },
             {
+                offset: 12345,
+                byteLength: 0,
                 tagGroup: '0008',
                 tagElement: '0001',
                 tagName: 'TAG-NAME',
@@ -218,6 +248,8 @@ describe('dicom-entry-converter-sortDicomEntries', () => {
 
             },
             {
+                offset: 12345,
+                byteLength: 0,
                 tagGroup: '0008',
                 tagElement: '0002',
                 tagName: 'TAG-NAME',
@@ -229,6 +261,8 @@ describe('dicom-entry-converter-sortDicomEntries', () => {
 
             },
             {
+                offset: 12345,
+                byteLength: 0,
                 tagGroup: '0008',
                 tagElement: '0004',
                 tagName: 'TAG-NAME',
@@ -266,6 +300,8 @@ describe('DicomEntryConverter -> filterRedundantModulesBySopClass()', () => {
             'Patient':
             [
                 {
+                    offset: 12345,
+                    byteLength: 0,
                     tagGroup: '0008',
                     tagElement: '0145',
                     tagName: 'PatientName',
@@ -276,6 +312,8 @@ describe('DicomEntryConverter -> filterRedundantModulesBySopClass()', () => {
                     sequence: []
                 },
                 {
+                    offset: 12345,
+                    byteLength: 0,
                     tagGroup: '0008',
                     tagElement: '1548',
                     tagName: 'PatientAge',
@@ -293,6 +331,8 @@ describe('DicomEntryConverter -> filterRedundantModulesBySopClass()', () => {
             'Patient':
             [
                 {
+                    offset: 12345,
+                    byteLength: 0,
                     tagGroup: '0008',
                     tagElement: '0145',
                     tagName: 'PatientName',
@@ -303,6 +343,8 @@ describe('DicomEntryConverter -> filterRedundantModulesBySopClass()', () => {
                     sequence: []
                 },
                 {
+                    offset: 12345,
+                    byteLength: 0,
                     tagGroup: '0008',
                     tagElement: '1548',
                     tagName: 'PatientAge',
@@ -317,6 +359,8 @@ describe('DicomEntryConverter -> filterRedundantModulesBySopClass()', () => {
             'DX Series':
             [
                 {
+                    offset: 12345,
+                    byteLength: 0,
                     tagGroup: '0010',
                     tagElement: '0145',
                     tagName: 'PatientName',
@@ -327,6 +371,8 @@ describe('DicomEntryConverter -> filterRedundantModulesBySopClass()', () => {
                     sequence: []
                 },
                 {
+                    offset: 12345,
+                    byteLength: 0,
                     tagGroup: '0010',
                     tagElement: '1548',
                     tagName: 'PatientAge',
