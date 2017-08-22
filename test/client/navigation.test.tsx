@@ -86,7 +86,7 @@ describe('navigation', () => {
             <ExportDialog reducer={reducer} handleClosePopUpDialog={() => { }} openedPopUpDialog={true} />
         )
 
-        expect(element.find('div').find('Dialog').find('Checkbox').length).to.equal(2);
+        expect(element.find('div').find('Dialog').find('Checkbox').length).to.equal(3);
         //expect(element.find('Dialog').children('actions').length).to.equal(2);
 
     });
