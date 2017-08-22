@@ -81,6 +81,7 @@ export class DicomTableRow extends React.Component<DicomTableRowProps, DicomTabl
         if (this.props.editMode) {
             firstIcon = (
                 <ActionDone
+                    className="row-icon row-icon-done"
                     onClick={this.handleExitEdit}
                 />
             );
@@ -131,6 +132,7 @@ export class DicomTableRow extends React.Component<DicomTableRowProps, DicomTabl
         } else {
             firstIcon = (
                 <EditorModeEdit
+                    className="row-icon row-icon-edit"
                     onClick={this.props.handleEnterEditing}
                 />
             );

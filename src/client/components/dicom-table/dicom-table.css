@@ -58,3 +58,17 @@ background-color: #00BCD4;
     cursor: pointer;
     z-index: 1;
 }
+
+.row-icon {
+    cursor: pointer;
+    margin-right: 10px;
+    vertical-align: middle;
+}
+
+.row-icon-done {
+    fill: #00ff00 !important;
+}
+
+.row-icon-edit {
+    fill: #3385ff !important;
+}
