@@ -1,8 +1,8 @@
 import { DicomEntry } from './dicom-entry';
 
 export interface EditTags {
-    entryToChange: DicomEntry;
-    tyeOfChange: ChangeType;
+    entry: DicomEntry;
+    type: ChangeType;
 }
 
 export enum ChangeType {
