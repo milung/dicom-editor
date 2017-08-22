@@ -75,7 +75,7 @@ export class FileSearcher {
                         matchedRows.push(result);
                     }
                 }
-            };
+            }
         });
 
         return matchedRows;

@@ -65,7 +65,9 @@ export default class TagViewer extends React.Component<TagViewerProps, TagViewer
     }
 
     render() {
+        let reader = new DicomReader();
         let data: DicomSimpleData = this.props.currentFile.dicomData;
+        let sopClass = reader.getSopClassFromParsedDicom(data);
         let simpleComparisonData: DicomSimpleComparisonData = { dicomComparisonData: [] };
 
         if (this.props.comparisonActive) {
@@ -94,7 +96,7 @@ export default class TagViewer extends React.Component<TagViewerProps, TagViewer
                 if (this.props.comparisonActive) {
                     return this.renderExtendedComparisonTable(simpleComparisonData);
                 } else {
-                    return this.renderExtendedTable(data);
+                    return this.renderExtendedTable(data, sopClass);
                 }
             default:
                 return (
@@ -104,19 +106,14 @@ export default class TagViewer extends React.Component<TagViewerProps, TagViewer
     }
 
     private renderSimpleTable(data: DicomSimpleData): JSX.Element {
-
         return data.entries.length >= 1 ? (
             <div>
                 <DicomSimpleTable entries={data.entries} />
             </div>
         ) : (<div />);
-
     }
 
-    private renderExtendedTable(data: DicomSimpleData): JSX.Element {
-        let reader = new DicomReader();
-        let sopClass = reader.getSopClassFromParsedDicom(data);
-
+    private renderExtendedTable(data: DicomSimpleData, sopClass: string | undefined): JSX.Element {
         let filtered: DicomExtendedData = {};
 
         if (sopClass) {
@@ -127,7 +124,7 @@ export default class TagViewer extends React.Component<TagViewerProps, TagViewer
             <div>
                 <DicomExtendedTable data={filtered} />
             </div>
-        ) : (<div>No data to display or no modules found for SOP class: {sopClass}</ div>);
+        ) : (<div>No data to display or no modules found for SOP class: {sopClass ? sopClass : 'Undefined'}</ div>);
     }
 
     private renderSimpleComparisonTable(data: DicomSimpleComparisonData): JSX.Element {
