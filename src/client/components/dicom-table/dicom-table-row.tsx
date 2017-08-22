@@ -97,6 +97,11 @@ export class DicomTableRow extends React.Component<DicomTableRowProps, DicomTabl
                                 });
                             }
                         }
+                        onKeyPress={(event) => {
+                            if (event.key == 'Enter') {
+                                this.handleExitEdit();
+                            }
+                        }}
                     />
                 </TableRowColumn>
             );
@@ -114,6 +119,11 @@ export class DicomTableRow extends React.Component<DicomTableRowProps, DicomTabl
                                 });
                             }
                         }
+                        onKeyPress={(event) => {
+                            if (event.key == 'Enter') {
+                                this.handleExitEdit();
+                            }
+                        }}
                     />
                 </TableRowColumn>
             );
