@@ -55,27 +55,27 @@ export class FileSearcher {
             let tagWithoutComma = row.tagGroup + row.tagElement;
             let tagWithComma = row.tagGroup + ', ' + row.tagElement;
 
-            if (row && row.sequence && row.sequence.length >= 1) {
-                let res = this.findResultsOfSearch(searchExpression, row.sequence);
-                if (res.length > 0) {
-                    let result: DicomEntry = {
-                        tagGroup: row.tagGroup,
-                        tagElement: row.tagElement,
-                        tagName: row.tagName,
-                        tagValue: row.tagValue,
-                        tagVR: row.tagVR,
-                        tagVM: row.tagVM,
-                        colour: row.colour,
-                        sequence: res
-                    };
-                    matchedRows.push(result);
-                }
-            }
-            
             if (row.tagName.search(searching) !== -1 || tagWithoutComma.search(searching) !== -1 ||
                 tagWithComma.search(searching) !== -1) {
                 matchedRows.push(row);
-            }
+            } else {
+                if (row && row.sequence && row.sequence.length >= 1) {
+                    let res = this.findResultsOfSearch(searchExpression, row.sequence);
+                    if (res.length > 0) {
+                        let result: DicomEntry = {
+                            tagGroup: row.tagGroup,
+                            tagElement: row.tagElement,
+                            tagName: row.tagName,
+                            tagValue: row.tagValue,
+                            tagVR: row.tagVR,
+                            tagVM: row.tagVM,
+                            colour: row.colour,
+                            sequence: res
+                        };
+                        matchedRows.push(result);
+                    }
+                }
+            };
         });
 
         return matchedRows;

@@ -177,6 +177,23 @@ describe('FileSearcher -> searchFile() ->', () => {
         expect(res.entries[0].tagName).to.equal('Sequence name');
         expect(res.entries[0].sequence[0].tagName).to.equal('Test name');
     });
+
+    it('search on no file', () => {
+        let reducer = new ApplicationStateReducer();
+        let fs = new FileSearcher(reducer);
+        expect(fs.searchFile().entries).to.deep.equal([]);
+    });
+
+    it('sequence is not added if do not contain specific value', () => {
+        let reducer = new ApplicationStateReducer();
+        let testFile = prepareTestFileWithSequence();
+        reducer.updateCurrentFile(testFile);
+        reducer.setSearchExpression('Specific Value');
+
+        let fs = new FileSearcher(reducer);
+        let res = fs.searchFile();
+        expect(res.entries.length).to.equal(0);
+    });
 });
 
 describe('FileSearcher -> searchCompareData() ->', () => {
@@ -241,5 +258,4 @@ describe('FileSearcher -> searchCompareData() ->', () => {
         let fs = new FileSearcher(reducer);
         expect(fs.searchCompareData(data).dicomComparisonData.length).to.equal(1);
     });
-
 });
