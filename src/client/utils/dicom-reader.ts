@@ -12,6 +12,7 @@ export function getValueMultiplicity(value: string) {
 }
 
 export class DicomReader {
+    private index: number = 0;
 
     /**
      * Converts file to array buffer and then parses Dicom data
@@ -36,6 +37,7 @@ export class DicomReader {
         let dataset;
         try {
             dataset = dicomParser.parseDicom(bytes);
+            this.index = 0;
             let freshData = this.createEntries(dataset);
             data.entries = data.entries.concat(freshData.entries);
 
@@ -92,12 +94,12 @@ export class DicomReader {
         let data: DicomSimpleData = {
             entries: []
         };
-        let index: number = -1;
+
         for (var tag in dataset.elements) {
             if (!tag) {
                 continue;
             }
-            index++;
+            this.index++;
             const tagElement = dataset.elements[tag];
             const firstHalf: string = tag.slice(1, 5);
             const latterHalf: string = tag.slice(5, 9);
@@ -144,7 +146,7 @@ export class DicomReader {
             const byteLength = tagElement.length + 8;
 
             let entry: DicomEntry = {
-                id: index,
+                id: this.index,
                 offset: offset,
                 byteLength: byteLength,
                 tagGroup: firstHalf,
