@@ -1,11 +1,11 @@
 import * as express from 'express';
 
 const app = express();
-var compression = require('compression')
+// var compression = require('compression')
 
 app.set('view engine', 'pug');
 app.use(express.static('public'));
-app.use(compression());
+// app.use(compression());
 
 // Dynamic loading of gz insted of js to increase performance
 // app.get('*.js', function (req, res, next) {
