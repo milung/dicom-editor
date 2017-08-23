@@ -50,16 +50,23 @@ export default class TagViewer extends React.Component<TagViewerProps, TagViewer
 
         if (nextProps.comparisonActive) {
             if (nextProps.files[0] && nextProps.files[1]) {
-                simpleComparisonData = compareTwoFiles(nextProps.files[0], nextProps.files[1]);
+                simpleComparisonData = compareTwoFiles(
+                    nextProps.files[0].selectedFile.dicomData.entries,
+                    nextProps.files[0].colour,
+                    nextProps.files[1].selectedFile.dicomData.entries,
+                    nextProps.files[1].colour
+                );
 
             }
             if (areFilesExactlySame(simpleComparisonData.dicomComparisonData)) {
                 this.setState({
-                    exactlySameFiles: true
+                    exactlySameFiles: true,
+                    showOnlyDiffs: true
                 });
             } else {
                 this.setState({
-                    exactlySameFiles: false
+                    exactlySameFiles: false,
+                    showOnlyDiffs: true
                 });
             }
         }
@@ -73,7 +80,12 @@ export default class TagViewer extends React.Component<TagViewerProps, TagViewer
 
         if (this.props.comparisonActive) {
             if (this.props.files[0] && this.props.files[1]) {
-                simpleComparisonData = compareTwoFiles(this.props.files[0], this.props.files[1]);
+                simpleComparisonData = compareTwoFiles(
+                    this.props.files[0].selectedFile.dicomData.entries,
+                    this.props.files[0].colour,
+                    this.props.files[1].selectedFile.dicomData.entries,
+                    this.props.files[1].colour
+                );
             }
 
             if (this.props.reducer.getState().searchExpression !== '') {

@@ -28,9 +28,14 @@ export class DicomSequenceRow extends React.Component<DicomSequenceRowProps, Dic
 
     public render() {
         let tableRowStyle = { color: this.props.entry.colour };
+        let tableRowColumnStyle = {
+            whiteSpace: 'normal',
+            wordWrap: 'break-word'
+        };
         let tagStyle = this.props.margin ? { paddingLeft: this.props.margin } : {};
         let tag = this.props.entry.tagGroup + ', ' + this.props.entry.tagElement;
         let icon = this.props.expanded ?
+
             <CollapseIcon className="expandable-icon" />
             : <ExpandIcon className="expandable-icon" />;
         return (
@@ -38,8 +43,18 @@ export class DicomSequenceRow extends React.Component<DicomSequenceRowProps, Dic
                 <TableRowColumn style={tagStyle} className={'table-row-tag-column'}>
                     {icon}{tag}
                 </TableRowColumn>
-                <TableRowColumn className={'table-row-column'}>{this.props.entry.tagName}</TableRowColumn>
-                <TableRowColumn className={'table-row-column'}>{this.props.entry.tagValue}</TableRowColumn>
+                <TableRowColumn
+                    style={tableRowColumnStyle}
+                    className={'table-row-column'}
+                >
+                    {this.props.entry.tagName}
+                </TableRowColumn>
+                <TableRowColumn
+                    style={tableRowColumnStyle}
+                    className={'table-row-column'}
+                >
+                    {this.props.entry.tagValue}
+                </TableRowColumn>
                 <TableRowColumn>{this.props.entry.tagVR}</TableRowColumn>
                 <TableRowColumn>{this.props.entry.tagVM}</TableRowColumn>
             </TableRow>

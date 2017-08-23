@@ -32,6 +32,7 @@ export interface DicomComparisonData {
     group: DicomEntry[];
     tagGroup: string;
     tagElement: string;
+    sequence?: DicomComparisonData[];
 }
 
 /**
