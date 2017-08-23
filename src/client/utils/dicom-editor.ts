@@ -24,35 +24,49 @@ export class DicomEditor {
     }
 
     public replaceTag(buffer: Uint8Array, tag: DicomEntry, newTag: Uint8Array) {
-        let begining = buffer.slice(0, tag.offset);
+        let beginning = buffer.slice(0, tag.offset);
         let end = buffer.slice(tag.offset + tag.byteLength);
-        let updatedBuffer = new Uint8Array(begining.length + newTag.length + end.length);
-        updatedBuffer.set(begining);
-        updatedBuffer.set(newTag, begining.length);
-        updatedBuffer.set(end, begining.length + newTag.length);
+        let updatedBuffer = new Uint8Array(beginning.length + newTag.length + end.length);
+        updatedBuffer.set(beginning);
+        updatedBuffer.set(newTag, beginning.length);
+        updatedBuffer.set(end, beginning.length + newTag.length);
         return updatedBuffer;
     }
 
-    public applyAllChanges(file: HeavyweightFile, changes: EditTags[]) {
+    public applyAllChanges(file: HeavyweightFile) {
         let buffer = file.bufferedData;
-        changes.sort(
-            function (change1: EditTags, change2: EditTags) {
-                return change2.entry.offset - change1.entry.offset;
+        let changes = file.unsavedChanges;
+        if (changes) {
+            changes.sort(
+                function (change1: EditTags, change2: EditTags) {
+                    return change2.entry.offset - change1.entry.offset;
+                });
+            changes.forEach(change => {
+                if (change.type === ChangeType.ADD) {
+                    let newHeader = this.writeTagName(change.entry.tagGroup, change.entry.tagElement);
+                    let newTag = this.createTag(newHeader, change.entry);
+                    buffer = this.insertTag(buffer, newTag, change.entry.offset);
+                } else if (change.type === ChangeType.EDIT) {
+                    let tagName = this.getElementAndGroup(buffer, change.entry.offset);
+                    let newTag = this.createTag(tagName, change.entry);
+                    buffer = this.replaceTag(buffer, change.entry, newTag);
+                } else if (change.type === ChangeType.REMOVE) {
+                    buffer = this.removeTag(buffer, change.entry);
+                }
             });
-        changes.forEach(change => {
-            if (change.type === ChangeType.ADD) {
-                let newHeader = this.writeTagName(change.entry.tagGroup, change.entry.tagElement);
-                let newTag = this.createTag(newHeader, change.entry);
-                buffer = this.insertTag(buffer, newTag, change.entry.offset);
-            } else if (change.type === ChangeType.EDIT) {
-                let tagName = this.getElementAndGroup(buffer, change.entry.offset);
-                let newTag = this.createTag(tagName, change.entry);
-                buffer = this.replaceTag(buffer, change.entry, newTag);
-            } else if (change.type === ChangeType.REMOVE) {
-                buffer = this.removeTag(buffer, change.entry);
-            }
-        });
+        }
         return buffer;
+    }
+
+    public updateLength(buffer: Uint8Array, tagOffset: number, newValue: number) {
+        let newLength = this.writeTypedNumber(newValue, 'uint16', 2);
+        let beginning = buffer.slice(0, tagOffset + 6);
+        let end = buffer.slice(tagOffset + 8, );
+        let newBuffer = new Uint8Array(buffer.length);
+        newBuffer.set(beginning);
+        newBuffer.set(newLength, beginning.length);
+        newBuffer.set(end, beginning.length + 2);
+        return newBuffer;
     }
 
     public createTag(tagName: Uint8Array, tag: DicomEntry) {
@@ -103,24 +117,24 @@ export class DicomEditor {
     }
 
     private getValueLength(tag: DicomEntry) {
-        let numbers = ['FD', 'FL', 'UL', 'US', 'SL', 'SS'];
+        let numbers = { 'FD': 8, 'FL': 4, 'UL': 4, 'US': 2, 'SL': 4, 'SS': 2 };
         if (tag.tagVR in numbers) {
             let value = parseInt(tag.tagValue, 10);
             let byteLength = 1;
-            /* tslint:disable */ 
+            /* tslint:disable */
             while ((value >>= 8) > 0) {
-            /* tslint:enable */        
+                /* tslint:enable */
                 byteLength++;
             }
             switch (tag.tagVR[1]) {
                 case 'S':
-                    byteLength += byteLength % 2;
+                    byteLength += (2 - byteLength % 2);
                     break;
                 case 'L':
-                    byteLength += byteLength % 4;
+                    byteLength += (4 - byteLength % 4);
                     break;
                 case 'D':
-                    byteLength += byteLength % 8;
+                    byteLength += (8 - byteLength % 8);
                     break;
                 default:
                     break;
