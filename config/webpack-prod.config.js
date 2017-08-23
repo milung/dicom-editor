@@ -1,6 +1,7 @@
 var HtmlWebpackPlugin = require('html-webpack-plugin');
 var path = require('path');
 var webpack = require('webpack');
+var CompressionPlugin = require("compression-webpack-plugin");
 
 module.exports = {
     entry: './src/client/index.tsx',
@@ -79,7 +80,14 @@ module.exports = {
             },
             comments: false,
             sourceMap: true
-        })
+        }),
+        new CompressionPlugin({
+            asset: "[path].gz[query]",
+            algorithm: "gzip",
+            test: /\.js$|\.tsx$|\.ts$|\.css$/,
+            threshold: 10240,
+            minRatio: 0.8
+        }),
     ],
     devtool: 'source-map',
     resolve: {
