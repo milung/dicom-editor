@@ -1,3 +1,4 @@
+import { EditTags } from './edit-interface';
 import { DicomSimpleData } from './dicom-entry';
 
 export interface FileInterface {
@@ -13,6 +14,7 @@ export interface HeavyweightFile extends FileInterface {
     fileSize: number;
     bufferedData: Uint8Array;
     dicomData: DicomSimpleData;
+    unsavedChanges?: EditTags[];
 }
 
 export interface SelectedFile {
