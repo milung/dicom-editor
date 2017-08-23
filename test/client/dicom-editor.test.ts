@@ -175,6 +175,7 @@ function prepareAHeavyweightFile() {
         entries:
         [
             {
+                id: 1,
                 offset: 0,
                 byteLength: 10,
                 tagGroup: '0001',
@@ -187,6 +188,7 @@ function prepareAHeavyweightFile() {
                 sequence: []
             },
             {
+                id: 1,
                 offset: 10,
                 byteLength: 13,
                 tagGroup: '0001',
@@ -199,6 +201,7 @@ function prepareAHeavyweightFile() {
                 sequence: []
             },
             {
+                id: 1,
                 offset: 23,
                 byteLength: 10,
                 tagGroup: '0002',
