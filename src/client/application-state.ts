@@ -93,7 +93,9 @@ export class ApplicationStateReducer {
                 } else {
                     this.updateCurrentFile(this.currentState.loadedFiles[0]);
                 }
-                switchCurrentLoadedFile(this.currentState.currentFile);
+                if(this.currentState.loadedFiles.length > 0){
+                    switchCurrentLoadedFile(this.currentState.currentFile);
+                }
             }
             this.stateSubject$.next(this.currentState);
         });
