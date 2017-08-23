@@ -4,9 +4,13 @@ import { DicomTableHeader } from './dicom-table-header';
 import { DicomTableRow } from './dicom-table-row';
 import { TableHeader, Table, TableBody } from 'material-ui';
 import { DicomSequenceRow } from './dicom-sequence-row';
+import { EditUtil } from '../../utils/edit-util';
+import { ApplicationStateReducer } from '../../application-state';
+import { ChangeType } from '../../model/edit-interface';
 
 export interface DicomSimpleTableProps {
     entries: DicomEntry[];
+    reducer: ApplicationStateReducer;
 }
 
 export interface DicomSimpleTableState {
@@ -115,7 +119,8 @@ export class DicomSimpleTable extends React.Component<DicomSimpleTableProps, Dic
     }
 
     private handleExitEditingClick(newEntry: DicomEntry) {
-        console.log(newEntry);
+        let editUtil: EditUtil = new EditUtil(this.props.reducer);
+        editUtil.applyChangeToCurrentFile(newEntry, ChangeType.EDIT);
         this.setState({
             entryBeingEdited: undefined
         });

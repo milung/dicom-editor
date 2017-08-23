@@ -107,7 +107,7 @@ export default class TagViewer extends React.Component<TagViewerProps, TagViewer
 
         return data.entries.length >= 1 ? (
             <div>
-                <DicomSimpleTable entries={data.entries} />
+                <DicomSimpleTable entries={data.entries} reducer={this.props.reducer} />
             </div>
         ) : (<div />);
 
@@ -125,7 +125,7 @@ export default class TagViewer extends React.Component<TagViewerProps, TagViewer
 
         return (!lodash.isEqual(filtered, {})) ? (
             <div>
-                <DicomExtendedTable data={filtered} />
+                <DicomExtendedTable data={filtered} reducer={this.props.reducer}/>
             </div>
         ) : (<div>No data to display or no modules found for SOP class: {sopClass}</ div>);
     }

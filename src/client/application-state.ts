@@ -119,6 +119,9 @@ export class ApplicationStateReducer {
 
     public updateCurrentFile(file: HeavyweightFile) {
         this.currentState.currentFile = file;
+        if (this.currentState.currentFile) {
+            this.currentState.currentFile.unsavedChanges = file.unsavedChanges;
+        }
         this.stateSubject$.next(this.currentState);
     }
 

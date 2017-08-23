@@ -7,6 +7,7 @@ import { DicomExtendedData, DicomEntry } from '../../model/dicom-entry';
 import './dicom-table.css';
 import { DicomSimpleTable } from './dicom-simple-table';
 import { sortDicomEntries } from '../../utils/dicom-entry-converter';
+import { ApplicationStateReducer } from '../../application-state';
 
 interface TableData {
     entries: DicomEntry[];
@@ -15,6 +16,7 @@ interface TableData {
 
 interface DicomExtendedTableProps {
     data: DicomExtendedData;
+    reducer: ApplicationStateReducer;
 }
 
 interface DicomExtendedTableState {
@@ -56,7 +58,7 @@ export class DicomExtendedTable extends React.Component<DicomExtendedTableProps,
                                 nestedItems={[
             
                                  <ListItem disabled={true} key={moduleIndex}>
-                                     <DicomSimpleTable entries={module.entries}/>
+                                     <DicomSimpleTable entries={module.entries} reducer={this.props.reducer}/>
                                 </ListItem>
 
                                 ]}
