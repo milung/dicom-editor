@@ -249,7 +249,6 @@ describe('ApplicationStateReducer -> getState()', () => {
             currentIndex: undefined,
             selectedFiles: [],
             comparisonActive: false,
-            editActive: false,
             savedFiles: [],
             searchExpression: ''
         }
@@ -302,7 +301,6 @@ describe('ApplicationStateReducer -> getState()', () => {
             loadedFiles: [files[1], files[0]],
             selectedFiles: [],
             comparisonActive: false,
-            editActive: false,
             savedFiles: [
                 firstFile,
                 secondFile

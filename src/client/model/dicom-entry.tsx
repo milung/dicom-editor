@@ -1,4 +1,5 @@
 export interface DicomEntry {
+    id: number;
     offset: number;
     byteLength: number;
     tagGroup: string;

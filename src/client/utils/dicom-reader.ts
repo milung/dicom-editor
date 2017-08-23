@@ -92,10 +92,12 @@ export class DicomReader {
         let data: DicomSimpleData = {
             entries: []
         };
+        let index: number = -1;
         for (var tag in dataset.elements) {
             if (!tag) {
                 continue;
             }
+            index++;
             const tagElement = dataset.elements[tag];
             const firstHalf: string = tag.slice(1, 5);
             const latterHalf: string = tag.slice(5, 9);
@@ -142,6 +144,7 @@ export class DicomReader {
             const byteLength = tagElement.length + 8;
 
             let entry: DicomEntry = {
+                id: index,
                 offset: offset,
                 byteLength: byteLength,
                 tagGroup: firstHalf,

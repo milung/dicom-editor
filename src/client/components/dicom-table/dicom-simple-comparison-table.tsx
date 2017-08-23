@@ -39,6 +39,7 @@ export class DicomSimpleComparisonTable extends React.Component<
                         {/* if header, print once*/ }
                         if (group.group.length > 1) {
                             let entryHeader: DicomEntry = {
+                                id: group.group[0].id,
                                 offset: group.group[0].offset,
                                 byteLength: group.group[0].byteLength,
                                 tagGroup: group.group[0].tagGroup,

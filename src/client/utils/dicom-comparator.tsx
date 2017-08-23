@@ -3,6 +3,7 @@ import { SelectedFile } from '../model/file-interfaces';
 
 function createEntryCopy(entry: DicomEntry): DicomEntry {
     let entryCopy: DicomEntry = {
+        id: entry.id,
         offset: entry.offset,
         byteLength: entry.byteLength,
         tagGroup: entry.tagGroup,

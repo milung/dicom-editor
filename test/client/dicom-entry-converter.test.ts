@@ -18,6 +18,7 @@ describe('dicom-entry-converter', () => {
         let dicomSimple: DicomSimpleData = {
             entries: [
                 {
+                    id: 1,
                     offset: 12345,
                     byteLength: 0,
                     tagGroup: '0008',
@@ -30,6 +31,7 @@ describe('dicom-entry-converter', () => {
                     sequence: []
                 },
                 {
+                    id: 1,
                     offset: 12345,
                     byteLength: 0,
                     tagGroup: '0007',
@@ -42,6 +44,7 @@ describe('dicom-entry-converter', () => {
                     sequence: []
                 },
                 {
+                    id: 1,
                     offset: 12345,
                     byteLength: 0,
                     tagGroup: '0012',
@@ -59,6 +62,7 @@ describe('dicom-entry-converter', () => {
         let expectedDicomExtended: DicomExtendedData = {
             'SOP Common': [
                 {
+                    id: 1,
                     offset: 12345,
                     byteLength: 0,
                     colour: '#000000',
@@ -73,6 +77,7 @@ describe('dicom-entry-converter', () => {
             ],
             'Protocol Context': [
                 {
+                    id: 1,
                     offset: 12345,
                     byteLength: 0,
                     tagGroup: '0008',
@@ -87,6 +92,7 @@ describe('dicom-entry-converter', () => {
             ],  
             'Undefined module group': [
                 {
+                    id: 1,
                     offset: 12345,
                     byteLength: 0,
                     tagGroup: '0007',
@@ -99,6 +105,7 @@ describe('dicom-entry-converter', () => {
                     sequence: []
                 },
                 {
+                    id: 1,
                     offset: 12345,
                     byteLength: 0,
                     tagGroup: '0012',
@@ -142,6 +149,7 @@ describe('dicom-entry-converter-sortDicomEntries', () => {
 
         let originalEntries: DicomEntry[] = [
             {
+                id: 1,
                 offset: 12345,
                 byteLength: 0,
                 tagGroup: '0008',
@@ -154,6 +162,7 @@ describe('dicom-entry-converter-sortDicomEntries', () => {
                 sequence: []
             },
             {
+                id: 1,
                 offset: 12345,
                 byteLength: 0,
                 tagGroup: '0008',
@@ -167,6 +176,7 @@ describe('dicom-entry-converter-sortDicomEntries', () => {
 
             },
             {
+                id: 1,
                 offset: 12345,
                 byteLength: 0,
                 tagGroup: '0008',
@@ -180,6 +190,7 @@ describe('dicom-entry-converter-sortDicomEntries', () => {
 
             },
             {
+                id: 1,
                 offset: 12345,
                 byteLength: 0,
                 tagGroup: '0002',
@@ -193,6 +204,7 @@ describe('dicom-entry-converter-sortDicomEntries', () => {
 
             },
             {
+                id: 1,
                 offset: 12345,
                 byteLength: 0,
                 tagGroup: '0003',
@@ -209,6 +221,7 @@ describe('dicom-entry-converter-sortDicomEntries', () => {
 
         let expectedEntries: DicomEntry[] = [
             {
+                id: 1,
                 offset: 12345,
                 byteLength: 0,
                 tagGroup: '0002',
@@ -222,6 +235,7 @@ describe('dicom-entry-converter-sortDicomEntries', () => {
 
             },
             {
+                id: 1,
                 offset: 12345,
                 byteLength: 0,
                 tagGroup: '0003',
@@ -235,6 +249,7 @@ describe('dicom-entry-converter-sortDicomEntries', () => {
 
             },
             {
+                id: 1,
                 offset: 12345,
                 byteLength: 0,
                 tagGroup: '0008',
@@ -248,6 +263,7 @@ describe('dicom-entry-converter-sortDicomEntries', () => {
 
             },
             {
+                id: 1,
                 offset: 12345,
                 byteLength: 0,
                 tagGroup: '0008',
@@ -261,6 +277,7 @@ describe('dicom-entry-converter-sortDicomEntries', () => {
 
             },
             {
+                id: 1,
                 offset: 12345,
                 byteLength: 0,
                 tagGroup: '0008',
@@ -300,6 +317,7 @@ describe('DicomEntryConverter -> filterRedundantModulesBySopClass()', () => {
             'Patient':
             [
                 {
+                    id: 1,
                     offset: 12345,
                     byteLength: 0,
                     tagGroup: '0008',
@@ -312,6 +330,7 @@ describe('DicomEntryConverter -> filterRedundantModulesBySopClass()', () => {
                     sequence: []
                 },
                 {
+                    id: 1,
                     offset: 12345,
                     byteLength: 0,
                     tagGroup: '0008',
@@ -331,6 +350,7 @@ describe('DicomEntryConverter -> filterRedundantModulesBySopClass()', () => {
             'Patient':
             [
                 {
+                    id: 1,
                     offset: 12345,
                     byteLength: 0,
                     tagGroup: '0008',
@@ -343,6 +363,7 @@ describe('DicomEntryConverter -> filterRedundantModulesBySopClass()', () => {
                     sequence: []
                 },
                 {
+                    id: 1,
                     offset: 12345,
                     byteLength: 0,
                     tagGroup: '0008',
@@ -359,6 +380,7 @@ describe('DicomEntryConverter -> filterRedundantModulesBySopClass()', () => {
             'DX Series':
             [
                 {
+                    id: 1,
                     offset: 12345,
                     byteLength: 0,
                     tagGroup: '0010',
@@ -371,6 +393,7 @@ describe('DicomEntryConverter -> filterRedundantModulesBySopClass()', () => {
                     sequence: []
                 },
                 {
+                    id: 1,
                     offset: 12345,
                     byteLength: 0,
                     tagGroup: '0010',

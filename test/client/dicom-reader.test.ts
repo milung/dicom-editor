@@ -8,6 +8,7 @@ describe('DicomReader getSopClassFromParsedDicom()', () => {
         let parsedDicom: DicomSimpleData = {
             entries: [
                 {
+                    id: 1,
                     offset: 12345,
                     byteLength: 0,
                     tagGroup: '0008',
@@ -20,6 +21,7 @@ describe('DicomReader getSopClassFromParsedDicom()', () => {
                     sequence: []
                 },
                 {
+                    id: 1,
                     offset: 12345,
                     byteLength: 0,
                     tagGroup: '0010',
@@ -32,6 +34,7 @@ describe('DicomReader getSopClassFromParsedDicom()', () => {
                     sequence: []
                 },
                 {
+                    id: 1,
                     offset: 12345,
                     byteLength: 0,
                     tagGroup: '0152',
@@ -44,6 +47,7 @@ describe('DicomReader getSopClassFromParsedDicom()', () => {
                     sequence: []
                 },
                 {
+                    id: 1,
                     offset: 12345,
                     byteLength: 0,
                     tagGroup: '0010',
