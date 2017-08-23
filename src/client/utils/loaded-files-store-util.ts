@@ -141,6 +141,12 @@ export async function loadLoadedFiles(reducer: ApplicationStateReducer) {
     let files: HeavyweightFile[] = await dbService.getAll<HeavyweightFile>();
     let currentFile: HeavyweightFile = await dbService.getItem<HeavyweightFile>('currentFileStorageKey');
 
+    // remove unsaved changes
+    currentFile.unsavedChanges = undefined;
+    files.forEach((file) => {
+        file.unsavedChanges = undefined;
+    });
+
     reducer.addLoadedFiles(files);
     reducer.updateCurrentFile(currentFile);
 }

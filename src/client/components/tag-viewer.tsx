@@ -17,6 +17,7 @@ import { FileSearcher } from '../utils/file-searcher';
 import { DicomReader } from '../utils/dicom-reader';
 import * as lodash from 'lodash';
 import { Toggle } from 'material-ui';
+import { applyChangesForDisplay } from '../utils/edit-util';
 
 interface TagViewerProps {
     tableMode: TableMode;
@@ -65,7 +66,7 @@ export default class TagViewer extends React.Component<TagViewerProps, TagViewer
     }
 
     render() {
-        let data: DicomSimpleData = this.props.currentFile.dicomData;
+        let data: DicomSimpleData = applyChangesForDisplay(this.props.currentFile);
         let simpleComparisonData: DicomSimpleComparisonData = { dicomComparisonData: [] };
 
         if (this.props.comparisonActive) {
