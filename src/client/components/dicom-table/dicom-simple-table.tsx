@@ -127,7 +127,7 @@ export class DicomSimpleTable extends React.Component<DicomSimpleTableProps, Dic
     }
 
     private handleDeletingRow(entry: DicomEntry) {
-        console.log('deleting:');
-        console.log(entry);
+        let editUtil: EditUtil = new EditUtil(this.props.reducer);
+        editUtil.applyChangeToCurrentFile(entry, ChangeType.REMOVE);
     }
 }

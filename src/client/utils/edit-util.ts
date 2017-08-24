@@ -42,6 +42,10 @@ export function applyChangesForDisplay(heavyFile: HeavyweightFile): DicomSimpleD
                 updateDicomTag(result, change.entry);
                 break;
 
+            case ChangeType.REMOVE:
+                removeDicomTag(result, change.entry);
+                break;
+
             default:
                 break;
         }
@@ -51,14 +55,27 @@ export function applyChangesForDisplay(heavyFile: HeavyweightFile): DicomSimpleD
 }
 
 export function updateDicomTag(dicomData: DicomSimpleData, newEntry: DicomEntry) {
-    let index = -1;
-    dicomData.entries.map((entry, i) => {
-        if (entry.id === newEntry.id) {
-            index = i;
-        }
-    });
+    let index = findIndexForEntryId(dicomData, newEntry.id);
 
     if (index > -1) {
         dicomData.entries[index] = newEntry;
     }
+}
+
+export function removeDicomTag(dicomData: DicomSimpleData, entry: DicomEntry) {
+    let index = findIndexForEntryId(dicomData, entry.id);
+
+    if (index > -1) {
+        dicomData.entries.splice(index, 1);
+    }
+}
+
+function findIndexForEntryId(dicomData: DicomSimpleData, id: number): number {
+    let index = -1;
+    dicomData.entries.map((entry, i) => {
+        if (entry.id === id) {
+            index = i;
+        }
+    });
+    return index;
 }
