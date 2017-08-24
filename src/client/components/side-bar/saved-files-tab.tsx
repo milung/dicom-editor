@@ -3,7 +3,7 @@ import { ApplicationStateReducer } from '../../application-state';
 import { List, ListItem } from 'material-ui';
 import { ElementOfDeletableList } from './element-deletable-list';
 import { LightweightFile, HeavyweightFile } from '../../model/file-interfaces';
-import { isFileSavedInDb } from '../../utils/file-store-util';
+import { isFileSavedInDb, getData } from '../../utils/file-store-util';
 import { ActionWatchLater, ContentSave } from 'material-ui/svg-icons';
 import { ColorDictionary } from '../../utils/colour-dictionary';
 import './side-bar.css';
@@ -38,6 +38,7 @@ export default class SavedFilesTab extends React.Component<SavedFilesTabProps, S
         this.handleRecentFilesToggle = this.handleRecentFilesToggle.bind(this);
         this.handleSavedFilesToggle = this.handleSavedFilesToggle.bind(this);
         this.selectCurrentFile = this.selectCurrentFile.bind(this);
+        this.loadFromSaved = this.loadFromSaved.bind(this);
         this.updateCurrentFromRecentFile = this.updateCurrentFromRecentFile.bind(this); 
     }
 
@@ -78,7 +79,7 @@ export default class SavedFilesTab extends React.Component<SavedFilesTabProps, S
                                     lightFile={item}
                                     showPopUpFunction={this.props.showPopUpDeleteConfirmation}
                                     reducer={this.props.reducer}
-                                    selectFileFunction={this.selectCurrentFile}
+                                    selectFileFunction={this.loadFromSaved}
                                 />
                             );
                         })}
@@ -126,5 +127,13 @@ export default class SavedFilesTab extends React.Component<SavedFilesTabProps, S
             this.props.reducer.addLoadedFiles([data]);
         });
         fileStorage.handleStoringRecentFile(file);
+    }
+
+    private loadFromSaved(file: LightweightFile) {
+        getData(file).then((data) => {
+            this.props.reducer.addLoadedFiles([data]);
+            let recentUtil = new RecentFileStoreUtil(this.props.reducer);
+            recentUtil.handleStoringRecentFile(file);
+        });
     }
 }
