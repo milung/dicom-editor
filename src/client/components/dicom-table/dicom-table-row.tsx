@@ -4,6 +4,7 @@ import { DicomEntry } from '../../model/dicom-entry';
 import { ColorDictionary } from '../../utils/colour-dictionary';
 import './dicom-table.css';
 import { EditorModeEdit, ActionDone, ActionDelete } from 'material-ui/svg-icons';
+import { getValueMultiplicity } from '../../utils/dicom-reader';
 
 var fileDownload = require('react-file-download');
 const PIXEL_DATA_GROUP: string = '7fe0';
@@ -22,6 +23,7 @@ export interface DicomTableRowProps {
 export interface DicomTableRowState {
     newTagValue: string | number | undefined;
     newTagVR: string | number | undefined;
+    newTagVM: string | number | undefined;
 }
 
 export class DicomTableRow extends React.Component<DicomTableRowProps, DicomTableRowState> {
@@ -32,7 +34,8 @@ export class DicomTableRow extends React.Component<DicomTableRowProps, DicomTabl
 
         this.state = {
             newTagValue: this.props.entry.tagValue,
-            newTagVR: this.props.entry.tagVR
+            newTagVR: this.props.entry.tagVR,
+            newTagVM: this.props.entry.tagVM
         };
         this.colorDict = new ColorDictionary();
 
@@ -98,7 +101,8 @@ export class DicomTableRow extends React.Component<DicomTableRowProps, DicomTabl
                         onChange={
                             (event: React.FormEvent<HTMLSelectElement>) => {
                                 this.setState({
-                                    newTagValue: event.currentTarget.value
+                                    newTagValue: event.currentTarget.value,
+                                    newTagVM: getValueMultiplicity(event.currentTarget.value)
                                 });
                             }
                         }
@@ -120,7 +124,7 @@ export class DicomTableRow extends React.Component<DicomTableRowProps, DicomTabl
                         onChange={
                             (event: React.FormEvent<HTMLSelectElement>) => {
                                 this.setState({
-                                    newTagVR: event.currentTarget.value
+                                    newTagVR: event.currentTarget.value,
                                 });
                             }
                         }
@@ -165,7 +169,7 @@ export class DicomTableRow extends React.Component<DicomTableRowProps, DicomTabl
                 <TableRowColumn style={tableRowColumnStyle}>{this.props.entry.tagName}</TableRowColumn>
                 {valueCell}
                 {vrCell}
-                <TableRowColumn>{this.props.entry.tagVM}</TableRowColumn>
+                <TableRowColumn>{this.state.newTagVM}</TableRowColumn>
             </TableRow>
         );
     }
