@@ -187,7 +187,7 @@ export class ApplicationStateReducer {
         this.stateSubject$.next(this.currentState);
     }
 
-    private findLoadedFileByName(fileName: string): (HeavyweightFile | undefined) {
+    public findLoadedFileByName(fileName: string): (HeavyweightFile | undefined) {
         for (var index = 0; index < this.currentState.loadedFiles.length; index++) {
             if (this.currentState.loadedFiles[index].fileName === fileName) {
                 return this.currentState.loadedFiles[index];

@@ -34,7 +34,7 @@ export function applyChangesForDisplay(heavyFile: HeavyweightFile): DicomSimpleD
         return heavyFile.dicomData;
     }
 
-    let result: DicomSimpleData = JSON.parse(JSON.stringify(heavyFile.dicomData))
+    let result: DicomSimpleData = JSON.parse(JSON.stringify(heavyFile.dicomData));
 
     heavyFile.unsavedChanges.forEach((change) => {
         switch (change.type) {
