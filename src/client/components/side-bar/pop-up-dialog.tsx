@@ -16,36 +16,35 @@ export interface PopUpDialogState {
 }
 
 export class PopUpDialog extends React.Component<PopUpDialogProps, PopUpDialogState> {
-    private actions = [
-        (
-            <FlatButton
-                label="Cancel"
-                primary={true}
-                onTouchTap={() => { this.props.handleCancelPopUpDialog(); }}
-            />
-        ),
-        (
-            <FlatButton
-                label={this.props.popUpConfirmText}
-                primary={true}
-                onTouchTap={() => { this.props.handleAction(); }}
-            />
-        ),
-    ];
-
     public constructor(props: PopUpDialogProps) {
         super(props);
     }
 
     public render() {
+        let actions = [
+            (
+                <FlatButton
+                    label="Cancel"
+                    primary={true}
+                    onTouchTap={() => { this.props.handleCancelPopUpDialog(); }}
+                />
+            ),
+            (
+                <FlatButton
+                    label={this.props.popUpConfirmText}
+                    primary={true}
+                    onTouchTap={() => { this.props.handleAction(); }}
+                />
+            ),
+        ];
         return (
             <div>
                 <Dialog
                     title={this.props.popUpQuestion}
-                    actions={this.actions}
+                    actions={actions}
                     modal={false}
                     open={this.props.openedPopUpDialog}
-                    onRequestClose={() => {this.props.handleClosePopUpDialog(); }}
+                    onRequestClose={() => { this.props.handleClosePopUpDialog(); }}
                 >
                     {this.props.popUpText}
                 </Dialog>
