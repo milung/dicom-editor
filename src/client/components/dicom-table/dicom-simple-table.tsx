@@ -7,6 +7,7 @@ import { DicomSequenceRow } from './dicom-sequence-row';
 import { EditUtil } from '../../utils/edit-util';
 import { ApplicationStateReducer } from '../../application-state';
 import { ChangeType } from '../../model/edit-interface';
+import { PopUpDialog } from '../side-bar/pop-up-dialog';
 
 export interface DicomSimpleTableProps {
     entries: DicomEntry[];
@@ -16,15 +17,18 @@ export interface DicomSimpleTableProps {
 export interface DicomSimpleTableState {
     expandedSequences: {};
     entryBeingEdited?: DicomEntry;
+    removeTagConfirmationOpen: boolean;
 }
 
 // This component displays a table of all entries belonging to a single module
 export class DicomSimpleTable extends React.Component<DicomSimpleTableProps, DicomSimpleTableState> {
 
+    private entryToRemove: DicomEntry;
     public constructor(props: DicomSimpleTableProps) {
         super(props);
         this.state = {
-            expandedSequences: { '': false }
+            expandedSequences: { '': false },
+            removeTagConfirmationOpen: false
         };
         this.props.entries.forEach((entry) => {
             if (entry.sequence.length > 0) {
@@ -33,26 +37,39 @@ export class DicomSimpleTable extends React.Component<DicomSimpleTableProps, Dic
         });
 
         this.handleExitEditingClick = this.handleExitEditingClick.bind(this);
+        this.handleConfirmConfirmDialog = this.handleConfirmConfirmDialog.bind(this);
     }
 
     public render() {
 
         return (
-            <Table selectable={false} headerStyle={{ backgroundColor: '#009999' }}>
+            <div>
+                <Table selectable={false} headerStyle={{ backgroundColor: '#009999' }}>
 
-                <TableHeader
-                    className="tableHeader"
-                    displaySelectAll={false}
-                    adjustForCheckbox={false}
-                >
-                    {/* Header containing tag value names*/}
-                    <DicomTableHeader />
-                </TableHeader>
+                    <TableHeader
+                        className="tableHeader"
+                        displaySelectAll={false}
+                        adjustForCheckbox={false}
+                    >
+                        {/* Header containing tag value names*/}
+                        <DicomTableHeader />
+                    </TableHeader>
 
-                <TableBody selectable={false} displayRowCheckbox={false}>
-                    {this.getEntryRows(this.props.entries, 0)}
-                </TableBody>
-            </Table>
+                    <TableBody selectable={false} displayRowCheckbox={false}>
+                        {this.getEntryRows(this.props.entries, 0)}
+                    </TableBody>
+                </Table>
+                <PopUpDialog
+                    handleClosePopUpDialog={() => { this.setState({ removeTagConfirmationOpen: false }); }}
+                    handleCancelPopUpDialog={() => { this.setState({ removeTagConfirmationOpen: false }); }}
+                    handleAction={this.handleConfirmConfirmDialog}
+                    openedPopUpDialog={this.state.removeTagConfirmationOpen}
+                    popUpText={'Are you sure you want to remove tag?'}
+                    popUpQuestion={'Remove selected tag?'}
+                    popUpConfirmText={'Remove tag'}
+                />
+            </div>
+
         );
     }
     /**
@@ -127,7 +144,17 @@ export class DicomSimpleTable extends React.Component<DicomSimpleTableProps, Dic
     }
 
     private handleDeletingRow(entry: DicomEntry) {
+        this.entryToRemove = entry;
+        this.setState({
+            removeTagConfirmationOpen: true
+        });
+    }
+
+    private handleConfirmConfirmDialog() {
         let editUtil: EditUtil = new EditUtil(this.props.reducer);
-        editUtil.applyChangeToCurrentFile(entry, ChangeType.REMOVE);
+        editUtil.applyChangeToCurrentFile(this.entryToRemove, ChangeType.REMOVE);
+        this.setState({
+            removeTagConfirmationOpen: false
+        });
     }
 }
