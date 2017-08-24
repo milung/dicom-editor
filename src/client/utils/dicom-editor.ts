@@ -9,8 +9,8 @@ import { HeavyweightFile } from '../model/file-interfaces';
 // doesn't update dicom entries, only the buffer
 
 interface Sequence {
-    entry: DicomEntry,
-    length: number
+    entry: DicomEntry;
+    length: number;
 }
 
 export class DicomEditor {
