@@ -5,10 +5,23 @@ import { ColorDictionary } from '../../utils/colour-dictionary';
 import './dicom-table.css';
 import { EditorModeEdit, ActionDone, ActionDelete } from 'material-ui/svg-icons';
 import { getValueMultiplicity } from '../../utils/dicom-reader';
+import { validateDicomEntry, ErrorType } from '../../utils/dicom-validator';
 
 var fileDownload = require('react-file-download');
 const PIXEL_DATA_GROUP: string = '7fe0';
 const PIXEL_DATA_ELEMENT: string = '0010';
+
+const validStyle = {
+    color: '#00e600'
+};
+
+const errorStyle = {
+    color: '#ff0000'
+};
+
+const ERROR_MESSAGES = {};
+ERROR_MESSAGES[ErrorType.INVALID_VR] = 'Invalid VR';
+ERROR_MESSAGES[ErrorType.VALUE_NOT_MATCH_VR] = 'Value does not match VR';
 
 export interface DicomTableRowProps {
     entry: DicomEntry;
@@ -21,9 +34,7 @@ export interface DicomTableRowProps {
 }
 
 export interface DicomTableRowState {
-    newTagValue: string | number | undefined;
-    newTagVR: string | number | undefined;
-    newTagVM: string | number | undefined;
+    newEntry: DicomEntry;
 }
 
 export class DicomTableRow extends React.Component<DicomTableRowProps, DicomTableRowState> {
@@ -33,9 +44,7 @@ export class DicomTableRow extends React.Component<DicomTableRowProps, DicomTabl
         super(props);
 
         this.state = {
-            newTagValue: this.props.entry.tagValue,
-            newTagVR: this.props.entry.tagVR,
-            newTagVM: this.props.entry.tagVM
+            newEntry: this.props.entry,
         };
         this.colorDict = new ColorDictionary();
 
@@ -85,6 +94,10 @@ export class DicomTableRow extends React.Component<DicomTableRowProps, DicomTabl
         let valueCell;
         let vrCell;
 
+        let validationResult = validateDicomEntry(this.state.newEntry);
+        let isValueValid = validationResult.tagValueErrors.length === 0;
+        let isVRValid = validationResult.tagVRErrors.length === 0;
+
         if (this.props.editMode) {
             firstIcon = (
                 <ActionDone
@@ -97,12 +110,16 @@ export class DicomTableRow extends React.Component<DicomTableRowProps, DicomTabl
                     <TextField
                         id="new-value"
                         style={tableRowColumnStyle}
-                        value={this.state.newTagValue}
+                        value={this.state.newEntry.tagValue}
+                        errorText={isValueValid ? 'Value is valid' : ERROR_MESSAGES[validationResult.tagValueErrors[0]]}
+                        errorStyle={isValueValid ? validStyle : errorStyle}
                         onChange={
                             (event: React.FormEvent<HTMLSelectElement>) => {
+                                let entry = this.state.newEntry;
+                                entry.tagValue = event.currentTarget.value;
+                                entry.tagVM = getValueMultiplicity(event.currentTarget.value).toString();
                                 this.setState({
-                                    newTagValue: event.currentTarget.value,
-                                    newTagVM: getValueMultiplicity(event.currentTarget.value)
+                                    newEntry: entry,
                                 });
                             }
                         }
@@ -120,11 +137,15 @@ export class DicomTableRow extends React.Component<DicomTableRowProps, DicomTabl
                     <TextField
                         id="new-vr"
                         style={tableRowColumnStyle}
-                        value={this.state.newTagVR}
+                        value={this.state.newEntry.tagVR}
+                        errorText={isVRValid ? 'Value is valid' : ERROR_MESSAGES[validationResult.tagVRErrors[0]]}
+                        errorStyle={isVRValid ? validStyle : errorStyle}
                         onChange={
                             (event: React.FormEvent<HTMLSelectElement>) => {
+                                let entry = this.state.newEntry;
+                                entry.tagVR = event.currentTarget.value;
                                 this.setState({
-                                    newTagVR: event.currentTarget.value,
+                                    newEntry: entry,
                                 });
                             }
                         }
@@ -169,7 +190,7 @@ export class DicomTableRow extends React.Component<DicomTableRowProps, DicomTabl
                 <TableRowColumn style={tableRowColumnStyle}>{this.props.entry.tagName}</TableRowColumn>
                 {valueCell}
                 {vrCell}
-                <TableRowColumn>{this.state.newTagVM}</TableRowColumn>
+                <TableRowColumn>{this.state.newEntry.tagVM}</TableRowColumn>
             </TableRow>
         );
     }
@@ -186,12 +207,7 @@ export class DicomTableRow extends React.Component<DicomTableRowProps, DicomTabl
 
     private handleExitEdit() {
         if (this.props.handleExitEditing) {
-            if (this.state.newTagValue && this.state.newTagVR) {
-                let newEntry: DicomEntry = { ...this.props.entry };
-                newEntry.tagValue = this.state.newTagValue.toString();
-                newEntry.tagVR = this.state.newTagVR.toString();
-                this.props.handleExitEditing(newEntry);
-            }
+            this.props.handleExitEditing(this.state.newEntry);
         }
     }
 }
