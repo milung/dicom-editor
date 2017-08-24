@@ -41,10 +41,18 @@ export class DicomSimpleTable extends React.Component<DicomSimpleTableProps, Dic
     }
 
     public render() {
-        let isSequence: boolean = false;
+        let popupText;
+        let question;
+        let confirmText;
 
-        if (this.entryToRemove) {
-            isSequence = this.entryToRemove.tagVR === 'SQ';
+        if (this.entryToRemove && this.entryToRemove.tagVR === 'SQ') {
+            popupText = 'Are you sure you want to remove sequence and all tags in it?';
+            question = 'Remove selected sequence?';
+            confirmText = 'Remove sequence';
+        } else {
+            popupText = 'Are you sure you want to remove tag?';
+            question = 'Remove selected tag?';
+            confirmText = 'Remove tag';
         }
         return (
             <div>
@@ -68,17 +76,9 @@ export class DicomSimpleTable extends React.Component<DicomSimpleTableProps, Dic
                     handleCancelPopUpDialog={() => { this.setState({ removeTagConfirmationOpen: false }); }}
                     handleAction={this.handleConfirmConfirmDialog}
                     openedPopUpDialog={this.state.removeTagConfirmationOpen}
-                    popUpText={
-                        isSequence
-                            ? 'Are you sure you want to remove sequence and all tags in it?'
-                            : 'Are you sure you want to remove tag?'
-                    }
-                    popUpQuestion={
-                        isSequence
-                            ? 'Remove selected sequence?'
-                            : 'Remove selected tag?'
-                    }
-                    popUpConfirmText={'Remove tag'}
+                    popUpText={popupText}
+                    popUpQuestion={question}
+                    popUpConfirmText={confirmText}
                 />
             </div>
 
