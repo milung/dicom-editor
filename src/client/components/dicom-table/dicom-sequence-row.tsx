@@ -3,6 +3,7 @@ import { TableRow, TableRowColumn } from 'material-ui';
 import { DicomEntry } from '../../model/dicom-entry';
 import { ColorDictionary } from '../../utils/colour-dictionary';
 import './dicom-table.css';
+import { ActionDelete } from 'material-ui/svg-icons';
 
 var ExpandIcon = require('react-icons/lib/md/keyboard-arrow-down');
 var CollapseIcon = require('react-icons/lib/md/keyboard-arrow-up');
@@ -12,6 +13,7 @@ export interface DicomSequenceRowProps {
     handleClick?: () => void;
     margin?: string;
     expanded: boolean;
+    handleDeletingEntry?: () => void;
 }
 
 export interface DicomSequenceRowState {
@@ -36,7 +38,12 @@ export class DicomSequenceRow extends React.Component<DicomSequenceRowProps, Dic
         return (
             <TableRow style={tableRowStyle} className={'sequence-table-row'} onRowClick={this.props.handleClick}>
                 <TableRowColumn style={tagStyle} className={'table-row-tag-column'}>
-                    {icon}{tag}
+                    {icon}
+                    <ActionDelete
+                        className="row-icon row-icon-delete"
+                        onClick={this.props.handleDeletingEntry}
+                    />
+                    {tag}
                 </TableRowColumn>
                 <TableRowColumn className={'table-row-column'}>{this.props.entry.tagName}</TableRowColumn>
                 <TableRowColumn className={'table-row-column'}>{this.props.entry.tagValue}</TableRowColumn>

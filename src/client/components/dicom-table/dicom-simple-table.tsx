@@ -41,7 +41,11 @@ export class DicomSimpleTable extends React.Component<DicomSimpleTableProps, Dic
     }
 
     public render() {
+        let isSequence: boolean = false;
 
+        if (this.entryToRemove) {
+            isSequence = this.entryToRemove.tagVR === 'SQ';
+        }
         return (
             <div>
                 <Table selectable={false} headerStyle={{ backgroundColor: '#009999' }}>
@@ -64,8 +68,16 @@ export class DicomSimpleTable extends React.Component<DicomSimpleTableProps, Dic
                     handleCancelPopUpDialog={() => { this.setState({ removeTagConfirmationOpen: false }); }}
                     handleAction={this.handleConfirmConfirmDialog}
                     openedPopUpDialog={this.state.removeTagConfirmationOpen}
-                    popUpText={'Are you sure you want to remove tag?'}
-                    popUpQuestion={'Remove selected tag?'}
+                    popUpText={
+                        isSequence
+                            ? 'Are you sure you want to remove sequence and all tags in it?'
+                            : 'Are you sure you want to remove tag?'
+                    }
+                    popUpQuestion={
+                        isSequence
+                            ? 'Remove selected sequence?'
+                            : 'Remove selected tag?'
+                    }
                     popUpConfirmText={'Remove tag'}
                 />
             </div>
@@ -91,6 +103,7 @@ export class DicomSimpleTable extends React.Component<DicomSimpleTableProps, Dic
                             handleClick={() => this.handleSequenceClick(entry)}
                             margin={(20 * (depth + 1)).toString() + 'px'}
                             expanded={this.state.expandedSequences[entry.tagGroup + entry.tagElement]}
+                            handleDeletingEntry={() => { this.handleDeletingRow(entry); }}
                         />
                     );
 

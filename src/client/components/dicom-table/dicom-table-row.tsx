@@ -134,7 +134,8 @@ export class DicomTableRow extends React.Component<DicomTableRowProps, DicomTabl
             );
 
         } else {
-            let isPixelData = this.props.entry.tagGroup === PIXEL_DATA_GROUP && this.props.entry.tagElement === PIXEL_DATA_ELEMENT;
+            let isPixelData = this.props.entry.tagGroup === PIXEL_DATA_GROUP
+                && this.props.entry.tagElement === PIXEL_DATA_ELEMENT;
             if (!isPixelData) {
                 firstIcon = (
                     <EditorModeEdit
