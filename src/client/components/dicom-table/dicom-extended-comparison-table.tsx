@@ -36,7 +36,11 @@ export class DicomExtendedComparisonTable extends React.Component<
                         groups: sortDicomComparisonEntries(this.props.data[moduleName]),
                         moduleName: moduleName
                     };
-                    moduleArray.push(data);
+                    if (!this.props.showOnlyDiffs
+                        || this.atLeastOneDifference(data.groups)) {
+                        moduleArray.push(data);
+                    }
+
                 }
             }
 
@@ -70,5 +74,40 @@ export class DicomExtendedComparisonTable extends React.Component<
         } else {
             return (<div />);
         }
+    }
+/**
+ * 
+ * @param dicomData data to be checked
+ * @description checks if data has at least one difference. If no difference is found application should
+ * hide the whole sequence if user selected that kind of option
+ */
+    private atLeastOneDifference(dicomData: DicomComparisonData[]) {
+        let result = false;
+        
+        dicomData.forEach(sequence => {
+            if (sequence.group.length > 1 || this.atLeastOneDifferenceInSequence(sequence.sequence)) {
+                result = true;
+            }
+        });
+        return result;
+    }
+
+/**
+ * 
+ * @param dicomData data to be checked
+ * @description checks if data has at least one difference. If no difference is found application should
+ * hide the whole sequence if user selected that kind of option
+ */
+    private atLeastOneDifferenceInSequence(sequence: DicomComparisonData[] | undefined) {
+        let result = false;
+        if (sequence === undefined) {
+            return false;
+        }
+        sequence.forEach(group => {
+            if (group.group.length > 1) {
+                result = true;
+            }
+        });
+        return result;
     }
 }

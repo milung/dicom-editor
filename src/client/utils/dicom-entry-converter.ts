@@ -96,3 +96,22 @@ export function filterRedundantModulesBySopClass(originalData: DicomExtendedData
     }
     return result;
 }
+
+/**
+ * @description filters modules that do not belong to given Sop class
+ * @param {DicomExtendedData} originalData data to filter
+ * @param {string} sopClass clas to filter by
+ * @returns {DicomExtendedData} filtered result data containing only modules 
+ * that belong to given sop class
+ */
+export function filterRedundantCompareModulesBySopClass(
+    originalData: DicomExtendedComparisonData,
+    sopClass: string): DicomExtendedComparisonData {
+    let result: DicomExtendedComparisonData = {};
+    for (var moduleName in originalData) {
+        if (moduleNameBelongsToSopClass(moduleName, sopClass)) {
+            result[moduleName] = originalData[moduleName];
+        }
+    }
+    return result;
+}

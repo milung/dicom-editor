@@ -6,9 +6,15 @@ import { DicomExtendedTable } from './dicom-table/dicom-extended-table';
 import {
     convertSimpleDicomToExtended,
     convertSimpleDicomToExtendedComparison,
-    filterRedundantModulesBySopClass
+    filterRedundantModulesBySopClass,
+    filterRedundantCompareModulesBySopClass
 } from '../utils/dicom-entry-converter';
-import { DicomSimpleData, DicomSimpleComparisonData, DicomExtendedData } from '../model/dicom-entry';
+import {
+    DicomSimpleData,
+    DicomSimpleComparisonData,
+    DicomExtendedData,
+    DicomExtendedComparisonData
+} from '../model/dicom-entry';
 import { compareTwoFiles, areFilesExactlySame } from '../utils/dicom-comparator';
 import { ApplicationStateReducer } from '../application-state';
 import { DicomSimpleComparisonTable } from './dicom-table/dicom-simple-comparison-table';
@@ -107,7 +113,7 @@ export default class TagViewer extends React.Component<TagViewerProps, TagViewer
 
             case TableMode.EXTENDED:
                 if (this.props.comparisonActive) {
-                    return this.renderExtendedComparisonTable(simpleComparisonData);
+                    return this.renderExtendedComparisonTable(simpleComparisonData, sopClass);
                 } else {
                     return this.renderExtendedTable(data, sopClass);
                 }
@@ -176,26 +182,15 @@ export default class TagViewer extends React.Component<TagViewerProps, TagViewer
             );
     }
 
-    private renderExtendedComparisonTable(data: DicomSimpleComparisonData): JSX.Element {
-        return (this.state.exactlySameFiles) ? (
-            <div>
-                <Toggle
-                    label="show only differences"
-                    defaultToggled={true}
-                    onToggle={this.showOnlyDiffsOn}
-                    labelPosition="right"
-                    style={{ margin: 20 }}
-                />
-                <h3 className="file-name-h1">
-                    Files are exactly the same
-                </h3>
-                <DicomExtendedComparisonTable
-                    data={convertSimpleDicomToExtendedComparison(data)}
-                    showOnlyDiffs={this.state.showOnlyDiffs}
-                />
-            </div>
-        )
-            : (
+    private renderExtendedComparisonTable(data: DicomSimpleComparisonData, sopClass: string | undefined): JSX.Element {
+        let filtered: DicomExtendedComparisonData = {};
+
+        if (sopClass) {
+            filtered = filterRedundantCompareModulesBySopClass(convertSimpleDicomToExtendedComparison(data), sopClass);
+        }
+
+        return (!isEqual(filtered, {})) ? (
+            (this.state.exactlySameFiles) ? (
                 <div>
                     <Toggle
                         label="show only differences"
@@ -204,12 +199,32 @@ export default class TagViewer extends React.Component<TagViewerProps, TagViewer
                         labelPosition="right"
                         style={{ margin: 20 }}
                     />
+                    <h3 className="file-name-h1">
+                        Files are exactly the same
+                </h3>
                     <DicomExtendedComparisonTable
-                        data={convertSimpleDicomToExtendedComparison(data)}
+                        data={filtered}
                         showOnlyDiffs={this.state.showOnlyDiffs}
                     />
                 </div>
-            );
+            )
+                : (
+                    <div>
+                        <Toggle
+                            label="show only differences"
+                            defaultToggled={true}
+                            onToggle={this.showOnlyDiffsOn}
+                            labelPosition="right"
+                            style={{ margin: 20 }}
+                        />
+                        <DicomExtendedComparisonTable
+                            data={filtered}
+                            showOnlyDiffs={this.state.showOnlyDiffs}
+                        />
+                    </div>
+                )
+        ) : (<div>No data to display or no modules found for SOP class: {sopClass ? sopClass : 'Undefined'}</ div>);
+
     }
 
     private showOnlyDiffsOn() {
