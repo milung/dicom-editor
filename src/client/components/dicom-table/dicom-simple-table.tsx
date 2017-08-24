@@ -8,6 +8,7 @@ import { EditUtil } from '../../utils/edit-util';
 import { ApplicationStateReducer } from '../../application-state';
 import { ChangeType } from '../../model/edit-interface';
 import { PopUpDialog } from '../side-bar/pop-up-dialog';
+import { isValidationWithoutErrors, validateDicomEntry } from '../../utils/dicom-validator';
 
 export interface DicomSimpleTableProps {
     entries: DicomEntry[];
@@ -18,17 +19,19 @@ export interface DicomSimpleTableState {
     expandedSequences: {};
     entryBeingEdited?: DicomEntry;
     removeTagConfirmationOpen: boolean;
+    exitInvalidConfirmOpen: boolean;
 }
 
 // This component displays a table of all entries belonging to a single module
 export class DicomSimpleTable extends React.Component<DicomSimpleTableProps, DicomSimpleTableState> {
 
-    private entryToRemove: DicomEntry;
+    private entryToProcess: DicomEntry;
     public constructor(props: DicomSimpleTableProps) {
         super(props);
         this.state = {
             expandedSequences: { '': false },
-            removeTagConfirmationOpen: false
+            removeTagConfirmationOpen: false,
+            exitInvalidConfirmOpen: false
         };
         this.props.entries.forEach((entry) => {
             if (entry.sequence.length > 0) {
@@ -38,6 +41,7 @@ export class DicomSimpleTable extends React.Component<DicomSimpleTableProps, Dic
 
         this.handleExitEditingClick = this.handleExitEditingClick.bind(this);
         this.handleConfirmConfirmDialog = this.handleConfirmConfirmDialog.bind(this);
+        this.handleExitWithErrorsDialogConfirm = this.handleExitWithErrorsDialogConfirm.bind(this);
     }
 
     public render() {
@@ -45,7 +49,7 @@ export class DicomSimpleTable extends React.Component<DicomSimpleTableProps, Dic
         let question;
         let confirmText;
 
-        if (this.entryToRemove && this.entryToRemove.tagVR === 'SQ') {
+        if (this.entryToProcess && this.entryToProcess.tagVR === 'SQ') {
             popupText = 'Are you sure you want to remove sequence and all tags in it?';
             question = 'Remove selected sequence?';
             confirmText = 'Remove sequence';
@@ -71,6 +75,8 @@ export class DicomSimpleTable extends React.Component<DicomSimpleTableProps, Dic
                         {this.getEntryRows(this.props.entries, 0)}
                     </TableBody>
                 </Table>
+
+                {/* remove tag confirmation pop up  */}
                 <PopUpDialog
                     handleClosePopUpDialog={() => { this.setState({ removeTagConfirmationOpen: false }); }}
                     handleCancelPopUpDialog={() => { this.setState({ removeTagConfirmationOpen: false }); }}
@@ -79,6 +85,17 @@ export class DicomSimpleTable extends React.Component<DicomSimpleTableProps, Dic
                     popUpText={popupText}
                     popUpQuestion={question}
                     popUpConfirmText={confirmText}
+                />
+
+                {/* exit editing of invalid tag confirmation pop up  */}
+                <PopUpDialog
+                    handleClosePopUpDialog={() => { this.setState({ exitInvalidConfirmOpen: false }); }}
+                    handleCancelPopUpDialog={() => { this.setState({ exitInvalidConfirmOpen: false }); }}
+                    handleAction={this.handleExitWithErrorsDialogConfirm}
+                    openedPopUpDialog={this.state.exitInvalidConfirmOpen}
+                    popUpText={'Are you sure you want to exit editing while errors exist?'}
+                    popUpQuestion={'Exit editing with errors?'}
+                    popUpConfirmText={'Exit with errors'}
                 />
             </div>
 
@@ -149,15 +166,32 @@ export class DicomSimpleTable extends React.Component<DicomSimpleTableProps, Dic
     }
 
     private handleExitEditingClick(newEntry: DicomEntry) {
+        this.entryToProcess = newEntry;
+        let isEntryValid = isValidationWithoutErrors(validateDicomEntry(newEntry));
+        if (!isEntryValid) {
+            this.setState({
+                exitInvalidConfirmOpen: true
+            });
+        } else {
+            this.applyEditChange();
+        }
+    }
+
+    private applyEditChange() {
         let editUtil: EditUtil = new EditUtil(this.props.reducer);
-        editUtil.applyChangeToCurrentFile(newEntry, ChangeType.EDIT);
+        editUtil.applyChangeToCurrentFile(this.entryToProcess, ChangeType.EDIT);
         this.setState({
             entryBeingEdited: undefined
         });
     }
 
+    private handleExitWithErrorsDialogConfirm() {
+        this.applyEditChange();
+        this.setState({ exitInvalidConfirmOpen: false });
+    }
+
     private handleDeletingRow(entry: DicomEntry) {
-        this.entryToRemove = entry;
+        this.entryToProcess = entry;
         this.setState({
             removeTagConfirmationOpen: true
         });
@@ -165,7 +199,7 @@ export class DicomSimpleTable extends React.Component<DicomSimpleTableProps, Dic
 
     private handleConfirmConfirmDialog() {
         let editUtil: EditUtil = new EditUtil(this.props.reducer);
-        editUtil.applyChangeToCurrentFile(this.entryToRemove, ChangeType.REMOVE);
+        editUtil.applyChangeToCurrentFile(this.entryToProcess, ChangeType.REMOVE);
         this.setState({
             removeTagConfirmationOpen: false
         });
