@@ -6,6 +6,8 @@ import './dicom-table.css';
 import { EditorModeEdit, ActionDone, ActionDelete } from 'material-ui/svg-icons';
 
 var fileDownload = require('react-file-download');
+const PIXEL_DATA_GROUP: string = '7fe0';
+const PIXEL_DATA_ELEMENT: string = '0010';
 
 export interface DicomTableRowProps {
     entry: DicomEntry;
@@ -132,12 +134,16 @@ export class DicomTableRow extends React.Component<DicomTableRowProps, DicomTabl
             );
 
         } else {
-            firstIcon = (
-                <EditorModeEdit
-                    className="row-icon row-icon-edit"
-                    onClick={this.props.handleEnterEditing}
-                />
-            );
+            let isPixelData = this.props.entry.tagGroup === PIXEL_DATA_GROUP && this.props.entry.tagElement === PIXEL_DATA_ELEMENT;
+            if (!isPixelData) {
+                firstIcon = (
+                    <EditorModeEdit
+                        className="row-icon row-icon-edit"
+                        onClick={this.props.handleEnterEditing}
+                    />
+                );
+            }
+
             secondIcon = (
                 <ActionDelete
                     className="row-icon row-icon-delete"
