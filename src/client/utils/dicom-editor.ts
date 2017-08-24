@@ -8,6 +8,11 @@ import { HeavyweightFile } from '../model/file-interfaces';
 // tests
 // doesn't update dicom entries, only the buffer
 
+interface Sequence {
+    entry: DicomEntry,
+    length: number
+}
+
 export class DicomEditor {
 
     public insertTag(buffer: Uint8Array, tag: Uint8Array, offset: number) {
@@ -35,8 +40,11 @@ export class DicomEditor {
 
     public applyAllChanges(file: HeavyweightFile) {
         let buffer = file.bufferedData;
-        let changes = file.unsavedChanges;
+        let changes = file.unsavedChanges || [];
+        let sequences: Sequence[] = [];
         if (changes) {
+            sequences = this.getSequences(sequences, file.dicomData.entries);
+            changes = this.addSequences(changes, sequences);
             changes.sort(
                 function (change1: EditTags, change2: EditTags) {
                     return change2.entry.offset - change1.entry.offset;
@@ -46,27 +54,48 @@ export class DicomEditor {
                     let newHeader = this.writeTagName(change.entry.tagGroup, change.entry.tagElement);
                     let newTag = this.createTag(newHeader, change.entry);
                     buffer = this.insertTag(buffer, newTag, change.entry.offset);
+                    sequences = this.checkSequences(sequences, change, newTag.length);
                 } else if (change.type === ChangeType.EDIT) {
-                    let tagName = this.getElementAndGroup(buffer, change.entry.offset);
-                    let newTag = this.createTag(tagName, change.entry);
-                    buffer = this.replaceTag(buffer, change.entry, newTag);
+                    if (change.entry.tagVR === 'SQ') {
+                        let currentSequence = sequences.shift();
+                        if (currentSequence && currentSequence.entry.byteLength !== currentSequence.length) {
+                            buffer = this.rewriteSQlength(buffer, currentSequence);
+                        }
+                    } else {
+                        let tagName = this.getElementAndGroup(buffer, change.entry.offset);
+                        let newTag = this.createTag(tagName, change.entry);
+                        buffer = this.replaceTag(buffer, change.entry, newTag);
+                        sequences = this.checkSequences(sequences, change, newTag.length);
+                    }
                 } else if (change.type === ChangeType.REMOVE) {
                     buffer = this.removeTag(buffer, change.entry);
+                    sequences = this.checkSequences(sequences, change, 0);
                 }
             });
         }
         return buffer;
     }
 
-    public updateLength(buffer: Uint8Array, tagOffset: number, newValue: number) {
-        let newLength = this.writeTypedNumber(newValue, 'uint16', 2);
-        let beginning = buffer.slice(0, tagOffset + 6);
-        let end = buffer.slice(tagOffset + 8, );
-        let newBuffer = new Uint8Array(buffer.length);
-        newBuffer.set(beginning);
-        newBuffer.set(newLength, beginning.length);
-        newBuffer.set(end, beginning.length + 2);
-        return newBuffer;
+    public checkSequences(sequences: Sequence[], change: EditTags, newLength: number) {
+        sequences.forEach(s => {
+            if (s.entry.offset + s.length > change.entry.offset &&
+                JSON.stringify(s.entry) !== JSON.stringify(change.entry)) {
+                let difference = newLength - change.entry.byteLength;
+                s.length = s.length + difference;
+            }
+        });
+        return sequences;
+    }
+
+    public rewriteSQlength(buffer: Uint8Array, sequence: Sequence) {
+        let beginning = buffer.slice(0, sequence.entry.offset + 6);
+        let end = buffer.slice(sequence.entry.offset + 8, );
+        let newSQlength = this.writeValueLengthArray(sequence.length);
+        let updatedBuffer = new Uint8Array(buffer.length);
+        updatedBuffer.set(beginning);
+        updatedBuffer.set(newSQlength, beginning.length);
+        updatedBuffer.set(end, beginning.length + newSQlength.length);
+        return updatedBuffer;
     }
 
     public createTag(tagName: Uint8Array, tag: DicomEntry) {
@@ -108,6 +137,26 @@ export class DicomEditor {
                 break;
         }
         return newTag;
+    }
+
+    private getSequences(sequences: Sequence[], entries: DicomEntry[]) {
+        entries.forEach(entry => {
+            if (entry.tagVR === 'SQ') {
+                sequences.push({ entry: entry, length: entry.byteLength });
+            }
+        });
+        sequences.sort(
+            function (s1: Sequence, s2: Sequence) {
+                return s2.entry.offset - s1.entry.offset;
+            });
+        return sequences;
+    }
+
+    private addSequences(changes: EditTags[], sequences: Sequence[]) {
+        sequences.forEach(s => {
+            changes.push({ entry: s.entry, type: ChangeType.EDIT });
+        });
+        return changes;
     }
 
     private getElementAndGroup(buffer: Uint8Array, offset: number): Uint8Array {

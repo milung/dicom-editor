@@ -36,13 +36,13 @@ describe('dicom-editor', () => {
     it('should remove a tag from the end of the buffer', () => {
         let file: HeavyweightFile = prepareAHeavyweightFile();
         let change: EditTags = {
-            entry: file.dicomData.entries[2],
+            entry: file.dicomData.entries[3],
             type: ChangeType.REMOVE
         };
         file.unsavedChanges = [change];
         let result = dicomEditor.applyAllChanges(file);
         expect(result.length).to.equal(file.bufferedData.length - 10);
-        expect(result).to.eql(file.bufferedData.slice(0, 23));
+        expect(result).to.eql(file.bufferedData.slice(0, change.entry.offset));
     });
 
     it('should remove tag from the beginning and end of the buffer (should sort the changes)', () => {
@@ -52,13 +52,13 @@ describe('dicom-editor', () => {
             type: ChangeType.REMOVE
         };
         let change2: EditTags = {
-            entry: file.dicomData.entries[2],
+            entry: file.dicomData.entries[3],
             type: ChangeType.REMOVE
         };
         file.unsavedChanges = [change1, change2];
         let result = dicomEditor.applyAllChanges(file);
         expect(result.length).to.equal(file.bufferedData.length - 20);
-        expect(result).to.eql(file.bufferedData.slice(10, 23));
+        expect(result).to.eql(file.bufferedData.slice(10, change2.entry.offset));
     });
 
     it('should edit a tag - change VR', () => {
@@ -145,7 +145,7 @@ describe('dicom-editor', () => {
     it('should change number to string representation when VR changed from SS to AD', () => {
         let file: HeavyweightFile = prepareAHeavyweightFile();
         let change: EditTags = {
-            entry: file.dicomData.entries[2],
+            entry: file.dicomData.entries[3],
             type: ChangeType.EDIT
         };
         change.entry.tagVR = "AD";
@@ -168,6 +168,54 @@ describe('dicom-editor', () => {
         expect(result[8]).to.eql(parseInt(change.entry.tagValue));
     });
 
+    it('should update SQ length when removing a tag from the sequence', () => {
+        let file: HeavyweightFile = prepareAHeavyweightFile();
+        let change: EditTags = {
+            entry: file.dicomData.entries[2].sequence[0],
+            type: ChangeType.REMOVE
+        };
+        file.unsavedChanges = [change];
+        let result = dicomEditor.applyAllChanges(file);
+        let sqLengthOffset = file.dicomData.entries[2].offset + 6;
+        let oldSQlength = file.dicomData.entries[2].byteLength;
+        expect(result[sqLengthOffset]).to.eql(oldSQlength - change.entry.byteLength);
+    });
+
+    it('should update SQ length when editing the last tag of a sequence', () => {
+        let file: HeavyweightFile = prepareAHeavyweightFile();
+        let change: EditTags = {
+            entry: file.dicomData.entries[2].sequence[1],
+            type: ChangeType.EDIT
+        };
+        change.entry.tagValue = "abcd";
+        file.unsavedChanges = [change];
+        let result = dicomEditor.applyAllChanges(file);
+        let sqLengthOffset = file.dicomData.entries[2].offset + 6;
+        let oldSQlength = file.dicomData.entries[2].byteLength;
+        expect(result[sqLengthOffset]).to.eql(oldSQlength + 2);
+    });
+
+    it('should delete the whole sequence', () => {
+        let file: HeavyweightFile = prepareAHeavyweightFile();
+        // console.log(file.bufferedData);
+        // console.log(file.dicomData.entries);
+        let change: EditTags = {
+            entry: file.dicomData.entries[2],
+            type: ChangeType.REMOVE
+        };
+        file.unsavedChanges = [change];
+        // console.log(change.entry);
+        // console.log(change.type);
+        let result = dicomEditor.applyAllChanges(file);
+        // console.log(result);
+        let oldSQlength = file.dicomData.entries[2].byteLength;
+        // console.log(oldSQlength);
+        expect(result.length).to.eql(file.bufferedData.length - oldSQlength);
+        let sqOffset = file.dicomData.entries[2].offset;
+        expect(result.slice(0, sqOffset)).to.eql(file.bufferedData.slice(0, sqOffset));
+        expect(result.slice(sqOffset, )).to.eql(file.bufferedData.slice(sqOffset + oldSQlength, ));
+    });
+
 });
 
 function prepareAHeavyweightFile() {
@@ -188,7 +236,7 @@ function prepareAHeavyweightFile() {
                 sequence: []
             },
             {
-                id: 1,
+                id: 2,
                 offset: 10,
                 byteLength: 13,
                 tagGroup: '0001',
@@ -201,8 +249,48 @@ function prepareAHeavyweightFile() {
                 sequence: []
             },
             {
-                id: 1,
+                id: 3,
                 offset: 23,
+                byteLength: 28,
+                tagGroup: '0002',
+                tagElement: '0001',
+                tagName: 'sequence',
+                tagValue: '',
+                tagVR: 'SQ',
+                tagVM: '0',
+                colour: 'black',
+                sequence: [
+                    {
+                        id: 31,
+                        offset: 31,
+                        byteLength: 10,
+                        tagGroup: '0002',
+                        tagElement: '0011',
+                        tagName: 'seq one',
+                        tagValue: '12',
+                        tagVR: 'NU',
+                        tagVM: '1',
+                        colour: 'black',
+                        sequence: []
+                    },
+                    {
+                        id: 32,
+                        offset: 41,
+                        byteLength: 10,
+                        tagGroup: '0002',
+                        tagElement: '0012',
+                        tagName: 'seq two',
+                        tagValue: 'ab',
+                        tagVR: 'NE',
+                        tagVM: '1',
+                        colour: 'black',
+                        sequence: []
+                    }
+                ]
+            },
+            {
+                id: 4,
+                offset: 51,
                 byteLength: 10,
                 tagGroup: '0002',
                 tagElement: '0025',
@@ -215,7 +303,7 @@ function prepareAHeavyweightFile() {
             }
         ]
     }
-    let array = new Uint8Array(33);
+    let array = new Uint8Array(61);
     array[0] = 1;
     array[1] = 0;
     array[2] = 25;
@@ -241,14 +329,42 @@ function prepareAHeavyweightFile() {
     array[22] = 111;
     array[23] = 2;
     array[24] = 0;
-    array[25] = 25;
+    array[25] = 1;
     array[26] = 0;
-    array[27] = 2;
-    array[28] = 0;
-    array[29] = 53;
-    array[30] = 53;
-    array[31] = 25;
+    array[27] = 83;
+    array[28] = 81;
+    array[29] = 20;
+    array[30] = 0;
+    array[31] = 2;
     array[32] = 0;
+    array[33] = 11;
+    array[34] = 0;
+    array[35] = 78;
+    array[36] = 85;
+    array[37] = 2;
+    array[38] = 0;
+    array[39] = 49;
+    array[40] = 50;
+    array[41] = 2;
+    array[42] = 0;
+    array[43] = 12;
+    array[44] = 0;
+    array[45] = 78;
+    array[46] = 69;
+    array[47] = 2;
+    array[48] = 0;
+    array[49] = 97;
+    array[50] = 98;
+    array[51] = 2;
+    array[52] = 0;
+    array[53] = 25;
+    array[54] = 0;
+    array[55] = 53;
+    array[56] = 53;
+    array[57] = 2;
+    array[58] = 0;
+    array[59] = 125;
+    array[60] = 0;
 
     let file: HeavyweightFile = {
         fileSize: 0,

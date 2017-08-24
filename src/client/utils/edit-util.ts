@@ -70,7 +70,7 @@ export function removeDicomTag(dicomData: DicomSimpleData, entry: DicomEntry) {
     }
 }
 
-function findIndexForEntryId(dicomData: DicomSimpleData, id: number): number {
+export function findIndexForEntryId(dicomData: DicomSimpleData, id: number): number {
     let index = -1;
     dicomData.entries.map((entry, i) => {
         if (entry.id === id) {
