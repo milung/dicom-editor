@@ -41,7 +41,7 @@ export class DicomSimpleTable extends React.Component<DicomSimpleTableProps, Dic
 
         this.handleExitEditingClick = this.handleExitEditingClick.bind(this);
         this.handleConfirmConfirmDialog = this.handleConfirmConfirmDialog.bind(this);
-        this.handleExitWithErrorsDialogConfirm = this.handleExitWithErrorsDialogConfirm.bind(this);
+        this.handleCancelChanges = this.handleCancelChanges.bind(this);
     }
 
     public render() {
@@ -90,12 +90,12 @@ export class DicomSimpleTable extends React.Component<DicomSimpleTableProps, Dic
                 {/* exit editing of invalid tag confirmation pop up  */}
                 <PopUpDialog
                     handleClosePopUpDialog={() => { this.setState({ exitInvalidConfirmOpen: false }); }}
-                    handleCancelPopUpDialog={() => { this.setState({ exitInvalidConfirmOpen: false }); }}
-                    handleAction={this.handleExitWithErrorsDialogConfirm}
+                    handleCancelPopUpDialog={this.handleCancelChanges}
+                    handleAction={() => { this.setState({ exitInvalidConfirmOpen: false }); }}
                     openedPopUpDialog={this.state.exitInvalidConfirmOpen}
-                    popUpText={'Are you sure you want to exit editing while errors exist?'}
-                    popUpQuestion={'Exit editing with errors?'}
-                    popUpConfirmText={'Exit with errors'}
+                    popUpText={'Edited values contain errors. Do you want to cancel editing or return to edit mode?'}
+                    popUpQuestion={'Values contain errors'}
+                    popUpConfirmText={'Return to edit mode'}
                 />
             </div>
 
@@ -130,13 +130,17 @@ export class DicomSimpleTable extends React.Component<DicomSimpleTableProps, Dic
 
                 } else {
                     // single row with single DicomEntry 
+                    let isEditMode: boolean = false;
+                    if (this.state.entryBeingEdited && this.state.entryBeingEdited.id == entry.id) {
+                        isEditMode = true;
+                    }
                     arr.push(
                         <DicomTableRow
                             entry={entry}
                             key={dasKey + Math.random()}
                             shouldShowTag={true}
                             margin={(20 * (depth + 1)).toString() + 'px'}
-                            editMode={this.state.entryBeingEdited === entry}
+                            editMode={isEditMode}
                             handleEnterEditing={() => { this.handleEditEntryClick(entry); }}
                             handleExitEditing={this.handleExitEditingClick}
                             handleDeletingEntry={() => { this.handleDeletingRow(entry); }}
@@ -161,12 +165,12 @@ export class DicomSimpleTable extends React.Component<DicomSimpleTableProps, Dic
 
     private handleEditEntryClick(entry: DicomEntry) {
         this.setState({
-            entryBeingEdited: entry
+            entryBeingEdited: JSON.parse(JSON.stringify(entry))
         });
     }
 
     private handleExitEditingClick(newEntry: DicomEntry) {
-        this.entryToProcess = newEntry;
+        this.entryToProcess = JSON.parse(JSON.stringify(newEntry));
         let isEntryValid = isValidationWithoutErrors(validateDicomEntry(newEntry));
         if (!isEntryValid) {
             this.setState({
@@ -185,8 +189,10 @@ export class DicomSimpleTable extends React.Component<DicomSimpleTableProps, Dic
         });
     }
 
-    private handleExitWithErrorsDialogConfirm() {
-        this.applyEditChange();
+    private handleCancelChanges() {
+        this.setState({
+            entryBeingEdited: undefined
+        });
         this.setState({ exitInvalidConfirmOpen: false });
     }
 

@@ -23,8 +23,8 @@ export class EditUtil {
 
             // check if file already has unsaved change of this dicom entry
             let index = -1;
-            currentFile.unsavedChanges.map((change, i) => {
-                if (change.entry.id === newEntry.id) {
+            currentFile.unsavedChanges.map((unsavedChange, i) => {
+                if (unsavedChange.entry.id === newEntry.id) {
                     index = i;
                 }
             });
