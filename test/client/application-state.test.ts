@@ -124,7 +124,7 @@ describe('ApplicationStateReducer -> addLoadedFiles()', () => {
 
         let files: HeavyweightFile[] = [
             {
-                fileName: 'name',
+                fileName: 'name1',
                 timestamp: 123456789,
                 fileSize: 1,
                 bufferedData: new Uint8Array(0),
@@ -143,7 +143,7 @@ describe('ApplicationStateReducer -> addLoadedFiles()', () => {
             }
         ]
         reducer.addLoadedFiles(files);
-        expect(reducer.getState().loadedFiles).to.deep.equal([files[1], files[0]]);
+        expect(reducer.getState().loadedFiles).to.deep.equal([files[0], files[1]]);
         expect(reducer.getState().currentFile).to.deep.equal(files[0]);
     });
 });
@@ -259,9 +259,9 @@ describe('ApplicationStateReducer -> getState()', () => {
         let reducer: ApplicationStateReducer = new ApplicationStateReducer();
 
         let firstFile: LightweightFile = {
-            fileName: 'name',
+            fileName: 'name1',
             timestamp: 123456789,
-            dbKey: 'name',
+            dbKey: 'name1',
         }
 
         let secondFile: LightweightFile = {
@@ -275,7 +275,7 @@ describe('ApplicationStateReducer -> getState()', () => {
 
         let files: HeavyweightFile[] = [
             {
-                fileName: 'name',
+                fileName: 'name1',
                 timestamp: 123456789,
                 fileSize: 1,
                 bufferedData: new Uint8Array(0),
@@ -298,7 +298,7 @@ describe('ApplicationStateReducer -> getState()', () => {
         let expectedState: ApplicationState = {
             curentExportFileNumber: 0,
             recentFiles: [],
-            loadedFiles: [files[1], files[0]],
+            loadedFiles: [files[0], files[1]],
             selectedFiles: [],
             comparisonActive: false,
             savedFiles: [
@@ -307,10 +307,12 @@ describe('ApplicationStateReducer -> getState()', () => {
             ],
             searchExpression: '',
             currentFile: files[0],
-            currentIndex: 1,
+            currentIndex: 0,
         }
 
         let state = reducer.getState();
+        console.log('\nState:\n' + state)
+        console.log('\nExtate:\n' + expectedState)
         expect(state).to.deep.equal(expectedState);
     });
 });

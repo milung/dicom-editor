@@ -111,6 +111,7 @@ export async function storeFilesToDB(reducer: ApplicationStateReducer) {
         if (currentFileToStore !== undefined &&
             reducerLoadedFiles[i].fileName === currentFileToStore.fileName) {
             dbService.setItem(currentFileKey, reducerLoadedFiles[i]);
+
         } else {
             dbService.setItem(currentKeys[i], reducerLoadedFiles[i]);
         }
@@ -141,6 +142,35 @@ export async function loadLoadedFiles(reducer: ApplicationStateReducer) {
     let files: HeavyweightFile[] = await dbService.getAll<HeavyweightFile>();
     let currentFile: HeavyweightFile = await dbService.getItem<HeavyweightFile>('currentFileStorageKey');
 
+    if (files === undefined || files.length <= 0) {
+        return;
+    }
+
+    files.forEach((file, index) => {
+        if ((file.fileName).localeCompare(currentFile.fileName) === 0) {
+            if (index > -1) {
+                files.splice(index, 1);
+            }
+        }
+    });
+
+    if (currentFile.fileName.localeCompare(files[files.length - 1].fileName) > 0) {
+        files.splice(files.length, 0, currentFile);
+    }
+    
+    if (currentFile.fileName.localeCompare(files[0].fileName) < 0) {
+        files.splice(0, 0, currentFile);
+    }
+
+    for (var i = 0; i < files.length - 1; i++) {
+        if (currentFile.fileName.localeCompare(files[i].fileName) > 0 &&
+            currentFile.fileName.localeCompare(files[i + 1].fileName) < 0) {
+                
+            files.splice(i + 1, 0, currentFile);
+            break;
+        }
+    }
+    
     reducer.addLoadedFiles(files);
     reducer.updateCurrentFile(currentFile);
 }

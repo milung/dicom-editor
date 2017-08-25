@@ -69,8 +69,11 @@ export class ApplicationStateReducer {
     public addLoadedFiles(files: HeavyweightFile[]) {
         files.forEach(element => {
             this.addOneLoadedFile(element);
+
+            // console.log('Added ' + element.fileName + ' to loaded');
         });
         this.currentState.currentFile = files[0];
+        // console.log('Set ' + files[0].fileName + ' as current');
         this.currentState.currentIndex = this.currentState.loadedFiles.indexOf(files[0]);
         this.stateSubject$.next(this.currentState);
     }
@@ -207,12 +210,31 @@ export class ApplicationStateReducer {
     }
 
     private addOneLoadedFile(file: HeavyweightFile) {
-        this.currentState.loadedFiles.forEach((e, index) => {
-            if (e.fileName === file.fileName) {
-                this.currentState.loadedFiles.splice(index, 1);
-            }
-        });
-        this.currentState.loadedFiles.unshift(file);
-    }
+        let prev = this.currentState.loadedFiles[0];
+        let loadedFiles = this.currentState.loadedFiles;
+        
+        if (loadedFiles === undefined || loadedFiles.length <= 0) {
+            loadedFiles.push(file);
+            return;
+        }
 
+        if (file.fileName.localeCompare(loadedFiles[0].fileName) < 0) {
+            this.currentState.loadedFiles.unshift(file);
+        } else if (file.fileName.localeCompare(loadedFiles[loadedFiles.length - 1].fileName) > 0) {
+            this.currentState.loadedFiles.splice(loadedFiles.length, 0, file);
+        } else {
+            this.currentState.loadedFiles.forEach((e, index) => {
+                if (e.fileName === file.fileName) {
+                    this.currentState.loadedFiles.splice(index, 1, file);
+                    prev = e;
+                    return;
+                } else if (file.fileName.localeCompare(e.fileName) < 0 && 
+                           file.fileName.localeCompare(prev.fileName) > 0) {
+                    this.currentState.loadedFiles.splice(index, 0, file);
+                    prev = e;
+                    return;
+                }
+            });
+        }
+    }
 }
