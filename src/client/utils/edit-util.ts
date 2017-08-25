@@ -21,8 +21,21 @@ export class EditUtil {
                 currentFile.unsavedChanges = [];
             }
 
-            // TODO if already id is here, only update not push
-            currentFile.unsavedChanges.push(change);
+            // check if file already has unsaved change of this dicom entry
+            let index = -1;
+            currentFile.unsavedChanges.map((change, i) => {
+                if (change.entry.id === newEntry.id) {
+                    index = i;
+                }
+            });
+
+            // if already id is here, only update not push
+            if (index > -1) {
+                currentFile.unsavedChanges[index] = change;
+            } else {
+                currentFile.unsavedChanges.push(change);
+            }
+
             this.reducer.updateCurrentFile(currentFile);
         }
     }
