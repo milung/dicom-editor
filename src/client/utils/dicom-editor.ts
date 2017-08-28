@@ -7,6 +7,7 @@ import { HeavyweightFile } from '../model/file-interfaces';
 // comments
 // tests
 // doesn't update dicom entries, only the buffer
+// bmod AT - checkni values - malo by to byt ok, otestuj
 
 interface Sequence {
     entry: DicomEntry;
@@ -44,11 +45,7 @@ export class DicomEditor {
         let sequences: Sequence[] = [];
         if (changes) {
             sequences = this.getSequences(sequences, file.dicomData.entries);
-            changes = this.addSequences(changes, sequences);
-            changes.sort(
-                function (change1: EditTags, change2: EditTags) {
-                    return change2.entry.offset - change1.entry.offset;
-                });
+            changes = this.handleSequenceChanges(changes, sequences);
             changes.forEach(change => {
                 if (change.type === ChangeType.ADD) {
                     let newHeader = this.writeTagName(change.entry.tagGroup, change.entry.tagElement);
@@ -58,6 +55,9 @@ export class DicomEditor {
                 } else if (change.type === ChangeType.EDIT) {
                     if (change.entry.tagVR === 'SQ') {
                         let currentSequence = sequences.shift();
+                        while (currentSequence && currentSequence.entry.id !== change.entry.id) {
+                            currentSequence = sequences.shift();
+                        }
                         if (currentSequence && currentSequence.entry.byteLength !== currentSequence.length) {
                             buffer = this.rewriteSQlength(buffer, currentSequence);
                         }
@@ -130,6 +130,9 @@ export class DicomEditor {
             case 'SS':
                 newTag.set(this.writeTypedNumber(parseInt(tag.tagValue, 10), 'int16', valueLength), valueOffset);
                 break;
+            case 'AT':
+                newTag.set(this.writeTypedNumber(parseInt(tag.tagValue.slice(0, 4), 16), 'uint16', valueLength / 2), valueOffset);
+                newTag.set(this.writeTypedNumber(parseInt(tag.tagValue.slice(4, ), 16), 'uint16', valueLength / 2), valueOffset + 2);
             default:
                 for (var i = 0; i < tag.tagValue.length; i++) {
                     newTag[i + 8] = tag.tagValue.charCodeAt(i);
@@ -139,24 +142,46 @@ export class DicomEditor {
         return newTag;
     }
 
-    private getSequences(sequences: Sequence[], entries: DicomEntry[]) {
+    public getSequences(sequences: Sequence[], entries: DicomEntry[]) {
         entries.forEach(entry => {
             if (entry.tagVR === 'SQ') {
                 sequences.push({ entry: entry, length: entry.byteLength });
+                this.getSequences(sequences, entry.sequence);
             }
         });
-        sequences.sort(
-            function (s1: Sequence, s2: Sequence) {
-                return s2.entry.offset - s1.entry.offset;
-            });
+        sequences = this.orderByOffset(sequences);
         return sequences;
     }
 
-    private addSequences(changes: EditTags[], sequences: Sequence[]) {
+    public addSequences(changes: EditTags[], sequences: Sequence[]) {
         sequences.forEach(s => {
             changes.push({ entry: s.entry, type: ChangeType.EDIT });
         });
-        return changes;
+        return this.orderByOffset(changes);
+    }
+
+    private orderByOffset(array: any[]) {
+        array.sort(
+            function (element1: any, element2: any) {
+                return element2.entry.offset - element1.entry.offset;
+            });
+        return array;
+    }
+
+    private handleSequenceChanges(changes: EditTags[], sequences: Sequence[]) {
+        changes = this.orderByOffset(changes);
+        for (var i = changes.length - 1; i >= 0; i--) {
+            if (changes[i].entry.tagVR === 'SQ') {
+                let sqOffset = changes[i].entry.offset;
+                let sqLength = changes[i].entry.byteLength;
+                while (i - 1 >= 0 && changes[--i].entry.offset < sqOffset + sqLength) {
+                    changes.splice(i, 1);
+                    i--;
+                }
+            }
+        }
+        changes = this.addSequences(changes, sequences);
+        return this.orderByOffset(changes);
     }
 
     private getElementAndGroup(buffer: Uint8Array, offset: number): Uint8Array {
@@ -189,6 +214,8 @@ export class DicomEditor {
                     break;
             }
             return byteLength;
+        } else if (tag.tagVR === 'AT') {
+            return 4;
         } else {
             return tag.tagValue.length;
         }

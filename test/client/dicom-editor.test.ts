@@ -1,8 +1,9 @@
 import { expect } from 'chai';
 import { HeavyweightFile } from "../../src/client/model/file-interfaces";
-import { DicomSimpleData } from "../../src/client/model/dicom-entry";
+import { DicomSimpleData, DicomEntry } from "../../src/client/model/dicom-entry";
 import { EditTags, ChangeType } from "../../src/client/model/edit-interface";
 import { DicomEditor } from "../../src/client/utils/dicom-editor";
+// import { DicomReader } from "../../src/client/utils/dicom-reader";
 
 describe('dicom-editor', () => {
 
@@ -197,19 +198,39 @@ describe('dicom-editor', () => {
 
     it('should delete the whole sequence', () => {
         let file: HeavyweightFile = prepareAHeavyweightFile();
-        // console.log(file.bufferedData);
-        // console.log(file.dicomData.entries);
         let change: EditTags = {
             entry: file.dicomData.entries[2],
             type: ChangeType.REMOVE
         };
         file.unsavedChanges = [change];
-        // console.log(change.entry);
-        // console.log(change.type);
         let result = dicomEditor.applyAllChanges(file);
-        // console.log(result);
         let oldSQlength = file.dicomData.entries[2].byteLength;
-        // console.log(oldSQlength);
+        expect(result.length).to.eql(file.bufferedData.length - oldSQlength);
+        let sqOffset = file.dicomData.entries[2].offset;
+        expect(result.slice(0, sqOffset)).to.eql(file.bufferedData.slice(0, sqOffset));
+        expect(result.slice(sqOffset, )).to.eql(file.bufferedData.slice(sqOffset + oldSQlength, ));
+    });
+
+    it('should get 3 SQces from nested sqs', () => {
+        let entries = prepareNestedSequences();
+        let result = dicomEditor.getSequences([], entries);
+        expect(result.length).to.equal(3);
+    });
+
+    it('should edit tag within a sq and delete the sq then', () => {
+        let file: HeavyweightFile = prepareAHeavyweightFile();
+        let change: EditTags = {
+            entry: file.dicomData.entries[2],
+            type: ChangeType.REMOVE
+        };
+        let change2: EditTags = {
+            entry: file.dicomData.entries[2].sequence[1],
+            type: ChangeType.EDIT
+        }
+        change2.entry.tagValue = "aaju";
+        file.unsavedChanges = [change, change2];
+        let result = dicomEditor.applyAllChanges(file);
+        let oldSQlength = file.dicomData.entries[2].byteLength;
         expect(result.length).to.eql(file.bufferedData.length - oldSQlength);
         let sqOffset = file.dicomData.entries[2].offset;
         expect(result.slice(0, sqOffset)).to.eql(file.bufferedData.slice(0, sqOffset));
@@ -375,4 +396,103 @@ function prepareAHeavyweightFile() {
     }
 
     return file;
+}
+
+function prepareNestedSequences() {
+    let entries: DicomEntry[] = [
+        {
+            id: 1,
+            offset: 0,
+            byteLength: 10,
+            tagGroup: '0001',
+            tagElement: '0025',
+            tagName: 'patient info',
+            tagValue: '12',
+            tagVR: 'SQ',
+            tagVM: '1',
+            colour: 'black',
+            sequence: [
+                {
+                    id: 2,
+                    offset: 15,
+                    byteLength: 10,
+                    tagGroup: '0001',
+                    tagElement: '0025',
+                    tagName: 'patient info',
+                    tagValue: '12',
+                    tagVR: 'PI',
+                    tagVM: '1',
+                    colour: 'black',
+                    sequence: []
+                },
+                {
+                    id: 3,
+                    offset: 7,
+                    byteLength: 10,
+                    tagGroup: '0001',
+                    tagElement: '0025',
+                    tagName: 'patient info',
+                    tagValue: '12',
+                    tagVR: 'SQ',
+                    tagVM: '1',
+                    colour: 'black',
+                    sequence: [
+                        {
+                            id: 4,
+                            offset: 0,
+                            byteLength: 10,
+                            tagGroup: '0001',
+                            tagElement: '0025',
+                            tagName: 'patient info',
+                            tagValue: '12',
+                            tagVR: 'PI',
+                            tagVM: '1',
+                            colour: 'black',
+                            sequence: []
+                        },
+                        {
+                            id: 5,
+                            offset: 4,
+                            byteLength: 10,
+                            tagGroup: '0001',
+                            tagElement: '0025',
+                            tagName: 'patient info',
+                            tagValue: '12',
+                            tagVR: 'SQ',
+                            tagVM: '1',
+                            colour: 'black',
+                            sequence: [
+                                {
+                                    id: 6,
+                                    offset: 0,
+                                    byteLength: 10,
+                                    tagGroup: '0001',
+                                    tagElement: '0025',
+                                    tagName: 'patient info',
+                                    tagValue: '12',
+                                    tagVR: 'PI',
+                                    tagVM: '1',
+                                    colour: 'black',
+                                    sequence: []
+                                }]
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            id: 7,
+            offset: 0,
+            byteLength: 10,
+            tagGroup: '0001',
+            tagElement: '0025',
+            tagName: 'patient info',
+            tagValue: '12',
+            tagVR: 'PI',
+            tagVM: '1',
+            colour: 'black',
+            sequence: []
+        }
+    ];
+    return entries;
 }
