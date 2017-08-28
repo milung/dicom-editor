@@ -37,6 +37,7 @@ export class DicomReader {
         let dataset;
         try {
             dataset = dicomParser.parseDicom(bytes);
+            console.log(dataset);
             this.index = 0;
             let freshData = this.createEntries(dataset);
             data.entries = data.entries.concat(freshData.entries);
@@ -48,6 +49,7 @@ export class DicomReader {
             }
             throw err;
         }
+        console.log(data);
         return data;
     }
 
@@ -94,7 +96,6 @@ export class DicomReader {
         let data: DicomSimpleData = {
             entries: []
         };
-
         for (var tag in dataset.elements) {
             if (!tag) {
                 continue;
@@ -145,8 +146,9 @@ export class DicomReader {
             const offset = tagElement.dataOffset - 8;
             const byteLength = tagElement.length + 8;
 
+            let id = tempSequence.length === 0? this.index : this.index - tempSequence.length;
             let entry: DicomEntry = {
-                id: this.index,
+                id: id,
                 offset: offset,
                 byteLength: byteLength,
                 tagGroup: firstHalf,
