@@ -110,13 +110,13 @@ export class DicomSimpleTable extends React.Component<DicomSimpleTableProps, Dic
 
         return entries.reduce(
             (arr: JSX.Element[], entry, entryIndex) => {
-                let dasKey = ((depth + 1) * 100000 + (entryIndex));
+                // let dasKey = ((depth + 1) * 100000 + (entryIndex));
 
                 if (entry.sequence.length > 0) {
                     arr.push(
                         <DicomSequenceRow
                             entry={entry}
-                            key={dasKey + Math.random()}
+                            key={entry.id}
                             handleClick={() => this.handleSequenceClick(entry)}
                             margin={(20 * (depth + 1)).toString() + 'px'}
                             expanded={this.state.expandedSequences[entry.tagGroup + entry.tagElement]}
@@ -137,7 +137,7 @@ export class DicomSimpleTable extends React.Component<DicomSimpleTableProps, Dic
                     arr.push(
                         <DicomTableRow
                             entry={entry}
-                            key={dasKey + Math.random()}
+                            key={entry.id}
                             shouldShowTag={true}
                             margin={(20 * (depth + 1)).toString() + 'px'}
                             editMode={isEditMode}

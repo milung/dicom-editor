@@ -45,11 +45,19 @@ export class DicomTableRow extends React.Component<DicomTableRowProps, DicomTabl
         super(props);
 
         this.state = {
-            newEntry: this.props.entry,
+            newEntry: JSON.parse(JSON.stringify(this.props.entry))
         };
         this.colorDict = new ColorDictionary();
-
         this.handleExitEdit = this.handleExitEdit.bind(this);
+    }
+
+    public componentWillReceiveProps(nextProps: DicomTableRowProps) {
+        // if changing from non edit mode to edit mode
+        if (!this.props.editMode && nextProps.editMode) {
+            this.setState({
+                newEntry: JSON.parse(JSON.stringify(this.props.entry))
+            });
+        }
     }
 
     public render() {
