@@ -3,9 +3,10 @@ import { TableRow, TableRowColumn, TextField } from 'material-ui';
 import { DicomEntry } from '../../model/dicom-entry';
 import { ColorDictionary } from '../../utils/colour-dictionary';
 import './dicom-table.css';
-import { EditorModeEdit, ActionDone, ActionDelete } from 'material-ui/svg-icons';
+import { EditorModeEdit, ActionDone, ActionDelete, ActionHelp } from 'material-ui/svg-icons';
 import { getValueMultiplicity } from '../../utils/dicom-reader';
 import { validateDicomEntry, ErrorType } from '../../utils/dicom-validator';
+// import { ValidationTooltip } from "./validation-tooltip";
 
 var fileDownload = require('react-file-download');
 const PIXEL_DATA_GROUP: string = '7fe0';
@@ -113,8 +114,16 @@ export class DicomTableRow extends React.Component<DicomTableRowProps, DicomTabl
 
         let firstIcon;
         let secondIcon;
+        let tooltipIcon;
         let valueCell;
         let vrCell;
+        tooltipIcon = (
+               // <ValidationTooltip isValid={false}/>
+               <ActionHelp
+               className="row-icon-help"
+                />
+            );
+            
 
         let validationResult = validateDicomEntry(this.state.newEntry);
         let isValueValid = validationResult.tagValueErrors.length === 0;
@@ -129,6 +138,7 @@ export class DicomTableRow extends React.Component<DicomTableRowProps, DicomTabl
             );
             valueCell = (
                 <TableRowColumn className="aaaaa">
+                    {!isValueValid ? tooltipIcon : <div/>}
                     <TextField
                         id="new-value"
                         /*style={tableRowColumnStyle2}*/
@@ -151,6 +161,7 @@ export class DicomTableRow extends React.Component<DicomTableRowProps, DicomTabl
                             }
                         }}
                     />
+                    
                 </TableRowColumn>
             );
 
@@ -175,7 +186,9 @@ export class DicomTableRow extends React.Component<DicomTableRowProps, DicomTabl
                                 this.handleExitEdit();
                             }
                         }}
+                        
                     />
+                    {/*<ValidationTooltip isValid={isValueValid} />*/}
                 </TableRowColumn>
             );
 
@@ -205,9 +218,9 @@ export class DicomTableRow extends React.Component<DicomTableRowProps, DicomTabl
             <TableRow style={tableRowStyle} className={rowClass} >
                 <TableRowColumn style={tagStyle}>
                     {firstIcon}
-                    {secondIcon}
+                    {secondIcon} 
                     {tag}
-                </TableRowColumn>
+                </TableRowColumn> 
                 <TableRowColumn style={tableRowColumnStyle2}>{this.props.entry.tagName}</TableRowColumn>
                 {valueCell}
                 {vrCell}

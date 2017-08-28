@@ -76,3 +76,12 @@ background-color: #00BCD4;
 .row-icon-delete {
     fill: #ff3333 !important;
 }
+
+.row-icon-help {
+    cursor: pointer;
+    fill: #ff0000!important;
+    width: 1.2em!important;
+    margin-right: 5px;
+    margin-left: -20px;
+    margin-bottom: -5px;
+}
