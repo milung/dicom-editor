@@ -68,11 +68,9 @@ export function applyChangesForDisplay(heavyFile: HeavyweightFile): DicomSimpleD
 }
 
 export function updateDicomTag(dicomData: DicomSimpleData, newEntry: DicomEntry) {
-    let index = findIndexForEntryId(dicomData, newEntry.id);
+    let entryToUpdate = findEntryById(dicomData, newEntry.id);
 
-    if (index > -1) {
-        dicomData.entries[index] = newEntry;
-    }
+    applyChangedValues(entryToUpdate, newEntry);
 }
 
 export function removeDicomTag(dicomData: DicomSimpleData, entry: DicomEntry) {
@@ -83,6 +81,33 @@ export function removeDicomTag(dicomData: DicomSimpleData, entry: DicomEntry) {
     }
 }
 
+/**
+ * @description Tries to find entry that is to be updated. Finds reference from dicom data. Searches
+ * also in sequences.
+ * @param {DicomSimpleData} dicomData data to find reference on entry in by id.
+ * @param {number} id id to search for
+ * @returns {(DicomEntry | undefined)} reference on entry that matches given id or undefined if no entry
+ * was found.
+ */
+export function findEntryById(dicomData: DicomSimpleData, id: number): DicomEntry | undefined {
+    let resultEntry: DicomEntry | undefined = undefined;
+    dicomData.entries.forEach((entry, index) => {
+        if (entry !== undefined) {
+            if (entry.id === id) {
+                resultEntry = entry;
+            } else {
+                let recEntry = findEntryById({ entries: entry.sequence }, id);
+                if (recEntry) {
+                    resultEntry = recEntry;
+                }
+            }
+        }
+
+    });
+
+    return resultEntry;
+}
+
 export function findIndexForEntryId(dicomData: DicomSimpleData, id: number): number {
     let index = -1;
     dicomData.entries.map((entry, i) => {
@@ -91,4 +116,12 @@ export function findIndexForEntryId(dicomData: DicomSimpleData, id: number): num
         }
     });
     return index;
+}
+
+function applyChangedValues(entryToUpdate: DicomEntry | undefined, newEntry: DicomEntry) {
+    if (entryToUpdate) {
+        entryToUpdate.tagValue = newEntry.tagValue;
+        entryToUpdate.tagVR = newEntry.tagVR;
+        entryToUpdate.tagVM = newEntry.tagVM;
+    }
 }
