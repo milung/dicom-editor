@@ -54,10 +54,21 @@ export class DicomTableRow extends React.Component<DicomTableRowProps, DicomTabl
 
     public render() {
         let tableRowStyle = { color: this.props.entry.colour };
-        let tagStyle = this.props.margin ? { paddingLeft: this.props.margin, color: '#000000' } : { color: '#000000' };
+        let tagStyle = this.props.margin ? { paddingLeft: this.props.margin, color: '#000000', width: '25%' } : { color: '#000000', width: '25%' };
         let tableRowColumnStyle = {
             whiteSpace: 'normal',
-            wordWrap: 'break-word'
+            wordWrap: 'break-word',
+            width: '10%'
+        };
+        let tableRowColumnStyle2 = {
+            whiteSpace: 'normal',
+            wordWrap: 'break-word',
+            width: '25%'
+        };
+        let tableRowColumnStyle3 = {
+            whiteSpace: 'normal',
+            wordWrap: 'break-word',
+            width: '30%'
         };
         let tag = this.props.entry.tagGroup + ', ' + this.props.entry.tagElement;
         let rowClass = 'tagBorder';
@@ -107,10 +118,10 @@ export class DicomTableRow extends React.Component<DicomTableRowProps, DicomTabl
                 />
             );
             valueCell = (
-                <TableRowColumn style={tableRowColumnStyle}>
+                <TableRowColumn className="aaaaa">
                     <TextField
                         id="new-value"
-                        style={tableRowColumnStyle}
+                        /*style={tableRowColumnStyle2}*/
                         value={this.state.newEntry.tagValue}
                         errorText={isValueValid ? 'Value is valid' : ERROR_MESSAGES[validationResult.tagValueErrors[0]]}
                         errorStyle={isValueValid ? validStyle : errorStyle}
@@ -137,7 +148,6 @@ export class DicomTableRow extends React.Component<DicomTableRowProps, DicomTabl
                 <TableRowColumn>
                     <TextField
                         id="new-vr"
-                        style={tableRowColumnStyle}
                         value={this.state.newEntry.tagVR}
                         errorText={isVRValid ? 'Value is valid' : ERROR_MESSAGES[validationResult.tagVRErrors[0]]}
                         errorStyle={isVRValid ? validStyle : errorStyle}
@@ -177,8 +187,8 @@ export class DicomTableRow extends React.Component<DicomTableRowProps, DicomTabl
                     onClick={this.props.handleDeletingEntry}
                 />
             );
-            valueCell = <TableRowColumn style={tableRowColumnStyle}>{ele}</TableRowColumn>;
-            vrCell = <TableRowColumn>{this.props.entry.tagVR}</TableRowColumn>;
+            valueCell = <TableRowColumn style={tableRowColumnStyle3}>{ele}</TableRowColumn>;
+            vrCell = <TableRowColumn style={tableRowColumnStyle}>{this.props.entry.tagVR}</TableRowColumn>;
         }
 
         return (
@@ -188,10 +198,10 @@ export class DicomTableRow extends React.Component<DicomTableRowProps, DicomTabl
                     {secondIcon}
                     {tag}
                 </TableRowColumn>
-                <TableRowColumn style={tableRowColumnStyle}>{this.props.entry.tagName}</TableRowColumn>
+                <TableRowColumn style={tableRowColumnStyle2}>{this.props.entry.tagName}</TableRowColumn>
                 {valueCell}
                 {vrCell}
-                <TableRowColumn>{this.state.newEntry.tagVM}</TableRowColumn>
+                <TableRowColumn style={tableRowColumnStyle}>{this.state.newEntry.tagVM}</TableRowColumn>
             </TableRow>
         );
     }
