@@ -62,7 +62,9 @@ export class DicomTableRow extends React.Component<DicomTableRowProps, DicomTabl
 
     public render() {
         let tableRowStyle = { color: this.props.entry.colour };
-        let tagStyle = this.props.margin ? { paddingLeft: this.props.margin, color: '#000000', width: '25%' } : { color: '#000000', width: '25%' };
+        let tagStyle = this.props.margin
+            ? { paddingLeft: this.props.margin, color: '#000000', width: '25%' }
+            : { color: '#000000', width: '25%' };
         let tableRowColumnStyle = {
             whiteSpace: 'normal',
             wordWrap: 'break-word',

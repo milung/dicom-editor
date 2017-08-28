@@ -34,46 +34,58 @@ export class DicomSimpleComparisonTable extends React.Component<
                 </TableHeader>
                 <TableBody selectable={false} displayRowCheckbox={false}>
 
-                    {this.props.comparisonData.reduce((
-                        arr: JSX.Element[], group, groupIndex) => {
-                        {/* if header, print once*/ }
-                        if (group.group.length > 1) {
-                            let entryHeader: DicomEntry = {
-                                id: group.group[0].id,
-                                offset: group.group[0].offset,
-                                byteLength: group.group[0].byteLength,
-                                tagGroup: group.group[0].tagGroup,
-                                tagElement: group.group[0].tagElement,
-                                tagName: '',
-                                tagValue: '',
-                                tagVR: '',
-                                tagVM: '',
-                                colour: '#000000',
-                                sequence: []
-                            };
-                            arr.push(
-                                <DicomTableRow entry={entryHeader} shouldShowTag={true} key={groupIndex} compareMode={true}/>
-                            );
-                            group.group.map((entry, entryIndex) => {
-
+                    {this.props.comparisonData.reduce(
+                        (arr: JSX.Element[], group, groupIndex) => {
+                            {/* if header, print once*/ }
+                            if (group.group.length > 1) {
+                                let entryHeader: DicomEntry = {
+                                    id: group.group[0].id,
+                                    offset: group.group[0].offset,
+                                    byteLength: group.group[0].byteLength,
+                                    tagGroup: group.group[0].tagGroup,
+                                    tagElement: group.group[0].tagElement,
+                                    tagName: '',
+                                    tagValue: '',
+                                    tagVR: '',
+                                    tagVM: '',
+                                    colour: '#000000',
+                                    sequence: []
+                                };
                                 arr.push(
-
                                     <DicomTableRow
-                                        entry={entry}
-                                        shouldShowTag={false}
-                                        key={entryIndex + 1000 * (groupIndex + 1)}
+                                        entry={entryHeader}
+                                        shouldShowTag={true}
+                                        key={groupIndex}
                                         compareMode={true}
                                     />
                                 );
-                            });
+                                group.group.map((entry, entryIndex) => {
 
-                        } else if (group.group.length === 1 && this.props.showOnlyDiffs === false) {
-                            arr.push(
-                                <DicomTableRow entry={group.group[0]} shouldShowTag={true} key={groupIndex} compareMode={true} />
-                            );
-                        }
-                        return arr;
-                    },                                [])}
+                                    arr.push(
+
+                                        <DicomTableRow
+                                            entry={entry}
+                                            shouldShowTag={false}
+                                            key={entryIndex + 1000 * (groupIndex + 1)}
+                                            compareMode={true}
+                                        />
+                                    );
+                                });
+
+                            } else if (group.group.length === 1 && this.props.showOnlyDiffs === false) {
+                                arr.push(
+                                    <DicomTableRow
+                                        entry={group.group[0]}
+                                        shouldShowTag={true}
+                                        key={groupIndex}
+                                        compareMode={true}
+                                    />
+                                );
+                            }
+                            return arr;
+                        },
+                        []
+                    )}
                 </TableBody>
             </Table>
         );
