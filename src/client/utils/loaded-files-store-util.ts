@@ -152,6 +152,12 @@ export async function loadLoadedFiles(reducer: ApplicationStateReducer) {
         });
     }
 
+    files.forEach((file, index) => {
+        if (file.fileName === currentFile.fileName) {
+            files[index] = currentFile;
+        }
+    });
+
     reducer.addLoadedFiles(files);
     reducer.updateCurrentFile(currentFile);
 }

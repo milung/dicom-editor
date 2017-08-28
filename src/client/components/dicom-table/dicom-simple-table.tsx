@@ -131,7 +131,7 @@ export class DicomSimpleTable extends React.Component<DicomSimpleTableProps, Dic
                 } else {
                     // single row with single DicomEntry 
                     let isEditMode: boolean = false;
-                    if (this.state.entryBeingEdited && this.state.entryBeingEdited.id == entry.id) {
+                    if (this.state.entryBeingEdited && this.state.entryBeingEdited.id === entry.id) {
                         isEditMode = true;
                     }
                     arr.push(
