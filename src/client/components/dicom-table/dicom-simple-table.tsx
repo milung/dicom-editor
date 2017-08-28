@@ -141,6 +141,7 @@ export class DicomSimpleTable extends React.Component<DicomSimpleTableProps, Dic
                             shouldShowTag={true}
                             margin={(20 * (depth + 1)).toString() + 'px'}
                             editMode={isEditMode}
+                            compareMode={false}
                             handleEnterEditing={() => { this.handleEditEntryClick(entry); }}
                             handleExitEditing={this.handleExitEditingClick}
                             handleDeletingEntry={() => { this.handleDeletingRow(entry); }}

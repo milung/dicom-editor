@@ -28,6 +28,7 @@ export interface DicomTableRowProps {
     shouldShowTag: boolean;
     margin?: string;
     editMode?: boolean;
+    compareMode?: boolean;
     handleEnterEditing?: () => void;
     handleExitEditing?: Function;
     handleDeletingEntry?: () => void;
@@ -158,7 +159,7 @@ export class DicomTableRow extends React.Component<DicomTableRowProps, DicomTabl
                 </TableRowColumn>
             );
 
-        } else {
+        } else if (this.props.compareMode === undefined || this.props.compareMode === false) {
             let isPixelData = this.props.entry.tagGroup === PIXEL_DATA_GROUP
                 && this.props.entry.tagElement === PIXEL_DATA_ELEMENT;
             if (!isPixelData) {

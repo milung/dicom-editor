@@ -52,7 +52,7 @@ export class DicomSimpleComparisonTable extends React.Component<
                                 sequence: []
                             };
                             arr.push(
-                                <DicomTableRow entry={entryHeader} shouldShowTag={true} key={groupIndex} />
+                                <DicomTableRow entry={entryHeader} shouldShowTag={true} key={groupIndex} compareMode={true}/>
                             );
                             group.group.map((entry, entryIndex) => {
 
@@ -62,13 +62,14 @@ export class DicomSimpleComparisonTable extends React.Component<
                                         entry={entry}
                                         shouldShowTag={false}
                                         key={entryIndex + 1000 * (groupIndex + 1)}
+                                        compareMode={true}
                                     />
                                 );
                             });
 
                         } else if (group.group.length === 1 && this.props.showOnlyDiffs === false) {
                             arr.push(
-                                <DicomTableRow entry={group.group[0]} shouldShowTag={true} key={groupIndex} />
+                                <DicomTableRow entry={group.group[0]} shouldShowTag={true} key={groupIndex} compareMode={true} />
                             );
                         }
                         return arr;
