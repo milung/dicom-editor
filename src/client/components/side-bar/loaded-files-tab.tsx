@@ -39,7 +39,7 @@ interface LoadedFilesTabState {
 }
 
 export default class LoadedFilesTab extends React.Component<LoadedFilesTabProps, LoadedFilesTabState> {
-    private saver: MultiSave;
+    private static saver: MultiSave;
 
     constructor(props: LoadedFilesTabProps) {
         super(props);
@@ -66,7 +66,7 @@ export default class LoadedFilesTab extends React.Component<LoadedFilesTabProps,
 
             savePalleteItem: {
                 text: 'Save file',
-                onClick: () => { this.saver.handleSaveClick(this.state.savePalleteItem.disabled); },
+                onClick: () => { this.handleSaveClick(); },
                 icon: (<ContentSave />),
                 disabled: true
             },
@@ -95,8 +95,10 @@ export default class LoadedFilesTab extends React.Component<LoadedFilesTabProps,
         this.showPopUpOverrideConfirmation = this.showPopUpOverrideConfirmation.bind(this);
         this.handleOneConflict = this.handleOneConflict.bind(this);
         this.handleMoreConflicts = this.handleMoreConflicts.bind(this);
-        this.saver = new MultiSave(this.props.reducer, this.handleOneConflict, this.handleMoreConflicts);
+        this.handleSaveClick = this.handleSaveClick.bind(this);
+        LoadedFilesTab.saver = new MultiSave(this.props.reducer, this.handleOneConflict, this.handleMoreConflicts);
     }
+
     public componentWillReceiveProps(nextProps: LoadedFilesTabProps) {
         this.setState({
             checkedCheckboxes: nextProps.initialCheckedCheckboxes
@@ -168,7 +170,7 @@ export default class LoadedFilesTab extends React.Component<LoadedFilesTabProps,
                 />
                 <OverridePopUpDialog
                     reducer={this.props.reducer}
-                    saveFile={this.saver.saveFile}
+                    saveFile={LoadedFilesTab.saver.saveFile}
                     handleCloseOverrideDialog={this.handleCloseOverwriteDialog}
                     openedOverrideDialog={this.state.openedOverrideDialog}
                     fileName={this.state.conflictFiles[0] ? this.state.conflictFiles[0].fileName : ''}
@@ -186,6 +188,10 @@ export default class LoadedFilesTab extends React.Component<LoadedFilesTabProps,
         );
     }
 
+    public handleSaveClick() {
+        LoadedFilesTab.saver.handleSaveClick(this.state.savePalleteItem.disabled);
+    }
+
     public handleCompareClick() {
         this.props.reducer.setComparisonActive(true);
         storeSelectedCompareFilesToDB(
@@ -193,13 +199,6 @@ export default class LoadedFilesTab extends React.Component<LoadedFilesTabProps,
             this.props.reducer.getState().selectedFiles[1]);
         storeComparisonActive(true);
     }
-
-    // private getFilesToBeCompared(files: SelectedFile[]){
-    //     result
-    //     files.forEach( file => {
-    //         if(file.colour ===)
-    //     })
-    // }
 
     private isChecked(file: HeavyweightFile) {
         const ll = this.props.selectedFiles.length;
@@ -238,7 +237,7 @@ export default class LoadedFilesTab extends React.Component<LoadedFilesTabProps,
     }
 
     private changeNumberOfCheckedBoxes(addition: boolean) {
-        
+
         if (addition) {
             this.setState({ checkedCheckboxes: this.state.checkedCheckboxes + 1 });
         } else {
@@ -287,18 +286,18 @@ export default class LoadedFilesTab extends React.Component<LoadedFilesTabProps,
         let filesToUnload = this.props.reducer.getSelectedFiles();
         if (filesToUnload.length === 0) {
             let current = this.props.reducer.getState().currentFile;
-            
+
             if (current) {
-                filesToUnload = [current]; 
+                filesToUnload = [current];
             }
         }
-        this.props.reducer.getState().selectedFiles.forEach( file => {
+        this.props.reducer.getState().selectedFiles.forEach(file => {
             this.props.colorDictionary.freeColor(file.colour);
         });
         this.props.reducer.removeLoadedFiles(filesToUnload);
         this.props.reducer.setComparisonActive(false);
         deleteAllSelectedFilesFromDB(this.props.reducer);
-        filesToUnload.forEach( file => {
+        filesToUnload.forEach(file => {
             deleteFileFromLoaded(file, this.props.reducer);
         });
     }
@@ -332,7 +331,7 @@ export default class LoadedFilesTab extends React.Component<LoadedFilesTabProps,
 
     private overwriteAll() {
         this.state.conflictFiles.forEach(file => {
-            this.saver.saveFile(file);
+            LoadedFilesTab.saver.saveFile(file);
         });
     }
 
