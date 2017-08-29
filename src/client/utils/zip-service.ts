@@ -120,7 +120,8 @@ export class Zipper {
 
     private async dicomToZip(dataToProcess: HeavyweightFile) {
         if (dataToProcess) {
-            this.dicomFile.file(dataToProcess.fileName + '.dcm', dataToProcess.bufferedData, { binary: true });
+            var nameOfFile: string[] = dataToProcess.fileName.split('.dcm');
+            this.dicomFile.file(nameOfFile[0] + '.dcm', dataToProcess.bufferedData, { binary: true });
         }
     }
 
