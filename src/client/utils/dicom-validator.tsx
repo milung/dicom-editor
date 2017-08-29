@@ -329,9 +329,6 @@ export function isTagValueValid(entry: DicomEntry): boolean {
         }
         case 'PN': {
             const regex = /^.*$/;
-            if (tagValue.split('\^').length > 5) {
-                return false;
-            }
             if (tagValue.match(/(\n|\r|\f)/)) {
                 return false;
             }
