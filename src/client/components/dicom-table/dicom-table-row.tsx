@@ -141,7 +141,6 @@ export class DicomTableRow extends React.Component<DicomTableRowProps, DicomTabl
                     {!isValueValid ? tooltipIcon : <div/>}
                     <TextField
                         id="new-value"
-                        /*style={tableRowColumnStyle2}*/
                         value={this.state.newEntry.tagValue}
                         errorText={isValueValid ? 'Value is valid' : ERROR_MESSAGES[validationResult.tagValueErrors[0]]}
                         errorStyle={isValueValid ? validStyle : errorStyle}

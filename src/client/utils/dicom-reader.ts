@@ -6,6 +6,7 @@ import { convertFileToArrayBuffer } from './file-converter';
 import * as dicomParser from 'dicom-parser';
 
 const SOP_CLASS_TAG = '00080016';
+enum VR_with_12_bytes_header { 'VR', 'OB', 'OD', 'OF', 'OL', 'OW', 'SQ', 'UC', 'UR', 'UT', 'UN' }
 
 export function getValueMultiplicity(value: string) {
     return value === undefined ? 0 : (value.toString().match(/\\/g) || []).length + 1;
@@ -37,7 +38,6 @@ export class DicomReader {
         let dataset;
         try {
             dataset = dicomParser.parseDicom(bytes);
-            console.log(dataset);
             this.index = 0;
             let freshData = this.createEntries(dataset);
             data.entries = data.entries.concat(freshData.entries);
@@ -49,7 +49,6 @@ export class DicomReader {
             }
             throw err;
         }
-        console.log(data);
         return data;
     }
 
@@ -143,10 +142,11 @@ export class DicomReader {
 
             const name = dicomDictionary[fullTag];
             const VR = tagElement.vr;
-            const offset = tagElement.dataOffset - 8;
-            const byteLength = tagElement.length + 8;
+            const headerLength = VR in VR_with_12_bytes_header ? 12 : 8;
+            const offset = tagElement.dataOffset - headerLength;
+            const byteLength = tagElement.length + headerLength;
 
-            let id = tempSequence.length === 0? this.index : this.index - tempSequence.length;
+            let id = tempSequence.length === 0 ? this.index : this.index - tempSequence.length;
             let entry: DicomEntry = {
                 id: id,
                 offset: offset,

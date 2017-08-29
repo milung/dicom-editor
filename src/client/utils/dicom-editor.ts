@@ -131,8 +131,9 @@ export class DicomEditor {
                 newTag.set(this.writeTypedNumber(parseInt(tag.tagValue, 10), 'int16', valueLength), valueOffset);
                 break;
             case 'AT':
-                newTag.set(this.writeTypedNumber(parseInt(tag.tagValue.slice(0, 4), 16), 'uint16', valueLength / 2), valueOffset);
-                newTag.set(this.writeTypedNumber(parseInt(tag.tagValue.slice(4, ), 16), 'uint16', valueLength / 2), valueOffset + 2);
+                newTag.set(this.writeTypedNumber(parseInt(tag.tagValue.slice(0, 4), 16), 'uint16', 2), valueOffset);
+                newTag.set(this.writeTypedNumber(parseInt(tag.tagValue.slice(4, ), 16), 'uint16', 2), valueOffset + 2);
+                break;
             default:
                 for (var i = 0; i < tag.tagValue.length; i++) {
                     newTag[i + 8] = tag.tagValue.charCodeAt(i);
@@ -149,7 +150,7 @@ export class DicomEditor {
                 this.getSequences(sequences, entry.sequence);
             }
         });
-        sequences = this.orderByOffset(sequences);
+        sequences = this.orderByOffset(sequences) as Sequence[];
         return sequences;
     }
 
@@ -160,16 +161,16 @@ export class DicomEditor {
         return this.orderByOffset(changes);
     }
 
-    private orderByOffset(array: any[]) {
+    private orderByOffset(array: (EditTags| Sequence)[]) {
         array.sort(
-            function (element1: any, element2: any) {
+            function (element1: EditTags | Sequence, element2: EditTags | Sequence) {
                 return element2.entry.offset - element1.entry.offset;
             });
         return array;
     }
 
     private handleSequenceChanges(changes: EditTags[], sequences: Sequence[]) {
-        changes = this.orderByOffset(changes);
+        changes = this.orderByOffset(changes) as EditTags[];
         for (var i = changes.length - 1; i >= 0; i--) {
             if (changes[i].entry.tagVR === 'SQ') {
                 let sqOffset = changes[i].entry.offset;
@@ -180,8 +181,8 @@ export class DicomEditor {
                 }
             }
         }
-        changes = this.addSequences(changes, sequences);
-        return this.orderByOffset(changes);
+        changes = this.addSequences(changes, sequences)  as EditTags[];
+        return this.orderByOffset(changes)  as EditTags[];
     }
 
     private getElementAndGroup(buffer: Uint8Array, offset: number): Uint8Array {
