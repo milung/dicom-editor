@@ -81,3 +81,13 @@ background-color: #00BCD4;
     margin-left: -20px;
     margin-bottom: -5px;
 }
+.list_nobullets {
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
+}
+
+.tooltip {
+    position: relative;
+    display: inline-block;
+}
