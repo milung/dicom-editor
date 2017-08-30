@@ -8,7 +8,6 @@ export interface ValidationTooltipProps {
 }
 
 export interface ValidationTooltipState {
-
 }
 
 export class ValidationTooltip extends React.Component<ValidationTooltipProps, ValidationTooltipState> {

@@ -3,19 +3,36 @@ import { EditTags } from '../model/edit-interface';
 import { ChangeType } from '../model/edit-interface';
 import { HeavyweightFile } from '../model/file-interfaces';
 
-// to do: sequence check (if the tag is part of sequence, seq. length needs to be updated)
-// comments
-// tests
-// doesn't update dicom entries, only the buffer
-// bmod AT - checkni values - malo by to byt ok, otestuj
+// dokonci addovanie tagov - vyhladaj logicke miesto pre tag a umiestni ho tam. 
+// pridavanie do sekvencii domysli
 
 interface Sequence {
     entry: DicomEntry;
     length: number;
 }
 
+enum NUMBERS { 'FD', 'FL', 'UL', 'US', 'SL', 'SS' }
+enum VR_with_12_bytes_header { 'VR', 'OB', 'OD', 'OF', 'OL', 'OW', 'SQ', 'UC', 'UR', 'UT', 'UN' }
+const groupLen = 2;
+const elementLen = 2;
+const vrLen = 2;
+const lengthLen = 2;
+const longHeaderLengthLen = 4;
+const headerLen = 8;
+const longHeaderLen = 12;
+const vrOffset = 4;
+const lengthOffset = 6;
+const longHeaderLengthOffset = 8;
+
 export class DicomEditor {
 
+    /**
+     * @param buffer array to insert a tag to
+     * @param tag tag (array) to insert
+     * @param offset  where to insert the tag
+     * @description inserts a tag (Uint8Array) to another array at the offset
+     * @return array incluing the tag
+     */
     public insertTag(buffer: Uint8Array, tag: Uint8Array, offset: number) {
         let buffer1 = buffer.slice(0, offset);
         let buffer2 = buffer.slice(offset, );
@@ -23,12 +40,25 @@ export class DicomEditor {
         return this.concatBuffers(buffer3, buffer2);
     }
 
+    /**
+     * @param buffer array to remove a tag from
+     * @param tag DicomEntry to remove
+     * @description removes a tag from Uint8Array
+     * @return array without the tag
+     */
     public removeTag(buffer: Uint8Array, tag: DicomEntry) {
         let buffer1 = buffer.slice(0, tag.offset);
         let buffer2 = buffer.slice(tag.offset + tag.byteLength, );
         return this.concatBuffers(buffer1, buffer2);
     }
 
+    /**
+    * @param buffer array to change
+    * @param tag DicomEntry to remove
+    * @param newTag new tag to replace the old
+    * @description replaces a tag in array
+    * @return array without the old tag including newTag
+    */
     public replaceTag(buffer: Uint8Array, tag: DicomEntry, newTag: Uint8Array) {
         let beginning = buffer.slice(0, tag.offset);
         let end = buffer.slice(tag.offset + tag.byteLength);
@@ -39,6 +69,11 @@ export class DicomEditor {
         return updatedBuffer;
     }
 
+    /**
+    * @param file file to apply changes to
+    * @description applies all unsaved changes to file buffered data
+    * @return changed file buffered data
+    */
     public applyAllChanges(file: HeavyweightFile) {
         let buffer = file.bufferedData;
         let changes = file.unsavedChanges || [];
@@ -48,9 +83,10 @@ export class DicomEditor {
             changes = this.handleSequenceChanges(changes, sequences);
             changes.forEach(change => {
                 if (change.type === ChangeType.ADD) {
-                    let newHeader = this.writeTagName(change.entry.tagGroup, change.entry.tagElement);
-                    let newTag = this.createTag(newHeader, change.entry);
-                    buffer = this.insertTag(buffer, newTag, change.entry.offset);
+                    let newTagName = this.writeTagName(change.entry.tagGroup, change.entry.tagElement);
+                    let newTag = this.createTag(newTagName, change.entry);
+                    let offset = this.findOffsetForNewTag(file.dicomData.entries, change.entry);
+                    buffer = this.insertTag(buffer, newTag, offset);
                     sequences = this.checkSequences(sequences, change, newTag.length);
                 } else if (change.type === ChangeType.EDIT) {
                     if (change.entry.tagVR === 'SQ') {
@@ -76,6 +112,13 @@ export class DicomEditor {
         return buffer;
     }
 
+    /**
+    * @param sequences sequences to be checked
+    * @param change a tag which has been changed
+    * @param newLength new length od the changed tag in bytearray
+    * @description checks if the changed tag belonges to any of the sequences and updates the seqence lengths
+    * @return sequences with updated lengths
+    */
     public checkSequences(sequences: Sequence[], change: EditTags, newLength: number) {
         sequences.forEach(s => {
             if (s.entry.offset + s.length > change.entry.offset &&
@@ -87,10 +130,16 @@ export class DicomEditor {
         return sequences;
     }
 
+    /**
+    * @param buffer bytearray in which the SQ length should be rewritten
+    * @param sequence the sequence to have its length updated in the bytearray
+    * @description changes the length of a sequence in the bytearray
+    * @return buffer with the updated SQ lenth
+    */
     public rewriteSQlength(buffer: Uint8Array, sequence: Sequence) {
-        let beginning = buffer.slice(0, sequence.entry.offset + 6);
-        let end = buffer.slice(sequence.entry.offset + 8, );
-        let newSQlength = this.writeValueLengthArray(sequence.length);
+        let beginning = buffer.slice(0, sequence.entry.offset + longHeaderLengthOffset);
+        let end = buffer.slice(sequence.entry.offset + longHeaderLen, );
+        let newSQlength = this.writeTypedNumber(sequence.length, 'uint32', longHeaderLengthLen);
         let updatedBuffer = new Uint8Array(buffer.length);
         updatedBuffer.set(beginning);
         updatedBuffer.set(newSQlength, beginning.length);
@@ -98,18 +147,24 @@ export class DicomEditor {
         return updatedBuffer;
     }
 
+    /**
+     * @param tagName tag's group and element in bytearray
+     * @param tag dicom entry to be written to bytearray
+     * @description creates a bytearray representing the tag
+     * @return tag's bytearray
+     */
     public createTag(tagName: Uint8Array, tag: DicomEntry) {
-        let valueOffset = 8;
+        let valueOffset = this.getHeaderLength(tag);
         let valueLength = this.getValueLength(tag);
 
         let tagVR = this.writeVRArray(tag.tagVR);
-        let tagLength = this.writeValueLengthArray(valueLength);
-
-        let newTag = new Uint8Array(valueLength + 8);
-
+        let tagLength = valueOffset === longHeaderLen ?
+            this.writeTypedNumber(valueLength, 'uint32', longHeaderLengthLen) :
+            this.writeTypedNumber(valueLength, 'uint16', lengthLen);
+        let newTag = new Uint8Array(valueLength + valueOffset);
         newTag.set(tagName);
-        newTag.set(tagVR, tagName.length);
-        newTag.set(tagLength, tagName.length + tagVR.length);
+        newTag.set(tagVR, vrOffset);
+        newTag.set(tagLength, lengthOffset);
 
         switch (tag.tagVR) {
             case 'FD':
@@ -131,8 +186,10 @@ export class DicomEditor {
                 newTag.set(this.writeTypedNumber(parseInt(tag.tagValue, 10), 'int16', valueLength), valueOffset);
                 break;
             case 'AT':
-                newTag.set(this.writeTypedNumber(parseInt(tag.tagValue.slice(0, 4), 16), 'uint16', 2), valueOffset);
-                newTag.set(this.writeTypedNumber(parseInt(tag.tagValue.slice(4, ), 16), 'uint16', 2), valueOffset + 2);
+                let atGroup = parseInt(tag.tagValue.slice(0, 4), 16);
+                let atElement = parseInt(tag.tagValue.slice(4, ), 16);
+                newTag.set(this.writeTypedNumber(atGroup, 'uint16', valueLength / 2), valueOffset);
+                newTag.set(this.writeTypedNumber(atElement, 'uint16', valueLength / 2), valueOffset + 2);
                 break;
             default:
                 for (var i = 0; i < tag.tagValue.length; i++) {
@@ -143,7 +200,20 @@ export class DicomEditor {
         return newTag;
     }
 
-    public getSequences(sequences: Sequence[], entries: DicomEntry[]) {
+    /**
+     * @param tag dicom entry
+     * @return tag's header length in bytes according to its VR
+     */
+    private getHeaderLength(tag: DicomEntry) {
+        return tag.tagVR in VR_with_12_bytes_header ? longHeaderLen : headerLen;
+    }
+
+    /**
+     * @param sequences array of sequences which is then returned
+     * @param entries dicom entries
+     * @return all sequence tags as Sequence[] from entries
+     */
+    private getSequences(sequences: Sequence[], entries: DicomEntry[]) {
         entries.forEach(entry => {
             if (entry.tagVR === 'SQ') {
                 sequences.push({ entry: entry, length: entry.byteLength });
@@ -154,14 +224,23 @@ export class DicomEditor {
         return sequences;
     }
 
-    public addSequences(changes: EditTags[], sequences: Sequence[]) {
+    /**
+     * @param sequences array of sequences to add to changes
+     * @param changes dicom entries to be changed
+     * @return changes with sequences added
+     */
+    private addSequences(changes: EditTags[], sequences: Sequence[]) {
         sequences.forEach(s => {
             changes.push({ entry: s.entry, type: ChangeType.EDIT });
         });
         return this.orderByOffset(changes);
     }
 
-    private orderByOffset(array: (EditTags| Sequence)[]) {
+    /**
+    * @param array array to be ordered
+    * @return array ordered by offset
+    */
+    private orderByOffset(array: (EditTags | Sequence)[]) {
         array.sort(
             function (element1: EditTags | Sequence, element2: EditTags | Sequence) {
                 return element2.entry.offset - element1.entry.offset;
@@ -169,6 +248,12 @@ export class DicomEditor {
         return array;
     }
 
+    /**
+     * @param changes dicom entries to be changed 
+     * @param sequences array of all sequences
+     * @description removes changes within the sequences which are to be removed
+     * @return changes with added sequences, ordered by offset
+     */
     private handleSequenceChanges(changes: EditTags[], sequences: Sequence[]) {
         changes = this.orderByOffset(changes) as EditTags[];
         for (var i = changes.length - 1; i >= 0; i--) {
@@ -181,19 +266,27 @@ export class DicomEditor {
                 }
             }
         }
-        changes = this.addSequences(changes, sequences)  as EditTags[];
-        return this.orderByOffset(changes)  as EditTags[];
+        changes = this.addSequences(changes, sequences) as EditTags[];
+        return this.orderByOffset(changes) as EditTags[];
     }
 
+    /**
+    * @param buffer byte array - buffered data
+    * @param offset the offset of the tag's group
+    * @return returns tag's group and element as bytearray from buffer
+    */
     private getElementAndGroup(buffer: Uint8Array, offset: number): Uint8Array {
-        let ElementAndGroupLength = 4;
+        let ElementAndGroupLength = elementLen + groupLen;
         let result = buffer.slice(offset, offset + ElementAndGroupLength);
         return result;
     }
 
+    /**
+     * @param tag dicom entry
+     * @return bytelength of the tag's value
+     */
     private getValueLength(tag: DicomEntry) {
-        let numbers = { 'FD': 8, 'FL': 4, 'UL': 4, 'US': 2, 'SL': 4, 'SS': 2 };
-        if (tag.tagVR in numbers) {
+        if (tag.tagVR in NUMBERS) {
             let value = parseInt(tag.tagValue, 10);
             let byteLength = 1;
             /* tslint:disable */
@@ -222,28 +315,58 @@ export class DicomEditor {
         }
     }
 
+    /**
+     * @param entries 
+     * @param newTag tag that needs to be placed in the bytearray
+     * @description finds offset for a tag according to tag attribute (group+element)
+     * @return offset for new tag
+     */
+    private findOffsetForNewTag(entries: DicomEntry[], newTag: DicomEntry) {
+        let newTagAttribute = newTag.tagGroup.concat(newTag.tagElement);
+        entries.sort(
+            function (element1: DicomEntry, element2: DicomEntry) {
+                return element1.offset - element2.offset;
+            });
+        for (var i = 0; i < entries.length; i++) {
+            let tagAttribute = entries[i].tagGroup.concat(entries[i].tagElement);
+            if (tagAttribute > newTagAttribute || tagAttribute === newTagAttribute) {
+                return entries[i].offset;
+            }
+        }
+        return entries[i-1].offset + entries[i-1].byteLength;
+    }
+
+    /**
+     * @param tagGroup string representation of a tag's group (hexa number)
+     * @param tagElement string representation of a tag's element (hexa number)
+     * @return bytearray of tagGroup and tagElement
+     */
     private writeTagName(tagGroup: string, tagElement: string) {
-        let elementOrGroupLength = 2;
-        let group = this.writeTypedNumber(parseInt(tagGroup, 16), 'uint16', elementOrGroupLength);
-        let element = this.writeTypedNumber(parseInt(tagElement, 16), 'uint16', elementOrGroupLength);
-        let tagName = new Uint8Array(elementOrGroupLength * 2);
+        let group = this.writeTypedNumber(parseInt(tagGroup, 16), 'uint16', groupLen);
+        let element = this.writeTypedNumber(parseInt(tagElement, 16), 'uint16', elementLen);
+        let tagName = new Uint8Array(groupLen + elementLen);
         tagName.set(group);
-        tagName.set(element, elementOrGroupLength);
+        tagName.set(element, groupLen);
         return tagName;
     }
 
+    /**
+     * @param vr string representation of a VR (value representation)
+     * @return vr in bytearray
+     */
     private writeVRArray(vr: string) {
-        let vrArray = new Uint8Array(2);
+        let vrArray = new Uint8Array(vrLen);
         for (var i = 0; i < 2; i++) {
             vrArray[i] = vr.charCodeAt(i);
         }
         return vrArray;
     }
 
-    private writeValueLengthArray(length: number) {
-        return this.writeTypedNumber(length, 'uint16', 2);
-    }
-
+    /**
+     * @param num number to be written
+     * @param type defines the number type: e.g. unsigned 16 B integer - uint16
+     * @return bytearray of the number
+     */
     private writeTypedNumber(num: number, type: string, arrayLength: number) {
         let arrbuff = new ArrayBuffer(arrayLength);
         let view = new DataView(arrbuff);
@@ -275,6 +398,11 @@ export class DicomEditor {
         return new Uint8Array(arrbuff);
     }
 
+    /**
+     * @param buffer1 bytearray to be joined (head)
+     * @param buffer2 bytearray to be joined (tail)
+     * @return bytearray consisting of joined buffer1 and buffer2
+     */
     private concatBuffers(bufffer1: Uint8Array, buffer2: Uint8Array): Uint8Array {
         let concatedBuffer = new Uint8Array(bufffer1.length + buffer2.length);
         concatedBuffer.set(bufffer1);
