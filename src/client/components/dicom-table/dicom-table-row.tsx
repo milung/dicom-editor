@@ -7,7 +7,7 @@ import { EditorModeEdit, ActionDone, ActionDelete } from 'material-ui/svg-icons'
 import { getValueMultiplicity } from '../../utils/dicom-reader';
 import { validateDicomEntry, ErrorType } from '../../utils/dicom-validator';
 import { vrTooltipDictionary } from '../../utils/vr-tooltips-dictionary';
-import { ValidationTooltip } from "./validation-tooltip";
+import { ValidationTooltip } from './validation-tooltip';
 
 var fileDownload = require('react-file-download');
 const PIXEL_DATA_GROUP: string = '7fe0';

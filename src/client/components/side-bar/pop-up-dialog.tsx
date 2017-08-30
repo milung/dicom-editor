@@ -25,7 +25,7 @@ export class PopUpDialog extends React.Component<PopUpDialogProps, PopUpDialogSt
         let actions = [
             (
                 <FlatButton
-                    label={this.props.popUpCancelText ? this.props.popUpCancelText : "Cancel"}
+                    label={this.props.popUpCancelText ? this.props.popUpCancelText : 'Cancel'}
                     primary={true}
                     onTouchTap={() => { this.props.handleCancelPopUpDialog(); }}
                 />
