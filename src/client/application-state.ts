@@ -3,6 +3,7 @@ import { HeavyweightFile, LightweightFile, SelectedFile } from './model/file-int
 import { Observable } from 'rxjs/Observable';
 import { BehaviorSubject } from 'rxjs/BehaviorSubject';
 import { deleteFileFromLoaded, switchCurrentLoadedFile, updateSelectedFile } from './utils/loaded-files-store-util';
+import { DicomEntry } from './model/dicom-entry';
 
 export interface ApplicationState {
     recentFiles: LightweightFile[];
@@ -15,6 +16,7 @@ export interface ApplicationState {
     searchExpression: string;
     palleteMenuAction?: PalleteItem;
     curentExportFileNumber: number;
+    entryBeingEdited?: DicomEntry;
 }
 
 export class ApplicationStateReducer {
@@ -35,7 +37,8 @@ export class ApplicationStateReducer {
             selectedFiles: [],
             comparisonActive: false,
             savedFiles: [],
-            searchExpression: ''
+            searchExpression: '',
+            entryBeingEdited: undefined,
         };
 
         this.stateSubject$ = new BehaviorSubject(this.currentState);
@@ -195,6 +198,11 @@ export class ApplicationStateReducer {
         }
 
         return undefined;
+    }
+
+    public setEditEntry(entry?: DicomEntry) {
+        this.currentState.entryBeingEdited = entry;
+        this.stateSubject$.next(this.currentState);
     }
 
     private findSelectedFileIndexByName(fileName: string): number {

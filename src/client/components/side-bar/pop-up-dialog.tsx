@@ -10,6 +10,7 @@ export interface PopUpDialogProps {
     popUpQuestion: string;
     popUpConfirmText: string;
     popUpCancelText?: string;
+    actions?: JSX.Element[];
 }
 
 export interface PopUpDialogState {
@@ -42,7 +43,7 @@ export class PopUpDialog extends React.Component<PopUpDialogProps, PopUpDialogSt
             <div>
                 <Dialog
                     title={this.props.popUpQuestion}
-                    actions={actions}
+                    actions={this.props.actions || actions}
                     modal={false}
                     open={this.props.openedPopUpDialog}
                     onRequestClose={() => { this.props.handleClosePopUpDialog(); }}

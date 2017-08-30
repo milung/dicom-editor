@@ -18,6 +18,7 @@ interface SavedFilesTabProps {
     saveFile: Function;
     className: string;
     colorDictionary: ColorDictionary;
+    isFileEditing?: Function;
 }
 
 interface SavedFilesTabState {
@@ -114,6 +115,9 @@ export default class SavedFilesTab extends React.Component<SavedFilesTabProps, S
     }
 
     private selectCurrentFile(file: LightweightFile) {
+        if (this.props.isFileEditing && this.props.isFileEditing()) {
+            return;
+        }
         this.updateCurrentFromRecentFile(file);
         this.props.reducer.removeAllSelectedFiles();
         this.props.reducer.setComparisonActive(false);

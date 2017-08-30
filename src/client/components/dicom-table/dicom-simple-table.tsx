@@ -44,6 +44,14 @@ export class DicomSimpleTable extends React.Component<DicomSimpleTableProps, Dic
         this.handleCancelChanges = this.handleCancelChanges.bind(this);
     }
 
+    public componentDidMount() {
+        this.props.reducer.state$.subscribe(state => {
+            this.setState({
+                entryBeingEdited: state.entryBeingEdited,
+            });
+        });
+    }
+
     public render() {
         let popupText;
         let question;
@@ -168,9 +176,7 @@ export class DicomSimpleTable extends React.Component<DicomSimpleTableProps, Dic
     }
 
     private handleEditEntryClick(entry: DicomEntry) {
-        this.setState({
-            entryBeingEdited: JSON.parse(JSON.stringify(entry))
-        });
+        this.props.reducer.setEditEntry(JSON.parse(JSON.stringify(entry)));
     }
 
     private handleExitEditingClick(newEntry: DicomEntry) {
@@ -188,16 +194,14 @@ export class DicomSimpleTable extends React.Component<DicomSimpleTableProps, Dic
     private applyEditChange() {
         let editUtil: EditUtil = new EditUtil(this.props.reducer);
         editUtil.applyChangeToCurrentFile(this.entryToProcess, ChangeType.EDIT);
-        this.setState({
-            entryBeingEdited: undefined
-        });
+        this.props.reducer.setEditEntry(undefined);
     }
 
     private handleCancelChanges() {
         this.setState({
-            entryBeingEdited: undefined,
             exitInvalidConfirmOpen: false
         });
+        this.props.reducer.setEditEntry(undefined);
     }
 
     private handleDeletingRow(entry: DicomEntry) {
