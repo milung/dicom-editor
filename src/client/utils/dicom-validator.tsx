@@ -246,7 +246,7 @@ export function isTagValueValid(entry: DicomEntry): boolean {
             return true;
         }
         case 'DS': {
-            const regex = /^[0-9+-eE.]*$/;
+            const regex = /^[0-9\+-eE\.]*$/;
             if (!isValid(tagValue, 16, regex)) {
                 return false;
             }
