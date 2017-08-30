@@ -58,7 +58,7 @@ export default class SideBar extends React.Component<SideBarProps, SideBarState>
         this.showPopUpDeleteConfirmation = this.showPopUpDeleteConfirmation.bind(this);
         this.isFileEditing = this.isFileEditing.bind(this);
         this.saveFile = this.saveFile.bind(this);
-        
+
     }
 
     public componentDidMount() {
@@ -108,7 +108,7 @@ export default class SideBar extends React.Component<SideBarProps, SideBarState>
                         />
                     </Tab>
                 </Tabs>
-                
+
                 <OverridePopUpDialog
                     reducer={this.props.reducer}
                     saveFile={this.saveFile}
@@ -127,13 +127,13 @@ export default class SideBar extends React.Component<SideBarProps, SideBarState>
                         <FlatButton
                             label={'Close'}
                             primary={true}
-                            onTouchTap={() => { this.setState({ openedEditationMessageDialog: false }) }}
+                            onTouchTap={() => { this.setState({ openedEditationMessageDialog: false }); }}
                         />]
                     }
                     modal={true}
                     open={this.state.openedEditationMessageDialog}
                 >
-                    {<h3>You cannot switch between files while you editations are not saved with check mark;</h3>}
+                    <h3>You cannot switch between files while you editations are not saved with check mark</h3>
                 </Dialog>
             </Paper>
         );

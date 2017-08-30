@@ -38,7 +38,6 @@ export class ApplicationStateReducer {
             comparisonActive: false,
             savedFiles: [],
             searchExpression: '',
-            entryBeingEdited: undefined,
         };
 
         this.stateSubject$ = new BehaviorSubject(this.currentState);
