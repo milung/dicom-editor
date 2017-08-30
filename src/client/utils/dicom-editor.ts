@@ -53,12 +53,12 @@ export class DicomEditor {
     }
 
     /**
-    * @param buffer array to change
-    * @param tag DicomEntry to remove
-    * @param newTag new tag to replace the old
-    * @description replaces a tag in array
-    * @return array without the old tag including newTag
-    */
+     * @param buffer array to change
+     * @param tag DicomEntry to remove
+     * @param newTag new tag to replace the old
+     * @description replaces a tag in array
+     * @return array without the old tag including newTag
+     */
     public replaceTag(buffer: Uint8Array, tag: DicomEntry, newTag: Uint8Array) {
         let beginning = buffer.slice(0, tag.offset);
         let end = buffer.slice(tag.offset + tag.byteLength);
@@ -70,10 +70,10 @@ export class DicomEditor {
     }
 
     /**
-    * @param file file to apply changes to
-    * @description applies all unsaved changes to file buffered data
-    * @return changed file buffered data
-    */
+     * @param file file to apply changes to
+     * @description applies all unsaved changes to file buffered data
+     * @return changed file buffered data
+     */
     public applyAllChanges(file: HeavyweightFile) {
         let buffer = file.bufferedData;
         let changes = file.unsavedChanges || [];
@@ -113,12 +113,12 @@ export class DicomEditor {
     }
 
     /**
-    * @param sequences sequences to be checked
-    * @param change a tag which has been changed
-    * @param newLength new length od the changed tag in bytearray
-    * @description checks if the changed tag belonges to any of the sequences and updates the seqence lengths
-    * @return sequences with updated lengths
-    */
+     * @param sequences sequences to be checked
+     * @param change a tag which has been changed
+     * @param newLength new length od the changed tag in bytearray
+     * @description checks if the changed tag belonges to any of the sequences and updates the seqence lengths
+     * @return sequences with updated lengths
+     */
     public checkSequences(sequences: Sequence[], change: EditTags, newLength: number) {
         sequences.forEach(s => {
             if (s.entry.offset + s.length > change.entry.offset &&
@@ -131,11 +131,11 @@ export class DicomEditor {
     }
 
     /**
-    * @param buffer bytearray in which the SQ length should be rewritten
-    * @param sequence the sequence to have its length updated in the bytearray
-    * @description changes the length of a sequence in the bytearray
-    * @return buffer with the updated SQ lenth
-    */
+     * @param buffer bytearray in which the SQ length should be rewritten
+     * @param sequence the sequence to have its length updated in the bytearray
+     * @description changes the length of a sequence in the bytearray
+     * @return buffer with the updated SQ lenth
+     */
     public rewriteSQlength(buffer: Uint8Array, sequence: Sequence) {
         let beginning = buffer.slice(0, sequence.entry.offset + longHeaderLengthOffset);
         let end = buffer.slice(sequence.entry.offset + longHeaderLen, );
@@ -237,9 +237,9 @@ export class DicomEditor {
     }
 
     /**
-    * @param array array to be ordered
-    * @return array ordered by offset
-    */
+     * @param array array to be ordered
+     * @return array ordered by offset
+     */
     private orderByOffset(array: (EditTags | Sequence)[]) {
         array.sort(
             function (element1: EditTags | Sequence, element2: EditTags | Sequence) {
@@ -271,10 +271,10 @@ export class DicomEditor {
     }
 
     /**
-    * @param buffer byte array - buffered data
-    * @param offset the offset of the tag's group
-    * @return returns tag's group and element as bytearray from buffer
-    */
+     * @param buffer byte array - buffered data
+     * @param offset the offset of the tag's group
+     * @return returns tag's group and element as bytearray from buffer
+     */
     private getElementAndGroup(buffer: Uint8Array, offset: number): Uint8Array {
         let ElementAndGroupLength = elementLen + groupLen;
         let result = buffer.slice(offset, offset + ElementAndGroupLength);
@@ -333,7 +333,7 @@ export class DicomEditor {
                 return entries[i].offset;
             }
         }
-        return entries[i-1].offset + entries[i-1].byteLength;
+        return entries[i - 1].offset + entries[i - 1].byteLength;
     }
 
     /**
