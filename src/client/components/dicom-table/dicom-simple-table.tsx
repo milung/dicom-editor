@@ -147,7 +147,7 @@ export class DicomSimpleTable extends React.Component<DicomSimpleTableProps, Dic
                             handleEnterEditing={() => { this.handleEditEntryClick(entry); }}
                             handleExitEditing={this.handleExitEditingClick}
                             handleDeletingEntry={() => { this.handleDeletingRow(entry); }}
-                            handleClearEditing={() => this.handleCancelChanges() }
+                            handleClearEditing={() => this.handleCancelChanges()}
                         />
                     );
                 }
