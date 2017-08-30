@@ -59,6 +59,10 @@ export function applyChangesForDisplay(heavyFile: HeavyweightFile): DicomSimpleD
                 removeDicomTag(result, change.entry);
                 break;
 
+            case ChangeType.ADD:
+                addDicomTag(result, change.entry);
+                break;
+
             default:
                 break;
         }
@@ -79,6 +83,11 @@ export function removeDicomTag(dicomData: DicomSimpleData, entry: DicomEntry) {
     if (index > -1) {
         dicomData.entries.splice(index, 1);
     }
+}
+
+export function addDicomTag(dicomData: DicomSimpleData, entry: DicomEntry) {
+    entry.id = findHighestID(dicomData) + 1;
+    dicomData.entries.push(entry);
 }
 
 /**
@@ -116,6 +125,25 @@ export function findIndexForEntryId(dicomData: DicomSimpleData, id: number): num
         }
     });
     return index;
+}
+
+export function findHighestID(dicomData: DicomSimpleData): number {
+    let maxID = 0;
+    dicomData.entries.forEach((entry, index) => {
+        if (entry !== undefined) {
+            let maxInSequence = findHighestID({ entries: entry.sequence });
+            if (entry.id > maxID) {
+                maxID = entry.id;
+            }
+
+            if (maxInSequence > maxID) {
+                maxID = maxInSequence;
+            }
+        }
+
+    });
+
+    return maxID;
 }
 
 function applyChangedValues(entryToUpdate: DicomEntry | undefined, newEntry: DicomEntry) {

@@ -134,12 +134,17 @@ const defaultCharacterRepertoire = [
 
 export enum ErrorType {
     INVALID_VR,
-    VALUE_NOT_MATCH_VR
+    VALUE_NOT_MATCH_VR,
+    INVALID_NAME,
+    INVALID_GROUP,
+    INVALID_ELEMENT
 }
 
 export interface ValidationResult {
     tagValueErrors: ErrorType[];
     tagVRErrors: ErrorType[];
+    tagGroupErrors: ErrorType[];
+    tagElementErrors: ErrorType[];
 }
 
 /**
@@ -185,6 +190,24 @@ export function isVRSupported(vrToCheck: string): boolean {
     return SUPPORTED_VR.filter((supportedVR) => {
         return supportedVR === vrToCheck;
     }).length > 0;
+}
+
+export function isNameValid(nameToCheck: string): boolean {
+    if (nameToCheck.length === 0) {
+        return false;
+    }
+    return true;
+}
+
+export function isTagNumberValid(groupOrElement: string): boolean {
+    if (groupOrElement.length !== 4) {
+        return false;
+    }
+
+    if (!(/^[0-9a-fA-F]*$/.test(groupOrElement))) {
+        return false;
+    }
+    return true;
 }
 
 export function isTagValueValid(entry: DicomEntry): boolean {
@@ -471,7 +494,9 @@ function checkForDefaultRepertoire(tagValue: string): boolean {
 export function validateDicomEntry(entry: DicomEntry): ValidationResult {
     let validationResult: ValidationResult = {
         tagValueErrors: [],
-        tagVRErrors: []
+        tagVRErrors: [],
+        tagElementErrors: [],
+        tagGroupErrors: [],
     };
 
     // check VR validity
@@ -483,6 +508,16 @@ export function validateDicomEntry(entry: DicomEntry): ValidationResult {
     if (!isTagValueValid(entry)) {
         validationResult.tagValueErrors.push(ErrorType.VALUE_NOT_MATCH_VR);
         validationResult.tagVRErrors.push(ErrorType.VALUE_NOT_MATCH_VR);
+    }
+
+    // check tag group validity
+    if (!isTagNumberValid(entry.tagGroup)) {
+        validationResult.tagGroupErrors.push(ErrorType.INVALID_GROUP);
+    }
+
+    // check tag element validity
+    if (!isTagNumberValid(entry.tagElement)) {
+        validationResult.tagElementErrors.push(ErrorType.INVALID_ELEMENT);
     }
 
     return validationResult;

@@ -13,17 +13,20 @@ var fileDownload = require('react-file-download');
 const PIXEL_DATA_GROUP: string = '7fe0';
 const PIXEL_DATA_ELEMENT: string = '0010';
 
-const validStyle = {
+export const VALID_STYLE = {
     color: '#00e600'
 };
 
-const errorStyle = {
+export const ERROR_STYLE = {
     color: '#ff0000'
 };
 
-const ERROR_MESSAGES = {};
+export const ERROR_MESSAGES = {};
 ERROR_MESSAGES[ErrorType.INVALID_VR] = 'Invalid VR';
 ERROR_MESSAGES[ErrorType.VALUE_NOT_MATCH_VR] = 'Value does not match VR';
+ERROR_MESSAGES[ErrorType.INVALID_ELEMENT] = 'Invalid tag element';
+ERROR_MESSAGES[ErrorType.INVALID_GROUP] = 'Invalid tag group';
+ERROR_MESSAGES[ErrorType.INVALID_NAME] = 'Invalid tag name';
 
 export interface DicomTableRowProps {
     entry: DicomEntry;
@@ -152,7 +155,7 @@ export class DicomTableRow extends React.Component<DicomTableRowProps, DicomTabl
                         id="new-value"
                         value={this.state.newEntry.tagValue}
                         errorText={isValueValid ? 'Value is valid' : ERROR_MESSAGES[validationResult.tagValueErrors[0]]}
-                        errorStyle={isValueValid ? validStyle : errorStyle}
+                        errorStyle={isValueValid ? VALID_STYLE : ERROR_STYLE}
                         onChange={
                             (event: React.FormEvent<HTMLSelectElement>) => {
                                 let entry = this.state.newEntry;
@@ -178,7 +181,7 @@ export class DicomTableRow extends React.Component<DicomTableRowProps, DicomTabl
                         id="new-vr"
                         value={this.state.newEntry.tagVR}
                         errorText={isVRValid ? 'Value is valid' : ERROR_MESSAGES[validationResult.tagVRErrors[0]]}
-                        errorStyle={isVRValid ? validStyle : errorStyle}
+                        errorStyle={isVRValid ? VALID_STYLE : ERROR_STYLE}
                         onChange={
                             (event: React.FormEvent<HTMLSelectElement>) => {
                                 let entry = this.state.newEntry;
