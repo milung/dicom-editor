@@ -93,8 +93,8 @@ export class DicomSimpleTable extends React.Component<DicomSimpleTableProps, Dic
                     handleCancelPopUpDialog={this.handleCancelChanges}
                     handleAction={() => { this.setState({ exitInvalidConfirmOpen: false }); }}
                     openedPopUpDialog={this.state.exitInvalidConfirmOpen}
-                    popUpText={'Edited values contain errors. Do you want to cancel' +
-                        'editing and drop changes or return to edit mode and contunie editing?'}
+                    popUpText={'Edited values contain errors. Do you want to cancel ' +
+                        'editing and drop changes or return to edit mode and continue with editing?'}
                     popUpQuestion={'Values contain errors'}
                     popUpConfirmText={'Return to edit mode'}
                     popUpCancelText={'Drop changes and cancel edit mode'}

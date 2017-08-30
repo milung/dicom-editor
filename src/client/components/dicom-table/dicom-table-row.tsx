@@ -61,6 +61,10 @@ export class DicomTableRow extends React.Component<DicomTableRowProps, DicomTabl
             this.setState({
                 newEntry: JSON.parse(JSON.stringify(this.props.entry))
             });
+        } else {
+            if (!nextProps.editMode) {
+                this.setState({ newEntry: { ...this.state.newEntry, tagVM: nextProps.entry.tagVM } });
+            }
         }
     }
 
@@ -117,12 +121,11 @@ export class DicomTableRow extends React.Component<DicomTableRowProps, DicomTabl
 
         let firstIcon;
         let secondIcon;
-        let tooltipIcon;
         let valueCell;
         let vrCell;
         let vrTooltip = vrTooltipDictionary[this.state.newEntry.tagVR];
-        tooltipIcon = (
-            <ValidationTooltip vrTooltip={vrTooltip}/>
+        let tooltipIcon = (
+            <ValidationTooltip vrTooltip={vrTooltip} />
         );
 
         let validationResult = validateDicomEntry(this.state.newEntry);
@@ -144,8 +147,7 @@ export class DicomTableRow extends React.Component<DicomTableRowProps, DicomTabl
             );
             valueCell = (
                 <TableRowColumn className="aaaaa">
-                    {!isValueValid ? tooltipIcon : <div data-tip="hello"/>}
-                     {/* <ReactTooltip place="left" effect="solid" />    */}
+                    {!isValueValid ? tooltipIcon : <div data-tip="hello" />}
                     <TextField
                         id="new-value"
                         value={this.state.newEntry.tagValue}
@@ -167,7 +169,6 @@ export class DicomTableRow extends React.Component<DicomTableRowProps, DicomTabl
                             }
                         }}
                     />
-
                 </TableRowColumn>
             );
 
@@ -194,7 +195,6 @@ export class DicomTableRow extends React.Component<DicomTableRowProps, DicomTabl
                         }}
 
                     />
-                    {/*<ValidationTooltip isValid={isValueValid} />*/}
                 </TableRowColumn>
             );
 
