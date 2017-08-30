@@ -3,7 +3,7 @@ import { TableRow, TableRowColumn, TextField } from 'material-ui';
 import { DicomEntry } from '../../model/dicom-entry';
 import { ColorDictionary } from '../../utils/colour-dictionary';
 import './dicom-table.css';
-import { EditorModeEdit, ActionDone, ActionDelete } from 'material-ui/svg-icons';
+import { EditorModeEdit, ActionDone, ActionDelete, ContentClear } from 'material-ui/svg-icons';
 import { getValueMultiplicity } from '../../utils/dicom-reader';
 import { validateDicomEntry, ErrorType } from '../../utils/dicom-validator';
 import { vrTooltipDictionary } from '../../utils/vr-tooltips-dictionary';
@@ -34,6 +34,7 @@ export interface DicomTableRowProps {
     handleEnterEditing?: () => void;
     handleExitEditing?: Function;
     handleDeletingEntry?: () => void;
+    handleClearEditing?: Function;
 }
 
 export interface DicomTableRowState {
@@ -51,6 +52,7 @@ export class DicomTableRow extends React.Component<DicomTableRowProps, DicomTabl
         };
         this.colorDict = new ColorDictionary();
         this.handleExitEdit = this.handleExitEdit.bind(this);
+        this.handleClearEdit = this.handleClearEdit.bind(this);
     }
 
     public componentWillReceiveProps(nextProps: DicomTableRowProps) {
@@ -132,6 +134,12 @@ export class DicomTableRow extends React.Component<DicomTableRowProps, DicomTabl
                 <ActionDone
                     className="row-icon row-icon-done"
                     onClick={this.handleExitEdit}
+                />
+            );
+            secondIcon = (
+                <ContentClear
+                    className="row-icon row-icon-clear"
+                    onClick={this.handleClearEdit}
                 />
             );
             valueCell = (
@@ -240,6 +248,12 @@ export class DicomTableRow extends React.Component<DicomTableRowProps, DicomTabl
     private handleExitEdit() {
         if (this.props.handleExitEditing) {
             this.props.handleExitEditing(this.state.newEntry);
+        }
+    }
+
+    private handleClearEdit() {
+        if (this.props.handleClearEditing) {
+            this.props.handleClearEditing();
         }
     }
 }

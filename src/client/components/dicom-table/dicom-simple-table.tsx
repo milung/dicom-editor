@@ -147,6 +147,7 @@ export class DicomSimpleTable extends React.Component<DicomSimpleTableProps, Dic
                             handleEnterEditing={() => { this.handleEditEntryClick(entry); }}
                             handleExitEditing={this.handleExitEditingClick}
                             handleDeletingEntry={() => { this.handleDeletingRow(entry); }}
+                            handleClearEditing={() => this.handleCancelChanges() }
                         />
                     );
                 }
@@ -194,9 +195,9 @@ export class DicomSimpleTable extends React.Component<DicomSimpleTableProps, Dic
 
     private handleCancelChanges() {
         this.setState({
-            entryBeingEdited: undefined
+            entryBeingEdited: undefined,
+            exitInvalidConfirmOpen: false
         });
-        this.setState({ exitInvalidConfirmOpen: false });
     }
 
     private handleDeletingRow(entry: DicomEntry) {
