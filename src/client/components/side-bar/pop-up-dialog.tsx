@@ -12,6 +12,7 @@ export interface PopUpDialogProps {
     popUpCancelText?: string;
     body?: JSX.Element;
     modal?: boolean;
+    autoScroll?: boolean;
 }
 
 export interface PopUpDialogState {
@@ -48,6 +49,7 @@ export class PopUpDialog extends React.Component<PopUpDialogProps, PopUpDialogSt
                     modal={this.props.modal ? this.props.modal : false}
                     open={this.props.openedPopUpDialog}
                     onRequestClose={() => { this.props.handleClosePopUpDialog(); }}
+                    autoScrollBodyContent={this.props.autoScroll ? this.props.autoScroll : false}
                 >
                     {this.props.body ? this.props.body : this.props.popUpText}
                 </Dialog>

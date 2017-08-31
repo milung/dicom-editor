@@ -62,6 +62,7 @@ export class AddTagDialog extends React.Component<AddTagDialogProps, AddTagDialo
                     popUpCancelText={'Cancel adding tag'}
                     modal={true}
                     body={this.renderBody()}
+                    autoScroll={true}
                 />
 
                 <Dialog
