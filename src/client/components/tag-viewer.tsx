@@ -117,6 +117,8 @@ export default class TagViewer extends React.Component<TagViewerProps, TagViewer
                 <RaisedButton
                     label={'add tag'}
                     icon={<ContentAddBox />}
+                    primary={true}
+                    style={{marginBottom: '15px'}}
                     onClick={() => {
                         this.setState({
                             addTagDialogOpen: true
