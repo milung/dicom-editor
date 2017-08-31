@@ -18,17 +18,31 @@ export class DicomTableHeader extends React.Component<DicomTableHeaderProps, Dic
         let tableRowStyle = { 
             color: '#FFFFFF', 
             backgroundColor: '#009999',
-            fontSize: '0.9em' 
+            fontSize: '0.9em',
+            width: '10%'
         };
+        let tableRowStyle2 = { 
+            color: '#FFFFFF', 
+            backgroundColor: '#009999',
+            fontSize: '0.9em',
+            width: '25%' 
+        };
+        let tableRowStyle3 = { 
+            color: '#FFFFFF', 
+            backgroundColor: '#009999',
+            fontSize: '0.9em',
+            width: '30%' 
+        };
+
         return (
                 <TableRow>
-                    <TableHeaderColumn style={tableRowStyle}>
+                    <TableHeaderColumn style={tableRowStyle2}>
                         Tag group, tag element
                     </TableHeaderColumn>
-                    <TableHeaderColumn style={tableRowStyle}>
+                    <TableHeaderColumn style={tableRowStyle2}>
                         Tag name
                     </TableHeaderColumn>
-                    <TableHeaderColumn style={tableRowStyle}>
+                    <TableHeaderColumn style={tableRowStyle3}>
                         Tag value
                     </TableHeaderColumn>
                     <TableHeaderColumn style={tableRowStyle}>

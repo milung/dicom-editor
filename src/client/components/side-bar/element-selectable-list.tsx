@@ -50,7 +50,14 @@ export class ElementOfSelectableList extends
     }
 
     render() {
+
+        if (!this.props.item) {
+            return (<div/>);
+        }
         let bckgcolor = this.isCurrentFile() ? { backgroundColor: '#c7d5ed' } : { backgroundColor: 'white' };
+        let fileLabel = (this.props.item.unsavedChanges === undefined || this.props.item.unsavedChanges.length === 0)
+            ? this.props.item.fileName
+            : this.props.item.fileName + '*';
         return (
             <div className="container-selectable-list" style={bckgcolor}>
                 <div className="checkbox">
@@ -62,7 +69,7 @@ export class ElementOfSelectableList extends
                 <div className="truncate">
                     <ListItem
                         onClick={() => this.props.selectFunction(this.props.item)}
-                        primaryText={this.props.item.fileName}
+                        primaryText={fileLabel}
                         style={
                             this.props.reducer.getState().comparisonActive ?
                                 { color: this.props.color } :
@@ -84,7 +91,7 @@ export class ElementOfSelectableList extends
 
     private isCurrentFile() {
         let currFile = this.props.reducer.getState().currentFile;
-        if (currFile !== undefined && currFile.fileName === this.props.item.fileName &&
+        if (currFile && currFile !== undefined && currFile.fileName === this.props.item.fileName &&
             currFile.fileSize === this.props.item.fileSize) {
             return true;
         } else {

@@ -16,6 +16,7 @@ import LoadedFilesTab from './loaded-files-tab';
 import SavedFilesTab from './saved-files-tab';
 import OverridePopUpDialog from './override-popup-dialog';
 import { DeletePopUpDialog } from './delete-popup-dialog';
+import { Dialog, FlatButton } from 'material-ui';
 
 export interface SideBarProps {
     reducer: ApplicationStateReducer;
@@ -30,6 +31,8 @@ export interface SideBarState {
     openedOverrideDialog: boolean;
     openedDeleteDialog: boolean;
     fileInPopUp?: LightweightFile;
+    openedEditationMessageDialog: boolean;
+    isFileEdited: boolean;
 }
 
 export default class SideBar extends React.Component<SideBarProps, SideBarState> {
@@ -44,15 +47,18 @@ export default class SideBar extends React.Component<SideBarProps, SideBarState>
             savedFiles: [],
             openedOverrideDialog: false,
             openedDeleteDialog: false,
-            fileInPopUp: undefined
+            fileInPopUp: undefined,
+            openedEditationMessageDialog: false,
+            isFileEdited: false,
         };
 
         this.handleCloseOverrideDialog = this.handleCloseOverrideDialog.bind(this);
         this.handleCloseDeleteDialog = this.handleCloseDeleteDialog.bind(this);
         this.showPopUpOverrideConfirmation = this.showPopUpOverrideConfirmation.bind(this);
         this.showPopUpDeleteConfirmation = this.showPopUpDeleteConfirmation.bind(this);
+        this.isFileEditing = this.isFileEditing.bind(this);
         this.saveFile = this.saveFile.bind(this);
-        
+
     }
 
     public componentDidMount() {
@@ -61,7 +67,8 @@ export default class SideBar extends React.Component<SideBarProps, SideBarState>
                 loadedFiles: state.loadedFiles,
                 recentFiles: state.recentFiles,
                 selectedFiles: state.selectedFiles,
-                savedFiles: state.savedFiles
+                savedFiles: state.savedFiles,
+                isFileEdited: state.entryBeingEdited !== undefined,
             });
         });
     }
@@ -84,6 +91,7 @@ export default class SideBar extends React.Component<SideBarProps, SideBarState>
                             colorDictionary={this.props.colorDictionary}
                             className={'tab-container'}
                             initialCheckedCheckboxes={this.props.reducer.getState().selectedFiles.length}
+                            isFileEditing={this.isFileEditing}
                         />
                     </Tab>
                     <Tab label="Saved">
@@ -96,10 +104,11 @@ export default class SideBar extends React.Component<SideBarProps, SideBarState>
                             recentFiles={this.state.recentFiles}
                             colorDictionary={this.props.colorDictionary}
                             className={'tab-container'}
+                            isFileEditing={this.isFileEditing}
                         />
                     </Tab>
                 </Tabs>
-                
+
                 <OverridePopUpDialog
                     reducer={this.props.reducer}
                     saveFile={this.saveFile}
@@ -112,8 +121,30 @@ export default class SideBar extends React.Component<SideBarProps, SideBarState>
                     openedDeleteDialog={this.state.openedDeleteDialog}
                     fileInPopUp={this.state.fileInPopUp}
                 />
+                <Dialog
+                    title={'Save editing changes before switching file'}
+                    actions={[
+                        <FlatButton
+                            label={'Close'}
+                            primary={true}
+                            onTouchTap={() => { this.setState({ openedEditationMessageDialog: false }); }}
+                        />]
+                    }
+                    modal={true}
+                    open={this.state.openedEditationMessageDialog}
+                >
+                    <h3>You cannot switch between files while you editations are not saved with check mark</h3>
+                </Dialog>
             </Paper>
         );
+    }
+
+    private isFileEditing(): boolean {
+        if (this.state.isFileEdited) {
+            this.setState({ openedEditationMessageDialog: true });
+            return true;
+        }
+        return false;
     }
 
     /**

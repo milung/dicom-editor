@@ -32,6 +32,9 @@ export function prepareTestFileWithSequence(): HeavyweightFile {
 
 export function prepareDicomEntry(): DicomEntry {
     return {
+        id: 1,
+        offset: 12456,
+        byteLength: 10,
         tagGroup: '0001',
         tagElement: '0002',
         tagName: 'Test name',
@@ -45,6 +48,9 @@ export function prepareDicomEntry(): DicomEntry {
 
 export function prepareDicomSequence(): DicomEntry {
     return {
+        id: 1,
+        byteLength: 0,
+        offset: 0,
         tagGroup: '0001',
         tagElement: '0002',
         tagName: 'Sequence name',

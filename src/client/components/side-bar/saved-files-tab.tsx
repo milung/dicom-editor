@@ -8,6 +8,7 @@ import { ActionWatchLater, ContentSave } from 'material-ui/svg-icons';
 import { ColorDictionary } from '../../utils/colour-dictionary';
 import './side-bar.css';
 import { RecentFileStoreUtil } from '../../utils/recent-file-store-util';
+import { storeFilesToDB } from '../../utils/loaded-files-store-util';
 
 interface SavedFilesTabProps {
     reducer: ApplicationStateReducer;
@@ -18,6 +19,7 @@ interface SavedFilesTabProps {
     saveFile: Function;
     className: string;
     colorDictionary: ColorDictionary;
+    isFileEditing?: Function;
 }
 
 interface SavedFilesTabState {
@@ -115,6 +117,9 @@ export default class SavedFilesTab extends React.Component<SavedFilesTabProps, S
     }
 
     private selectCurrentFile(file: LightweightFile) {
+        if (this.props.isFileEditing && this.props.isFileEditing()) {
+            return;
+        }
         this.updateCurrentFromRecentFile(file);
         this.props.reducer.removeAllSelectedFiles();
         this.props.reducer.setComparisonActive(false);
@@ -125,6 +130,7 @@ export default class SavedFilesTab extends React.Component<SavedFilesTabProps, S
         let fileStorage = new RecentFileStoreUtil(this.props.reducer);
         fileStorage.getRecentFile(file.dbKey).then(data => {
             this.props.reducer.addLoadedFiles([data]);
+            storeFilesToDB(this.props.reducer);
         });
         fileStorage.handleStoringRecentFile(file);
     }

@@ -3,6 +3,9 @@ import { DicomEntry, DicomSimpleComparisonData, DicomComparisonData } from '../m
 
 function createEntryCopy(entry: DicomEntry): DicomEntry {
     let entryCopy: DicomEntry = {
+        id: entry.id,
+        offset: entry.offset,
+        byteLength: entry.byteLength,
         tagGroup: entry.tagGroup,
         tagElement: entry.tagElement,
         tagName: entry.tagName,
@@ -22,11 +25,12 @@ export function compareTwoFiles(
     color2: string): DicomSimpleComparisonData {
     let comparisonEntries: DicomSimpleComparisonData = { dicomComparisonData: [] };
 
-    let fileMap2 = entries2.reduce(function (map: {}, obj: DicomEntry) {
-        map[obj.tagGroup + obj.tagElement] = obj;
-        return map;
-    },
-                                   {});
+    let fileMap2 = entries2.reduce(
+        function (map: {}, obj: DicomEntry) {
+            map[obj.tagGroup + obj.tagElement] = obj;
+            return map;
+        },
+        {});
 
     let commonMap = {};
     entries1.map((entry, index) => {
@@ -102,9 +106,12 @@ export function compareTwoFiles(
 
     entries2.forEach(entry => {
         if (commonMap[entry.tagGroup + entry.tagElement] === undefined) {
-            let entries = [
+            let entries: DicomEntry[] = [
 
                 {
+                    id: entry.id,
+                    offset: entry.offset,
+                    byteLength: entry.byteLength,
                     tagGroup: entry.tagGroup,
                     tagElement: entry.tagElement,
                     tagName: entry.tagName,
@@ -115,6 +122,9 @@ export function compareTwoFiles(
                     sequence: entry.sequence
                 },
                 {
+                    id: entry.id + 100000,
+                    offset: entry.offset,
+                    byteLength: entry.byteLength,
                     tagGroup: entry.tagGroup,
                     tagElement: entry.tagElement,
                     tagName: 'Missing name',
@@ -139,6 +149,9 @@ export function compareTwoFiles(
         if (commonMap[entry.tagGroup + entry.tagElement] === undefined) {
             let entries: DicomEntry[] = [
                 {
+                    id: entry.id,
+                    offset: entry.offset,
+                    byteLength: entry.byteLength,
                     tagGroup: entry.tagGroup,
                     tagElement: entry.tagElement,
                     tagName: entry.tagName,
@@ -149,6 +162,9 @@ export function compareTwoFiles(
                     sequence: entry.sequence
                 },
                 {
+                    id: entry.id + 100000,
+                    offset: entry.offset,
+                    byteLength: entry.byteLength,
                     tagGroup: entry.tagGroup,
                     tagElement: entry.tagElement,
                     tagName: 'Missing name',

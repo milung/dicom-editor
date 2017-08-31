@@ -13,7 +13,8 @@ import {
     DicomSimpleData,
     DicomSimpleComparisonData,
     DicomExtendedData,
-    DicomExtendedComparisonData
+    DicomExtendedComparisonData,
+    DicomEntry
 } from '../model/dicom-entry';
 import { compareTwoFiles, areFilesExactlySame } from '../utils/dicom-comparator';
 import { ApplicationStateReducer } from '../application-state';
@@ -21,7 +22,11 @@ import { DicomSimpleComparisonTable } from './dicom-table/dicom-simple-compariso
 import { DicomExtendedComparisonTable } from './dicom-table/dicom-extended-comparison-table';
 import { FileSearcher } from '../utils/file-searcher';
 import { DicomReader } from '../utils/dicom-reader';
-import { Toggle } from 'material-ui';
+import { Toggle, RaisedButton } from 'material-ui';
+import { applyChangesForDisplay, EditUtil } from '../utils/edit-util';
+import { ContentAddBox } from 'material-ui/svg-icons';
+import { AddTagDialog } from './add-tag-dialog';
+import { ChangeType } from '../model/edit-interface';
 
 var isEqual = require('lodash.isequal');
 
@@ -36,6 +41,7 @@ interface TagViewerProps {
 interface TagViewerState {
     showOnlyDiffs: boolean;
     exactlySameFiles: boolean;
+    addTagDialogOpen: boolean;
 }
 
 export default class TagViewer extends React.Component<TagViewerProps, TagViewerState> {
@@ -47,8 +53,11 @@ export default class TagViewer extends React.Component<TagViewerProps, TagViewer
         this.showOnlyDiffsOn = this.showOnlyDiffsOn.bind(this);
         this.state = {
             showOnlyDiffs: true,
-            exactlySameFiles: false
+            exactlySameFiles: false,
+            addTagDialogOpen: false
         };
+
+        this.handleAddNewEntry = this.handleAddNewEntry.bind(this);
     }
 
     public componentWillReceiveProps(nextProps: TagViewerProps) {
@@ -80,8 +89,9 @@ export default class TagViewer extends React.Component<TagViewerProps, TagViewer
 
     render() {
         let reader = new DicomReader();
-        let data: DicomSimpleData = this.props.currentFile.dicomData;
+        let data: DicomSimpleData = applyChangesForDisplay(this.props.currentFile);
         let sopClass = reader.getSopClassFromParsedDicom(data);
+        
         let simpleComparisonData: DicomSimpleComparisonData = { dicomComparisonData: [] };
 
         if (this.props.comparisonActive) {
@@ -103,31 +113,68 @@ export default class TagViewer extends React.Component<TagViewerProps, TagViewer
             }
         }
 
+        let table: JSX.Element;
         switch (this.props.tableMode) {
             case TableMode.SIMPLE:
                 if (this.props.comparisonActive) {
-                    return this.renderSimpleComparisonTable(simpleComparisonData);
+                    table = this.renderSimpleComparisonTable(simpleComparisonData);
                 } else {
-                    return this.renderSimpleTable(data);
+                    table = this.renderSimpleTable(data);
                 }
-
+                break;
             case TableMode.EXTENDED:
                 if (this.props.comparisonActive) {
-                    return this.renderExtendedComparisonTable(simpleComparisonData, sopClass);
+                    table = this.renderExtendedComparisonTable(simpleComparisonData, sopClass);
                 } else {
-                    return this.renderExtendedTable(data, sopClass);
+                    table = this.renderExtendedTable(data, sopClass);
                 }
+                break;
             default:
-                return (
+                table = (
                     <div />
                 );
         }
+
+        return (
+            <div>
+                <RaisedButton
+                    label={'add tag'}
+                    icon={<ContentAddBox />}
+                    primary={true}
+                    style={{marginBottom: '15px'}}
+                    onClick={() => {
+                        this.setState({
+                            addTagDialogOpen: true
+                        });
+                    }}
+                />
+                {table}
+                <AddTagDialog
+                    handleClosePopUpDialog={() => this.setState({
+                        addTagDialogOpen: false
+                    })}
+                    handleCancelPopUpDialog={() => this.setState({
+                        addTagDialogOpen: false
+                    })}
+                    handleAction={this.handleAddNewEntry}
+                    openedPopUpDialog={this.state.addTagDialogOpen}
+                />
+            </div>
+        );
+    }
+
+    private handleAddNewEntry(newEntry: DicomEntry) {
+        let editUtil: EditUtil = new EditUtil(this.props.reducer);
+        editUtil.applyChangeToCurrentFile(newEntry, ChangeType.ADD);
+        this.setState({
+            addTagDialogOpen: false
+        });
     }
 
     private renderSimpleTable(data: DicomSimpleData): JSX.Element {
         return data.entries.length >= 1 ? (
             <div>
-                <DicomSimpleTable entries={data.entries} />
+                <DicomSimpleTable entries={data.entries} reducer={this.props.reducer} />
             </div>
         ) : (<div />);
     }
@@ -141,7 +188,7 @@ export default class TagViewer extends React.Component<TagViewerProps, TagViewer
 
         return (!isEqual(filtered, {})) ? (
             <div>
-                <DicomExtendedTable data={filtered} />
+                <DicomExtendedTable data={filtered} reducer={this.props.reducer} />
             </div>
         ) : (<div>No data to display or no modules found for SOP class: {sopClass ? sopClass : 'Undefined'}</ div>);
     }

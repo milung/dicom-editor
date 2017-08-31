@@ -63,6 +63,9 @@ export class FileSearcher {
                     let res = this.findResultsOfSearch(searchExpression, row.sequence);
                     if (res.length > 0) {
                         let result: DicomEntry = {
+                            id: row.id,
+                            byteLength: row.byteLength,
+                            offset: row.offset,
                             tagGroup: row.tagGroup,
                             tagElement: row.tagElement,
                             tagName: row.tagName,

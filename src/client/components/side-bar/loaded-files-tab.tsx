@@ -24,6 +24,7 @@ interface LoadedFilesTabProps {
     colorDictionary: ColorDictionary;
     className: string;
     initialCheckedCheckboxes: number;
+    isFileEditing?: Function;
 }
 
 interface LoadedFilesTabState {
@@ -223,6 +224,9 @@ export default class LoadedFilesTab extends React.Component<LoadedFilesTabProps,
     }
 
     private selectCurrentFile(file: HeavyweightFile) {
+        if (this.props.isFileEditing && this.props.isFileEditing()) {
+            return;
+        }
         this.props.reducer.removeAllSelectedFiles();
         this.props.reducer.setComparisonActive(false);
         this.props.colorDictionary.reset();

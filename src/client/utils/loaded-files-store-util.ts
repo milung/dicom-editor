@@ -104,7 +104,11 @@ export async function storeFilesToDB(reducer: ApplicationStateReducer) {
     const currentFileToStore = reducer.getState().currentFile;
 
     const currentKeys = reducerLoadedFiles.map((reducerFile, index) => {
-        return reducerFile.fileName + reducerFile.fileSize.toString();
+        if (reducerFile) {
+            return reducerFile.fileName + reducerFile.fileSize.toString();
+        } else {
+            return '';
+        }
     });
 
     for (var i = 0; i < currentKeys.length; i++) {
@@ -157,7 +161,7 @@ export async function loadLoadedFiles(reducer: ApplicationStateReducer) {
     if (currentFile.fileName.localeCompare(files[files.length - 1].fileName) > 0) {
         files.splice(files.length, 0, currentFile);
     }
-    
+
     if (currentFile.fileName.localeCompare(files[0].fileName) < 0) {
         files.splice(0, 0, currentFile);
     }
@@ -165,12 +169,31 @@ export async function loadLoadedFiles(reducer: ApplicationStateReducer) {
     for (var i = 0; i < files.length - 1; i++) {
         if (currentFile.fileName.localeCompare(files[i].fileName) > 0 &&
             currentFile.fileName.localeCompare(files[i + 1].fileName) < 0) {
-                
+
             files.splice(i + 1, 0, currentFile);
             break;
         }
     }
-    
+
+    // remove unsaved changes
+    if (currentFile) {
+        currentFile.unsavedChanges = undefined;
+    }
+
+    if (files) {
+        files.forEach((file) => {
+            if (file) {
+                file.unsavedChanges = undefined;
+            }
+        });
+    }
+
+    files.forEach((file, index) => {
+        if (file && file.fileName === currentFile.fileName) {
+            files[index] = currentFile;
+        }
+    });
+
     reducer.addLoadedFiles(files);
     reducer.updateCurrentFile(currentFile);
 }

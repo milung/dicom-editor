@@ -106,6 +106,9 @@ describe('FileSearcher -> searchFile() ->', () => {
         let testFile = prepareTestFile();
         testFile.dicomData.entries.push(
             {
+                id: 1,
+                offset: 123456,
+                byteLength: 0,
                 tagGroup: '0011',
                 tagElement: '0022',
                 tagName: 'Test name2',
