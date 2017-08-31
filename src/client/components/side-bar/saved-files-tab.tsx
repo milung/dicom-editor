@@ -140,6 +140,7 @@ export default class SavedFilesTab extends React.Component<SavedFilesTabProps, S
             this.props.reducer.addLoadedFiles([data]);
             let recentUtil = new RecentFileStoreUtil(this.props.reducer);
             recentUtil.handleStoringRecentFile(file);
+            storeFilesToDB(this.props.reducer);
         });
     }
 }

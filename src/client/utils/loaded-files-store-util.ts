@@ -158,14 +158,13 @@ export async function loadLoadedFiles(reducer: ApplicationStateReducer) {
         }
     });
 
-    if (currentFile.fileName.localeCompare(files[files.length - 1].fileName) > 0) {
+    // add currentfile to loadedFile
+    if (files.length === 0 || currentFile.fileName.localeCompare(files[files.length - 1].fileName) > 0) {
         files.splice(files.length, 0, currentFile);
     }
-
-    if (currentFile.fileName.localeCompare(files[0].fileName) < 0) {
+    if (files.length === 0 || currentFile.fileName.localeCompare(files[0].fileName) < 0) {
         files.splice(0, 0, currentFile);
     }
-
     for (var i = 0; i < files.length - 1; i++) {
         if (currentFile.fileName.localeCompare(files[i].fileName) > 0 &&
             currentFile.fileName.localeCompare(files[i + 1].fileName) < 0) {
@@ -174,6 +173,7 @@ export async function loadLoadedFiles(reducer: ApplicationStateReducer) {
             break;
         }
     }
+    
 
     // remove unsaved changes
     if (currentFile) {
