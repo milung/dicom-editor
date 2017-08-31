@@ -174,7 +174,6 @@ export async function loadLoadedFiles(reducer: ApplicationStateReducer) {
         }
     }
     
-
     // remove unsaved changes
     if (currentFile) {
         currentFile.unsavedChanges = undefined;
