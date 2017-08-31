@@ -104,7 +104,11 @@ export async function storeFilesToDB(reducer: ApplicationStateReducer) {
     const currentFileToStore = reducer.getState().currentFile;
 
     const currentKeys = reducerLoadedFiles.map((reducerFile, index) => {
-        return reducerFile.fileName + reducerFile.fileSize.toString();
+        if (reducerFile) {
+           return reducerFile.fileName + reducerFile.fileSize.toString(); 
+        } else {
+            return '';
+        }
     });
 
     for (var i = 0; i < currentKeys.length; i++) {
@@ -148,12 +152,14 @@ export async function loadLoadedFiles(reducer: ApplicationStateReducer) {
 
     if (files) {
         files.forEach((file) => {
-            file.unsavedChanges = undefined;
+            if (file) {
+                file.unsavedChanges = undefined;
+            }
         });
     }
 
     files.forEach((file, index) => {
-        if (file.fileName === currentFile.fileName) {
+        if (file && file.fileName === currentFile.fileName) {
             files[index] = currentFile;
         }
     });

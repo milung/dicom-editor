@@ -78,13 +78,19 @@ export class DicomEditor {
         let buffer = file.bufferedData;
         let changes = file.unsavedChanges || [];
         let sequences: Sequence[] = [];
+        let littleEndian: boolean = true;
+        file.dicomData.entries.forEach(element => {
+            if (element.tagValue === '1.2.840.10008.1.2.2') {
+                littleEndian = false;
+            }
+        });
         if (changes) {
             sequences = this.getSequences(sequences, file.dicomData.entries);
             changes = this.handleSequenceChanges(changes, sequences);
             changes.forEach(change => {
                 if (change.type === ChangeType.ADD) {
-                    let newTagName = this.writeTagName(change.entry.tagGroup, change.entry.tagElement);
-                    let newTag = this.createTag(newTagName, change.entry);
+                    let newTagName = this.writeTagName(change.entry.tagGroup, change.entry.tagElement, littleEndian);
+                    let newTag = this.createTag(newTagName, change.entry, littleEndian);
                     let offset = this.findOffsetForNewTag(file.dicomData.entries, change.entry);
                     buffer = this.insertTag(buffer, newTag, offset);
                     sequences = this.checkSequences(sequences, change, newTag.length);
@@ -95,11 +101,11 @@ export class DicomEditor {
                             currentSequence = sequences.shift();
                         }
                         if (currentSequence && currentSequence.entry.byteLength !== currentSequence.length) {
-                            buffer = this.rewriteSQlength(buffer, currentSequence);
+                            buffer = this.rewriteSQlength(buffer, currentSequence, littleEndian);
                         }
                     } else {
                         let tagName = this.getElementAndGroup(buffer, change.entry.offset);
-                        let newTag = this.createTag(tagName, change.entry);
+                        let newTag = this.createTag(tagName, change.entry, littleEndian);
                         buffer = this.replaceTag(buffer, change.entry, newTag);
                         sequences = this.checkSequences(sequences, change, newTag.length);
                     }
@@ -136,10 +142,10 @@ export class DicomEditor {
      * @description changes the length of a sequence in the bytearray
      * @return buffer with the updated SQ lenth
      */
-    public rewriteSQlength(buffer: Uint8Array, sequence: Sequence) {
+    public rewriteSQlength(buffer: Uint8Array, sequence: Sequence, littleEndian: boolean) {
         let beginning = buffer.slice(0, sequence.entry.offset + longHeaderLengthOffset);
         let end = buffer.slice(sequence.entry.offset + longHeaderLen, );
-        let newSQlength = this.writeTypedNumber(sequence.length, 'uint32', longHeaderLengthLen);
+        let newSQlength = this.writeTypedNumber(sequence.length, 'uint32', longHeaderLengthLen, littleEndian);
         let updatedBuffer = new Uint8Array(buffer.length);
         updatedBuffer.set(beginning);
         updatedBuffer.set(newSQlength, beginning.length);
@@ -153,14 +159,14 @@ export class DicomEditor {
      * @description creates a bytearray representing the tag
      * @return tag's bytearray
      */
-    public createTag(tagName: Uint8Array, tag: DicomEntry) {
+    public createTag(tagName: Uint8Array, tag: DicomEntry, littleEndian: boolean) {
         let valueOffset = this.getHeaderLength(tag);
         let valueLength = this.getValueLength(tag);
 
         let tagVR = this.writeVRArray(tag.tagVR);
         let tagLength = valueOffset === longHeaderLen ?
-            this.writeTypedNumber(valueLength, 'uint32', longHeaderLengthLen) :
-            this.writeTypedNumber(valueLength, 'uint16', lengthLen);
+            this.writeTypedNumber(valueLength, 'uint32', longHeaderLengthLen, littleEndian) :
+            this.writeTypedNumber(valueLength, 'uint16', lengthLen, littleEndian);
         let newTag = new Uint8Array(valueLength + valueOffset);
         newTag.set(tagName);
         newTag.set(tagVR, vrOffset);
@@ -168,28 +174,34 @@ export class DicomEditor {
 
         switch (tag.tagVR) {
             case 'FD':
-                newTag.set(this.writeTypedNumber(parseInt(tag.tagValue, 10), 'double', valueLength), valueOffset);
+                newTag.set(this.writeTypedNumber(parseInt(tag.tagValue, 10), 'double', valueLength, littleEndian), 
+                           valueOffset);
                 break;
             case 'FL':
-                newTag.set(this.writeTypedNumber(parseInt(tag.tagValue, 10), 'float', valueLength), valueOffset);
+                newTag.set(this.writeTypedNumber(parseInt(tag.tagValue, 10), 'float', valueLength, littleEndian), 
+                           valueOffset);
                 break;
             case 'UL':
-                newTag.set(this.writeTypedNumber(parseInt(tag.tagValue, 10), 'uint32', valueLength), valueOffset);
+                newTag.set(this.writeTypedNumber(parseInt(tag.tagValue, 10), 'uint32', valueLength, littleEndian), 
+                           valueOffset);
                 break;
             case 'US':
-                newTag.set(this.writeTypedNumber(parseInt(tag.tagValue, 10), 'uint16', valueLength), valueOffset);
+                newTag.set(this.writeTypedNumber(parseInt(tag.tagValue, 10), 'uint16', valueLength, littleEndian), 
+                           valueOffset);
                 break;
             case 'SL':
-                newTag.set(this.writeTypedNumber(parseInt(tag.tagValue, 10), 'int32', valueLength), valueOffset);
+                newTag.set(this.writeTypedNumber(parseInt(tag.tagValue, 10), 'int32', valueLength, littleEndian), 
+                           valueOffset);
                 break;
             case 'SS':
-                newTag.set(this.writeTypedNumber(parseInt(tag.tagValue, 10), 'int16', valueLength), valueOffset);
+                newTag.set(this.writeTypedNumber(parseInt(tag.tagValue, 10), 'int16', valueLength, littleEndian), 
+                           valueOffset);
                 break;
             case 'AT':
                 let atGroup = parseInt(tag.tagValue.slice(0, 4), 16);
                 let atElement = parseInt(tag.tagValue.slice(4, ), 16);
-                newTag.set(this.writeTypedNumber(atGroup, 'uint16', valueLength / 2), valueOffset);
-                newTag.set(this.writeTypedNumber(atElement, 'uint16', valueLength / 2), valueOffset + 2);
+                newTag.set(this.writeTypedNumber(atGroup, 'uint16', valueLength / 2, littleEndian), valueOffset);
+                newTag.set(this.writeTypedNumber(atElement, 'uint16', valueLength / 2, littleEndian), valueOffset + 2);
                 break;
             default:
                 for (var i = 0; i < tag.tagValue.length; i++) {
@@ -341,9 +353,9 @@ export class DicomEditor {
      * @param tagElement string representation of a tag's element (hexa number)
      * @return bytearray of tagGroup and tagElement
      */
-    private writeTagName(tagGroup: string, tagElement: string) {
-        let group = this.writeTypedNumber(parseInt(tagGroup, 16), 'uint16', groupLen);
-        let element = this.writeTypedNumber(parseInt(tagElement, 16), 'uint16', elementLen);
+    private writeTagName(tagGroup: string, tagElement: string, littleEndian: boolean) {
+        let group = this.writeTypedNumber(parseInt(tagGroup, 16), 'uint16', groupLen, littleEndian);
+        let element = this.writeTypedNumber(parseInt(tagElement, 16), 'uint16', elementLen, littleEndian);
         let tagName = new Uint8Array(groupLen + elementLen);
         tagName.set(group);
         tagName.set(element, groupLen);
@@ -367,30 +379,30 @@ export class DicomEditor {
      * @param type defines the number type: e.g. unsigned 16 B integer - uint16
      * @return bytearray of the number
      */
-    private writeTypedNumber(num: number, type: string, arrayLength: number) {
+    private writeTypedNumber(num: number, type: string, arrayLength: number, littleEndian: boolean) {
         let arrbuff = new ArrayBuffer(arrayLength);
         let view = new DataView(arrbuff);
         switch (type) {
             case 'uint16':
-                view.setUint16(0, num, true);
+                view.setUint16(0, num, littleEndian);
                 break;
             case 'uint32':
-                view.setUint16(0, num, true);
+                view.setUint16(0, num, littleEndian);
                 break;
             case 'int8':
                 view.setInt8(0, num);
                 break;
             case 'int16':
-                view.setInt16(0, num, true);
+                view.setInt16(0, num, littleEndian);
                 break;
             case 'int32':
-                view.setInt32(0, num, true);
+                view.setInt32(0, num, littleEndian);
                 break;
             case 'float':
-                view.setFloat32(0, num, true);
+                view.setFloat32(0, num, littleEndian);
                 break;
             case 'double':
-                view.setFloat64(0, num, true);
+                view.setFloat64(0, num, littleEndian);
                 break;
             default:
                 break;

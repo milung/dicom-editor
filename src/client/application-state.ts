@@ -191,7 +191,7 @@ export class ApplicationStateReducer {
 
     public findLoadedFileByName(fileName: string): (HeavyweightFile | undefined) {
         for (var index = 0; index < this.currentState.loadedFiles.length; index++) {
-            if (this.currentState.loadedFiles[index].fileName === fileName) {
+            if (this.currentState.loadedFiles[index] && this.currentState.loadedFiles[index].fileName === fileName) {
                 return this.currentState.loadedFiles[index];
             }
         }
@@ -216,7 +216,7 @@ export class ApplicationStateReducer {
 
     private addOneLoadedFile(file: HeavyweightFile) {
         this.currentState.loadedFiles.forEach((e, index) => {
-            if (e.fileName === file.fileName) {
+            if (e && e.fileName === file.fileName) {
                 this.currentState.loadedFiles.splice(index, 1);
             }
         });

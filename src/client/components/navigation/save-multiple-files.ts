@@ -86,6 +86,7 @@ export class MultiSave {
     }
 
     private async tryToSaveOneFile(file: HeavyweightFile) {
+
         file.timestamp = (new Date()).getTime();
         let isSaved = await isFileSavedInDb(file);
         if (!isSaved) {
