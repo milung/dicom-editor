@@ -125,6 +125,7 @@ export default class SideBar extends React.Component<SideBarProps, SideBarState>
                     title={'Save editing changes before switching file'}
                     actions={[
                         <FlatButton
+                            key={1}
                             label={'Close'}
                             primary={true}
                             onTouchTap={() => { this.setState({ openedEditationMessageDialog: false }); }}

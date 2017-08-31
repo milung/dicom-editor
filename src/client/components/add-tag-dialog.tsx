@@ -68,6 +68,7 @@ export class AddTagDialog extends React.Component<AddTagDialogProps, AddTagDialo
                     title={'Invalid dicom entry'}
                     actions={[
                         <FlatButton
+                            key={1}
                             label={'OK'}
                             primary={true}
                             onTouchTap={() => { this.setState({ openedInvalidDialog: false }); }}
