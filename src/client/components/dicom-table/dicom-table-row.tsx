@@ -213,14 +213,13 @@ export class DicomTableRow extends React.Component<DicomTableRowProps, DicomTabl
                             onClick={this.props.handleEnterEditing}
                         />
                     );
+                    secondIcon = (
+                        <ActionDelete
+                            className="row-icon row-icon-delete"
+                            onClick={this.props.handleDeletingEntry}
+                        />
+                    );
                 }
-
-                secondIcon = (
-                    <ActionDelete
-                        className="row-icon row-icon-delete"
-                        onClick={this.props.handleDeletingEntry}
-                    />
-                );
             }
 
             valueCell = <TableRowColumn style={tableRowColumnStyle3}>{ele}</TableRowColumn>;
