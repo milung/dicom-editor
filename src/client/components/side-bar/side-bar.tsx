@@ -122,7 +122,7 @@ export default class SideBar extends React.Component<SideBarProps, SideBarState>
                     fileInPopUp={this.state.fileInPopUp}
                 />
                 <Dialog
-                    title={'Save editing changes before switching file'}
+                    title={'Save editing changes before switching file?'}
                     actions={[
                         <FlatButton
                             key={1}
@@ -134,7 +134,7 @@ export default class SideBar extends React.Component<SideBarProps, SideBarState>
                     modal={true}
                     open={this.state.openedEditationMessageDialog}
                 >
-                    <h3>You cannot switch between files while you editations are not saved with check mark</h3>
+                    <h3>You cannot switch between files while you editations are not saved with check mark.</h3>
                 </Dialog>
             </Paper>
         );
