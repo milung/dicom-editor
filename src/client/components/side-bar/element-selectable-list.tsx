@@ -45,7 +45,6 @@ export class ElementOfSelectableList extends
         } else {
             this.handleColorChanging();
             deleteSelectedFileFromDB(this.props.item);
-
         }
     }
 
@@ -113,15 +112,15 @@ export class ElementOfSelectableList extends
     private handleColorChanging() {
         let selectedFiles = this.props.reducer.getSelectedFiles();
         let indexOfFile = selectedFiles.indexOf(this.props.item);
+        let freeColor = this.props.reducer.removeSelectedFile(this.props.item.fileName);
+        
+        this.props.colorDictionary.freeColor(freeColor);
+        this.props.checkInform(false);
 
-        if (indexOfFile !== -1 && this.props.reducer.getState().selectedFiles[indexOfFile].colour !== 'black') {
+        if (indexOfFile !== -1 && this.props.reducer.getState().comparisonActive) {
             this.props.reducer.setComparisonActive(false);
             storeComparisonActive(false);
             this.props.reducer.updateCurrentFile(this.props.reducer.getSelectedFiles()[0]);
         }
-
-        let freeColor = this.props.reducer.removeSelectedFile(this.props.item.fileName);
-        this.props.colorDictionary.freeColor(freeColor);
-        this.props.checkInform(false);
     }
 }
