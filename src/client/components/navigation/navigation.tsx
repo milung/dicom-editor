@@ -142,12 +142,12 @@ export class Navigation extends React.Component<NavigationProps, NavigationState
                         openedPopUpDialog={this.state.openedExportDialog}
                     />
                     <OverridePopUpDialog
-                        reducer={this.props.reducer}
                         saveFile={this.saver.saveFile}
                         handleCloseOverrideDialog={this.handleCloseOverwriteDialog}
                         openedOverrideDialog={this.state.openedOverrideDialog}
                         fileName={this.state.conflictFiles[0] ? this.state.conflictFiles[0].fileName : ''}
                         handleCancelOverrideDialog={this.handleCancelOverwriteDialog}
+                        file={this.state.conflictFiles[0]}
                     />
                     <ConflictPopUpDialog
                         handleCloseDialog={this.handleCloseConflictDialog}

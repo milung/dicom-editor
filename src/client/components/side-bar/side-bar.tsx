@@ -14,7 +14,6 @@ import { RecentFileStoreUtil } from '../../utils/recent-file-store-util';
 import { ColorDictionary } from '../../utils/colour-dictionary';
 import LoadedFilesTab from './loaded-files-tab';
 import SavedFilesTab from './saved-files-tab';
-import OverridePopUpDialog from './override-popup-dialog';
 import { DeletePopUpDialog } from './delete-popup-dialog';
 import { Dialog, FlatButton } from 'material-ui';
 
@@ -108,13 +107,6 @@ export default class SideBar extends React.Component<SideBarProps, SideBarState>
                         />
                     </Tab>
                 </Tabs>
-
-                <OverridePopUpDialog
-                    reducer={this.props.reducer}
-                    saveFile={this.saveFile}
-                    handleCloseOverrideDialog={this.handleCloseOverrideDialog}
-                    openedOverrideDialog={this.state.openedOverrideDialog}
-                />
                 <DeletePopUpDialog
                     reducer={this.props.reducer}
                     handleCloseDeleteDialog={this.handleCloseDeleteDialog}

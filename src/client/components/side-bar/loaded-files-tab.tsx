@@ -170,12 +170,12 @@ export default class LoadedFilesTab extends React.Component<LoadedFilesTabProps,
                     openedPopUpDialog={this.state.openExportDialog}
                 />
                 <OverridePopUpDialog
-                    reducer={this.props.reducer}
-                    saveFile={LoadedFilesTab.saver.saveFile}
+                    saveFile={(file: HeavyweightFile) => { LoadedFilesTab.saver.saveFile(file); }}
                     handleCloseOverrideDialog={this.handleCloseOverwriteDialog}
                     openedOverrideDialog={this.state.openedOverrideDialog}
                     fileName={this.state.conflictFiles[0] ? this.state.conflictFiles[0].fileName : ''}
                     handleCancelOverrideDialog={this.handleCancelOverwriteDialog}
+                    file={this.state.conflictFiles[0]}
                 />
                 <ConflictPopUpDialog
                     handleCloseDialog={this.handleCloseConflictDialog}

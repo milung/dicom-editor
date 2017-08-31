@@ -1,14 +1,14 @@
 import * as React from 'react';
 import { PopUpDialog } from '../side-bar/pop-up-dialog';
-import { ApplicationStateReducer } from '../../application-state';
+import { HeavyweightFile } from '../../model/file-interfaces';
 
 interface OverridePopUpDialogProps {
-    reducer: ApplicationStateReducer;
     saveFile: Function;
     handleCancelOverrideDialog: Function;
     handleCloseOverrideDialog: Function;
     openedOverrideDialog: boolean;
     fileName: string;
+    file: HeavyweightFile;
 }
 
 interface OverridePopUpDialogState {
@@ -37,9 +37,8 @@ export class OverridePopUpDialog extends React.Component<OverridePopUpDialogProp
     }
 
     private async handleOverrideButton() {
-        let file = this.props.reducer.getState().currentFile;
-        if (file) {
-           this.props.saveFile(file);
+        if (this.props.file) {
+            this.props.saveFile(this.props.file);
         }
         this.props.handleCancelOverrideDialog();
     }

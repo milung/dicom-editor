@@ -57,7 +57,6 @@ export class MultiSave {
             this.reducer.addSavedFile(lightFile);
         }
 
-
     }
     public handleSaveClick(disabled: boolean) {
         if (!disabled) {
