@@ -122,7 +122,7 @@ export default class SideBar extends React.Component<SideBarProps, SideBarState>
                     fileInPopUp={this.state.fileInPopUp}
                 />
                 <Dialog
-                    title={'Save editing changes before switching file?'}
+                    title={'Unable to switch file while editing'}
                     actions={[
                         <FlatButton
                             key={1}
