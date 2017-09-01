@@ -89,7 +89,7 @@ export default class TagViewer extends React.Component<TagViewerProps, TagViewer
 
     render() {
         let reader = new DicomReader();
-        let data: DicomSimpleData = applyChangesForDisplay(this.props.currentFile);
+        let data: DicomSimpleData = this.props.currentFile.dicomData;
         let sopClass = reader.getSopClassFromParsedDicom(data);
         
         let simpleComparisonData: DicomSimpleComparisonData = { dicomComparisonData: [] };
@@ -113,6 +113,7 @@ export default class TagViewer extends React.Component<TagViewerProps, TagViewer
             }
         }
 
+        data = applyChangesForDisplay(this.props.currentFile, data);
         let table: JSX.Element;
         switch (this.props.tableMode) {
             case TableMode.SIMPLE:

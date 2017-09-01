@@ -42,12 +42,12 @@ export class EditUtil {
 
 }
 
-export function applyChangesForDisplay(heavyFile: HeavyweightFile): DicomSimpleData {
+export function applyChangesForDisplay(heavyFile: HeavyweightFile, dataShown: DicomSimpleData): DicomSimpleData {
     if (heavyFile.unsavedChanges === undefined) {
-        return heavyFile.dicomData;
+        return dataShown;
     }
 
-    let result: DicomSimpleData = JSON.parse(JSON.stringify(heavyFile.dicomData));
+    let result: DicomSimpleData = JSON.parse(JSON.stringify(dataShown));
 
     heavyFile.unsavedChanges.forEach((change) => {
         switch (change.type) {
