@@ -87,8 +87,11 @@ export class DicomEditor {
         });
 
         if (changes) {
+            console.log(changes);
             sequences = this.getSequences(sequences, file.dicomData.entries);
+            console.log(sequences);
             changes = this.handleSequenceChanges(changes, sequences);
+            console.log(changes);
 
             changes.forEach(change => {
 
