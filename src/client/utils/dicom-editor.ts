@@ -79,22 +79,28 @@ export class DicomEditor {
         let changes = file.unsavedChanges || [];
         let sequences: Sequence[] = [];
         let littleEndian: boolean = true;
+
         file.dicomData.entries.forEach(element => {
             if (element.tagValue === '1.2.840.10008.1.2.2') {
                 littleEndian = false;
             }
         });
+
         if (changes) {
             sequences = this.getSequences(sequences, file.dicomData.entries);
             changes = this.handleSequenceChanges(changes, sequences);
+
             changes.forEach(change => {
+
                 if (change.type === ChangeType.ADD) {
                     let newTagName = this.writeTagName(change.entry.tagGroup, change.entry.tagElement, littleEndian);
                     let newTag = this.createTag(newTagName, change.entry, littleEndian);
                     let offset = this.findOffsetForNewTag(file.dicomData.entries, change.entry);
                     buffer = this.insertTag(buffer, newTag, offset);
                     sequences = this.checkSequences(sequences, change, newTag.length);
+
                 } else if (change.type === ChangeType.EDIT) {
+                    
                     if (change.entry.tagVR === 'SQ') {
                         let currentSequence = sequences.shift();
                         while (currentSequence && currentSequence.entry.id !== change.entry.id) {
@@ -109,6 +115,7 @@ export class DicomEditor {
                         buffer = this.replaceTag(buffer, change.entry, newTag);
                         sequences = this.checkSequences(sequences, change, newTag.length);
                     }
+
                 } else if (change.type === ChangeType.REMOVE) {
                     buffer = this.removeTag(buffer, change.entry);
                     sequences = this.checkSequences(sequences, change, 0);

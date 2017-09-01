@@ -77,12 +77,19 @@ export function updateDicomTag(dicomData: DicomSimpleData, newEntry: DicomEntry)
     applyChangedValues(entryToUpdate, newEntry);
 }
 
-export function removeDicomTag(dicomData: DicomSimpleData, entry: DicomEntry) {
-    let index = findIndexForEntryId(dicomData, entry.id);
+export function removeDicomTag(dicomData: DicomSimpleData, tag: DicomEntry) {
+    removeTag(dicomData.entries, tag);
+}
 
-    if (index > -1) {
-        dicomData.entries.splice(index, 1);
-    }
+export function removeTag(entries: DicomEntry[], tag: DicomEntry) {
+    entries.forEach((entry, index) => {
+        if (entry.id === tag.id) {
+            entries.splice(index, 1);
+            return;
+        } else if (entry.sequence.length > 0) {
+            removeTag(entry.sequence, tag);
+        }
+    });
 }
 
 export function addDicomTag(dicomData: DicomSimpleData, entry: DicomEntry) {
