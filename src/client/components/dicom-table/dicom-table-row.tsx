@@ -12,6 +12,8 @@ import { ValidationTooltip } from './validation-tooltip';
 var fileDownload = require('react-file-download');
 const PIXEL_DATA_GROUP: string = '7fe0';
 const PIXEL_DATA_ELEMENT: string = '0010';
+const TRANSFER_SYNTAX_UID_GROUP: string = '0002';
+const TRANSFER_SYNTAX_UID_ELEMENT: string = '0010';
 
 export const VALID_STYLE = {
     color: '#00e600'
@@ -206,7 +208,11 @@ export class DicomTableRow extends React.Component<DicomTableRowProps, DicomTabl
             if (this.props.compareMode === undefined || this.props.compareMode === false) {
                 let isPixelData = this.props.entry.tagGroup === PIXEL_DATA_GROUP
                     && this.props.entry.tagElement === PIXEL_DATA_ELEMENT;
-                if (!isPixelData) {
+
+                let isTransferSyntaxUID = this.props.entry.tagGroup === TRANSFER_SYNTAX_UID_GROUP
+                    && this.props.entry.tagElement === TRANSFER_SYNTAX_UID_ELEMENT;
+
+                if (!isPixelData && !isTransferSyntaxUID) {
                     firstIcon = (
                         <EditorModeEdit
                             className="row-icon row-icon-edit"
