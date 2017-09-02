@@ -23,6 +23,7 @@ const longHeaderLen = 12;
 const vrOffset = 4;
 const lengthOffset = 6;
 const longHeaderLengthOffset = 8;
+const itemLengthOffset = 4;
 
 export class DicomEditor {
 
@@ -78,20 +79,12 @@ export class DicomEditor {
         let buffer = file.bufferedData;
         let changes = file.unsavedChanges || [];
         let sequences: Sequence[] = [];
-        let littleEndian: boolean = true;
-
-        file.dicomData.entries.forEach(element => {
-            if (element.tagValue === '1.2.840.10008.1.2.2') {
-                littleEndian = false;
-            }
-        });
+        let littleEndian: boolean = this.getEndian(file.dicomData.entries);
 
         if (changes) {
-            console.log(changes);
-            sequences = this.getSequences(sequences, file.dicomData.entries);
-            console.log(sequences);
+
+            sequences = this.getSequences(sequences, file.dicomData.entries, buffer, littleEndian);
             changes = this.handleSequenceChanges(changes, sequences);
-            console.log(changes);
 
             changes.forEach(change => {
 
@@ -103,8 +96,8 @@ export class DicomEditor {
                     sequences = this.checkSequences(sequences, change, newTag.length);
 
                 } else if (change.type === ChangeType.EDIT) {
-                    
-                    if (change.entry.tagVR === 'SQ') {
+
+                    if (change.entry.tagVR === 'SQ' || change.entry.tagVR === 'item') {
                         let currentSequence = sequences.shift();
                         while (currentSequence && currentSequence.entry.id !== change.entry.id) {
                             currentSequence = sequences.shift();
@@ -126,6 +119,18 @@ export class DicomEditor {
             });
         }
         return buffer;
+    }
+
+    public getEndian(entries: DicomEntry[]) {
+        let littleEndian: boolean = true;
+        entries.forEach(element => {
+            if (element.tagGroup === '0002' &&
+                element.tagElement === '0010' &&
+                element.tagValue === '1.2.840.10008.1.2.2') {
+                littleEndian = false;
+            }
+        });
+        return littleEndian;
     }
 
     /**
@@ -153,9 +158,11 @@ export class DicomEditor {
      * @return buffer with the updated SQ lenth
      */
     public rewriteSQlength(buffer: Uint8Array, sequence: Sequence, littleEndian: boolean) {
-        let beginning = buffer.slice(0, sequence.entry.offset + longHeaderLengthOffset);
-        let end = buffer.slice(sequence.entry.offset + longHeaderLen, );
-        let newSQlength = this.writeTypedNumber(sequence.length, 'uint32', longHeaderLengthLen, littleEndian);
+        let headerLength = sequence.entry.tagVR === 'SQ' ? longHeaderLen : headerLen;
+        let lengthOff = sequence.entry.tagVR === 'SQ' ? longHeaderLengthOffset : itemLengthOffset;
+        let beginning = buffer.slice(0, sequence.entry.offset + lengthOff);
+        let end = buffer.slice(sequence.entry.offset + headerLength, );
+        let newSQlength = this.writeTypedNumber(sequence.length - headerLength, 'uint32', 4, littleEndian);
         let updatedBuffer = new Uint8Array(buffer.length);
         updatedBuffer.set(beginning);
         updatedBuffer.set(newSQlength, beginning.length);
@@ -184,28 +191,34 @@ export class DicomEditor {
 
         switch (tag.tagVR) {
             case 'FD':
-                newTag.set(this.writeTypedNumber(parseInt(tag.tagValue, 10), 'double', valueLength, littleEndian), 
-                           valueOffset);
+                newTag.set(
+                    this.writeTypedNumber(parseInt(tag.tagValue, 10), 'double', valueLength, littleEndian),
+                    valueOffset);
                 break;
             case 'FL':
-                newTag.set(this.writeTypedNumber(parseInt(tag.tagValue, 10), 'float', valueLength, littleEndian), 
-                           valueOffset);
+                newTag.set(
+                    this.writeTypedNumber(parseInt(tag.tagValue, 10), 'float', valueLength, littleEndian),
+                    valueOffset);
                 break;
             case 'UL':
-                newTag.set(this.writeTypedNumber(parseInt(tag.tagValue, 10), 'uint32', valueLength, littleEndian), 
-                           valueOffset);
+                newTag.set(
+                    this.writeTypedNumber(parseInt(tag.tagValue, 10), 'uint32', valueLength, littleEndian),
+                    valueOffset);
                 break;
             case 'US':
-                newTag.set(this.writeTypedNumber(parseInt(tag.tagValue, 10), 'uint16', valueLength, littleEndian), 
-                           valueOffset);
+                newTag.set(
+                    this.writeTypedNumber(parseInt(tag.tagValue, 10), 'uint16', valueLength, littleEndian),
+                    valueOffset);
                 break;
             case 'SL':
-                newTag.set(this.writeTypedNumber(parseInt(tag.tagValue, 10), 'int32', valueLength, littleEndian), 
-                           valueOffset);
+                newTag.set(
+                    this.writeTypedNumber(parseInt(tag.tagValue, 10), 'int32', valueLength, littleEndian),
+                    valueOffset);
                 break;
             case 'SS':
-                newTag.set(this.writeTypedNumber(parseInt(tag.tagValue, 10), 'int16', valueLength, littleEndian), 
-                           valueOffset);
+                newTag.set(
+                    this.writeTypedNumber(parseInt(tag.tagValue, 10), 'int16', valueLength, littleEndian),
+                    valueOffset);
                 break;
             case 'AT':
                 let atGroup = parseInt(tag.tagValue.slice(0, 4), 16);
@@ -235,15 +248,72 @@ export class DicomEditor {
      * @param entries dicom entries
      * @return all sequence tags as Sequence[] from entries
      */
-    private getSequences(sequences: Sequence[], entries: DicomEntry[]) {
+    private getSequences(sequences: Sequence[], entries: DicomEntry[], buffer: Uint8Array, littleEndian: boolean) {
         entries.forEach(entry => {
             if (entry.tagVR === 'SQ') {
                 sequences.push({ entry: entry, length: entry.byteLength });
-                this.getSequences(sequences, entry.sequence);
+                let items = this.getItemsFromSequenceAsSequences(entry, buffer, littleEndian);
+                sequences = sequences.concat(items);
+                this.getSequences(sequences, entry.sequence, buffer, littleEndian);
             }
         });
         sequences = this.orderByOffset(sequences) as Sequence[];
         return sequences;
+    }
+
+    /**
+     * 
+     * @param entry a 'SQ' entry which items are returned
+     * @param buffer whole bytearray with SQ,its items and other tags
+     * @param littleEndian defines whether the file's content is written in little or big endian
+     * @description gets all items from a sequence, so that their length is ajdusted as well when inner tags are changed
+     */
+    private getItemsFromSequenceAsSequences(entry: DicomEntry, buffer: Uint8Array, littleEndian: boolean) {
+        let items: Sequence[] = [];
+        let currentItemOffset = entry.offset + longHeaderLen;
+        let bytelength: number;
+        let itemLengthArray: Uint8Array;
+        while (currentItemOffset < entry.offset + entry.byteLength) {
+            itemLengthArray = buffer.slice(currentItemOffset + itemLengthOffset, currentItemOffset + headerLen);
+            bytelength = this.readUint32(itemLengthArray, littleEndian) + headerLen;
+            items.push({
+                entry: {
+                    id: -1,
+                    offset: currentItemOffset,
+                    byteLength: bytelength,
+                    tagGroup: 'FFFE',
+                    tagElement: 'E000',
+                    tagName: '',
+                    tagValue: '',
+                    tagVR: 'item',
+                    tagVM: '',
+                    colour: '',
+                    sequence: [],
+                },
+                length: bytelength
+            });
+            currentItemOffset += bytelength;
+        }
+        return items;
+    }
+
+    /**
+     * @param buffer uint8array with the four bytes representing an integer
+     * @param littleEndian int encoding
+     * @description reads a unsigned 4 B integer from a bytearray
+     */
+    private readUint32(buffer: Uint8Array, littleEndian: Boolean) {
+        let result: number = 0;
+        if (littleEndian) {
+            for (let i = 0; i < 4; i++) {
+                result += (buffer[i] * Math.pow(256, i));
+            }
+        } else {
+            for (let i = 3; i >= 0; i--) {
+                result += (buffer[i] * Math.pow(256, 3 - i));
+            }
+        }
+        return result;
     }
 
     /**

@@ -178,7 +178,7 @@ describe('dicom-editor', () => {
         let result = dicomEditor.applyAllChanges(file);
         let sqLengthOffset = file.dicomData.entries[2].offset + 8;
         let oldSQlength = file.dicomData.entries[2].byteLength;
-        expect(result[sqLengthOffset]).to.eql(oldSQlength - change.entry.byteLength);
+        expect(result[sqLengthOffset]).to.eql(oldSQlength - change.entry.byteLength - 12);
     });
 
     it('should update SQ length when editing the last tag of a sequence', () => {
@@ -192,7 +192,20 @@ describe('dicom-editor', () => {
         let result = dicomEditor.applyAllChanges(file);
         let sqLengthOffset = file.dicomData.entries[2].offset + 8;
         let oldSQlength = file.dicomData.entries[2].byteLength;
-        expect(result[sqLengthOffset]).to.eql(oldSQlength + 2);
+        expect(result[sqLengthOffset]).to.eql(oldSQlength + 2 - 12);
+    });
+
+    it('should update the item length when removing a tag from a sequence', () => {
+        let file: HeavyweightFile = prepareAHeavyweightFile();
+        let change: EditTags = {
+            entry: file.dicomData.entries[2].sequence[1],
+            type: ChangeType.REMOVE
+        };
+        file.unsavedChanges = [change];
+        let result = dicomEditor.applyAllChanges(file);
+        let itemLengthOffset = file.dicomData.entries[2].offset + 12 + 4;
+        let oldItemLength = file.dicomData.entries[2].byteLength - 12;
+        expect(result[itemLengthOffset]).to.eql(oldItemLength - change.entry.byteLength - 8);
     });
 
     it('should delete the whole sequence', () => {
@@ -315,7 +328,7 @@ function prepareAHeavyweightFile() {
             {
                 id: 3,
                 offset: 23,
-                byteLength: 32,
+                byteLength: 40,
                 tagGroup: '0002',
                 tagElement: '0001',
                 tagName: 'sequence',
@@ -326,7 +339,7 @@ function prepareAHeavyweightFile() {
                 sequence: [
                     {
                         id: 31,
-                        offset: 35,
+                        offset: 43,
                         byteLength: 10,
                         tagGroup: '0002',
                         tagElement: '0011',
@@ -339,7 +352,7 @@ function prepareAHeavyweightFile() {
                     },
                     {
                         id: 32,
-                        offset: 45,
+                        offset: 53,
                         byteLength: 10,
                         tagGroup: '0002',
                         tagElement: '0012',
@@ -354,7 +367,7 @@ function prepareAHeavyweightFile() {
             },
             {
                 id: 4,
-                offset: 55,
+                offset: 63,
                 byteLength: 10,
                 tagGroup: '0002',
                 tagElement: '0025',
@@ -367,7 +380,7 @@ function prepareAHeavyweightFile() {
             }
         ]
     }
-    let array = new Uint8Array(65);
+    let array = new Uint8Array(73);
     array[0] = 1;
     array[1] = 0;
     array[2] = 25;
@@ -399,40 +412,48 @@ function prepareAHeavyweightFile() {
     array[28] = 81;
     array[29] = 0;
     array[30] = 0;
-    array[31] = 32;
+    array[31] = 28;
     array[32] = 0;
     array[33] = 0;
     array[34] = 0;
-    array[35] = 20;
-    array[36] = 0;
-    array[37] = 2;
-    array[38] = 0;
-    array[39] = 78;
-    array[40] = 85;
-    array[41] = 2;
+    array[35] = 254;
+    array[36] = 255;
+    array[37] = 0;
+    array[38] = 224;
+    array[39] = 20;
+    array[40] = 0;
+    array[41] = 0;
     array[42] = 0;
-    array[43] = 49;
-    array[44] = 50;
+    array[43] = 20;
+    array[44] = 0;
     array[45] = 2;
     array[46] = 0;
-    array[47] = 12;
-    array[48] = 0;
-    array[49] = 78;
-    array[50] = 69;
-    array[51] = 2;
-    array[52] = 0;
-    array[53] = 97;
-    array[54] = 98;
-    array[55] = 2;
+    array[47] = 78;
+    array[48] = 85;
+    array[49] = 2;
+    array[50] = 0;
+    array[51] = 49;
+    array[52] = 50;
+    array[53] = 2;
+    array[54] = 0;
+    array[55] = 12;
     array[56] = 0;
-    array[57] = 25;
-    array[58] = 0;
-    array[59] = 53;
-    array[60] = 53;
-    array[61] = 2;
-    array[62] = 0;
-    array[63] = 125;
+    array[57] = 78;
+    array[58] = 69;
+    array[59] = 2;
+    array[60] = 0;
+    array[61] = 97;
+    array[62] = 98;
+    array[63] = 2;
     array[64] = 0;
+    array[65] = 25;
+    array[66] = 0;
+    array[67] = 53;
+    array[68] = 53;
+    array[69] = 2;
+    array[70] = 0;
+    array[71] = 125;
+    array[72] = 0;
 
     let file: HeavyweightFile = {
         fileSize: 0,

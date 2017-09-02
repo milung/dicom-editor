@@ -311,8 +311,6 @@ describe('ApplicationStateReducer -> getState()', () => {
         }
 
         let state = reducer.getState();
-        console.log('\nState:\n' + state)
-        console.log('\nExtate:\n' + expectedState)
         expect(state).to.deep.equal(expectedState);
     });
 });
