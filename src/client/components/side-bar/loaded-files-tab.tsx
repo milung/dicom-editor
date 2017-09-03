@@ -191,6 +191,7 @@ export default class LoadedFilesTab extends React.Component<LoadedFilesTabProps,
 
     public handleSaveClick() {
         LoadedFilesTab.saver.handleSaveClick(this.state.savePalleteItem.disabled);
+        deleteAllSelectedFilesFromDB(this.props.reducer);
     }
 
     public handleCompareClick() {
