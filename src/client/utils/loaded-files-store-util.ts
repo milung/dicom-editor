@@ -55,8 +55,8 @@ export async function deleteAllSelectedFilesFromDB(reducer: ApplicationStateRedu
     reducer.getState().selectedFiles.forEach(file => {
         keys.push(file.selectedFile.fileName + file.selectedFile.fileSize);
     });
-   // LoadedFilesDBService.removeItems(keys);
-   SelectedFilesDBService.removeItems(keys);
+    
+    SelectedFilesDBService.removeItems(keys);
 }
 
 export async function loadSelectedFiles(reducer: ApplicationStateReducer, colorDictonary: ColorDictionary) {
@@ -174,7 +174,7 @@ export async function loadLoadedFiles(reducer: ApplicationStateReducer) {
             break;
         }
     }
-    
+
     // remove unsaved changes
     if (currentFile) {
         currentFile.unsavedChanges = undefined;

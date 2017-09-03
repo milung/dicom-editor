@@ -67,20 +67,37 @@ export class ApplicationStateReducer {
         this.currentState.savedFiles = files;
         this.stateSubject$.next(this.currentState);
     }
-
-    public addLoadedFiles(files: HeavyweightFile[]) {
+    /**
+     * 
+     * @param files files to be loaded
+     * @param setAsCurrent value represents whether to set loaded file as current. Same as in 
+     * removeLoadedFiles function.
+     */
+    public addLoadedFiles(files: HeavyweightFile[], setAsCurrent?: boolean) {
+        if (setAsCurrent === undefined) {
+            setAsCurrent = true;
+        }
         files.forEach(element => {
             this.addOneLoadedFile(element);
-
-            // console.log('Added ' + element.fileName + ' to loaded');
         });
-        this.currentState.currentFile = files[0];
-        // console.log('Set ' + files[0].fileName + ' as current');
-        this.currentState.currentIndex = this.currentState.loadedFiles.indexOf(files[0]);
+        if (setAsCurrent) {
+            this.currentState.currentFile = files[0];
+            this.currentState.currentIndex = this.currentState.loadedFiles.indexOf(files[0]);
+        }
+
         this.stateSubject$.next(this.currentState);
     }
-
-    public removeLoadedFiles(files: HeavyweightFile[]) {
+    /**
+     * 
+     * @param files files to be removed
+     * @param setNextCurrent value represents whether to set next non current file as current. This value
+     * is neccessary during saving files action due to rapid switching effect it can cause.
+     * @description removes files from loaded tab
+     */
+    public removeLoadedFiles(files: HeavyweightFile[], setNextCurrent?: boolean) {
+        if (setNextCurrent === undefined) {
+            setNextCurrent = true;
+        }
         files.forEach(file => {
             let index = this.currentState.loadedFiles.indexOf(file);
             deleteFileFromLoaded(file, this);
@@ -92,7 +109,7 @@ export class ApplicationStateReducer {
             // if there are some files behind deleted index, load first one of them
             // only in case that removing current file
             // variable index points to next item now
-            if (this.currentState.currentFile === file) {
+            if (this.currentState.currentFile === file && setNextCurrent) {
                 if (index <= this.currentState.loadedFiles.length - 1) {
                     this.updateCurrentFile(this.currentState.loadedFiles[index]);
                 } else {
@@ -222,7 +239,7 @@ export class ApplicationStateReducer {
     private addOneLoadedFile(file: HeavyweightFile) {
         let prev = this.currentState.loadedFiles[0];
         let loadedFiles = this.currentState.loadedFiles;
-        
+
         if (loadedFiles === undefined || loadedFiles.length <= 0) {
             loadedFiles.push(file);
             return;
@@ -238,8 +255,8 @@ export class ApplicationStateReducer {
                     this.currentState.loadedFiles.splice(index, 1, file);
                     prev = e;
                     return;
-                } else if (file.fileName.localeCompare(e.fileName) < 0 && 
-                           file.fileName.localeCompare(prev.fileName) > 0) {
+                } else if (file.fileName.localeCompare(e.fileName) < 0 &&
+                    file.fileName.localeCompare(prev.fileName) > 0) {
                     this.currentState.loadedFiles.splice(index, 0, file);
                     prev = e;
                     return;

@@ -10,10 +10,12 @@ import { storeFilesToDB } from '../../utils/loaded-files-store-util';
 export class MultiSave {
     private oneConflict: Function;
     private moreConflicts: Function;
+    private currentFile: HeavyweightFile | undefined;
 
     public constructor(private reducer: ApplicationStateReducer, oneConflict: Function, moreConflicts: Function) {
         this.oneConflict = oneConflict;
         this.moreConflicts = moreConflicts;
+        this.currentFile = reducer.getState().currentFile;
     }
 
     /**
@@ -43,10 +45,14 @@ export class MultiSave {
             loadedFromReducer.unsavedChanges = [];
 
             // remove loaded file so it can be updated
-            this.reducer.removeLoadedFiles([loadedFromReducer]);
+            this.reducer.removeLoadedFiles([loadedFromReducer], false);
 
             // update loaded file's copy that has updated buffer
-            this.reducer.addLoadedFiles([loadedCopy]);
+            this.reducer.addLoadedFiles([loadedCopy], false);
+            // this causes the former current file to remain opened
+            if (this.currentFile !== undefined && loadedCopy.fileName === this.currentFile.fileName) {
+                this.reducer.updateCurrentFile(loadedCopy);
+            }
             storeFilesToDB(this.reducer);
 
             let lightFile = convertHeavyToLight(loadedCopy);
