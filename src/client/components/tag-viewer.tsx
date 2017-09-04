@@ -91,8 +91,9 @@ export default class TagViewer extends React.Component<TagViewerProps, TagViewer
         let reader = new DicomReader();
         let data: DicomSimpleData = this.props.currentFile.dicomData;
         let sopClass = reader.getSopClassFromParsedDicom(data);
-        
+
         let simpleComparisonData: DicomSimpleComparisonData = { dicomComparisonData: [] };
+        data = applyChangesForDisplay(this.props.currentFile, data);
 
         if (this.props.comparisonActive) {
             if (this.props.files[0] && this.props.files[1]) {
@@ -113,7 +114,6 @@ export default class TagViewer extends React.Component<TagViewerProps, TagViewer
             }
         }
 
-        data = applyChangesForDisplay(this.props.currentFile, data);
         let table: JSX.Element;
         switch (this.props.tableMode) {
             case TableMode.SIMPLE:
@@ -142,7 +142,7 @@ export default class TagViewer extends React.Component<TagViewerProps, TagViewer
                     label={'add tag'}
                     icon={<ContentAddBox />}
                     primary={true}
-                    style={{marginBottom: '15px'}}
+                    style={{ marginBottom: '15px' }}
                     onClick={() => {
                         this.setState({
                             addTagDialogOpen: true
@@ -177,7 +177,13 @@ export default class TagViewer extends React.Component<TagViewerProps, TagViewer
             <div>
                 <DicomSimpleTable entries={data.entries} reducer={this.props.reducer} />
             </div>
-        ) : (<div />);
+        ) : (
+                <div style={{ textAlign: 'center', fontWeight: 'bold' }}>
+                    {this.props.reducer.getState().searchExpression !== '' 
+                        ? 'No data found for expression ' + this.props.reducer.getState().searchExpression + '!' 
+                        : ''}
+                </div>
+            );
     }
 
     private renderExtendedTable(data: DicomSimpleData, sopClass: string | undefined): JSX.Element {

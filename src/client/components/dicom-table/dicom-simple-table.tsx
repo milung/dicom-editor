@@ -126,7 +126,7 @@ export class DicomSimpleTable extends React.Component<DicomSimpleTableProps, Dic
                             entry={entry}
                             key={entry.id}
                             handleClick={() => this.handleSequenceClick(entry)}
-                            margin={(20 * (depth + 1)).toString() + 'px'}
+                            margin={(10 * (depth + 1)).toString() + 'px'}
                             expanded={this.state.expandedSequences[entry.tagGroup + entry.tagElement]}
                             handleDeletingEntry={() => { this.handleDeletingRow(entry); }}
                         />
@@ -147,7 +147,7 @@ export class DicomSimpleTable extends React.Component<DicomSimpleTableProps, Dic
                             entry={entry}
                             key={entry.id}
                             shouldShowTag={true}
-                            margin={(20 * (depth + 1)).toString() + 'px'}
+                            margin={(10 * (depth + 1)).toString() + 'px'}
                             editMode={isEditMode}
                             compareMode={false}
                             handleEnterEditing={() => { this.handleEditEntryClick(entry); }}
