@@ -6,7 +6,4 @@ The application is result of the Siemens Developer Academy - 2017 group in Brati
 
 The application is based on the [cornerstone](https://github.com/chafey/cornerstone) library and ReactJS and allows preview of the Dicom file tags, comparison of dicom files and simple editing. Using Progressive Web App features it can be used also in the offline mode. 
 
-* [Usage](./docs/Dicom-Viewer/Usage.md)
-* [Architecture](./docs/Dicom-Viewer/Architecture.md)
-* [Progressive-web-application-of-dicom-viewer](./docs/Dicom-Viewer/Progressive-web-application-of-dicom-viewer.md)
-* [Known-issues](./docs/Dicom-Viewer/Known-issues.md)
+The usage is described at the project's [wiki](https://github.com/milung/dicom-editor/wiki/Usage)
