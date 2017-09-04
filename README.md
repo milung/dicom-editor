@@ -1,4 +1,4 @@
-# Dicom Tag Editor - Pwogressive Web application
+# Dicom Tag Editor - Progressive Web application
 
 The application served from GitHub Pages is [here](https://milung.github.io/dicom-editor/dist/). 
 
