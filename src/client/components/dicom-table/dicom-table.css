@@ -1,5 +1,5 @@
 .tableHeader{
-background-color: #00BCD4;
+    background-color: #00BCD4;
 }
 
 .tagBorder {
@@ -15,6 +15,18 @@ background-color: #00BCD4;
 .table-row-column {
     white-space: normal;
     word-wrap: break-word;
+}
+
+.table-row-column-small {
+    width: '10%' !important;
+}
+
+.table-row-column-big {
+    width: '25%' !important;
+}
+
+.table-row-column-biggest {
+    width: '30%' !important;
 }
 
 .table-row-tag-column {
@@ -59,6 +71,11 @@ background-color: #00BCD4;
     cursor: pointer;
     margin-right: 10px;
     vertical-align: middle;
+}
+
+.row-icon-lock {
+    cursor: default;
+    fill: grey !important;
 }
 
 .row-icon-clear {

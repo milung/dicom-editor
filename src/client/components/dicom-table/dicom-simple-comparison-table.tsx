@@ -40,7 +40,7 @@ export class DicomSimpleComparisonTable extends React.Component<
                     adjustForCheckbox={false}
                 >
                     {/* Header containing tag value names*/}
-                    <DicomTableHeader />
+                    <DicomTableHeader compare={true}/>
                 </TableHeader>
                 <TableBody selectable={false} displayRowCheckbox={false}>
 

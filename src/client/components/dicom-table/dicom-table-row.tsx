@@ -3,7 +3,7 @@ import { TableRow, TableRowColumn, TextField } from 'material-ui';
 import { DicomEntry } from '../../model/dicom-entry';
 import { ColorDictionary } from '../../utils/colour-dictionary';
 import './dicom-table.css';
-import { EditorModeEdit, ActionDone, ActionDelete, ContentClear } from 'material-ui/svg-icons';
+import { EditorModeEdit, ActionDone, ActionDelete, ContentClear, ActionLock } from 'material-ui/svg-icons';
 import { getValueMultiplicity } from '../../utils/dicom-reader';
 import { validateDicomEntry, ErrorType } from '../../utils/dicom-validator';
 import { vrTooltipDictionary } from '../../utils/vr-tooltips-dictionary';
@@ -76,12 +76,17 @@ export class DicomTableRow extends React.Component<DicomTableRowProps, DicomTabl
     public render() {
         let tableRowStyle = { color: this.props.entry.colour };
         let tagStyle = this.props.margin
-            ? { paddingLeft: this.props.margin, color: '#000000', width: '25%' }
-            : { color: '#000000', width: '25%' };
+            ? { paddingLeft: this.props.margin, color: '#000000', width: this.props.compareMode ? '0%' : '10%' }
+            : { color: '#000000', width: this.props.compareMode ? '0%' : '10%' };
         let tableRowColumnStyle = {
             whiteSpace: 'normal',
             wordWrap: 'break-word',
             width: '10%'
+        };
+        let tableRowColumnStyle1 = {
+            whiteSpace: 'normal',
+            wordWrap: 'break-word',
+            width: '15%'
         };
         let tableRowColumnStyle2 = {
             whiteSpace: 'normal',
@@ -91,7 +96,7 @@ export class DicomTableRow extends React.Component<DicomTableRowProps, DicomTabl
         let tableRowColumnStyle3 = {
             whiteSpace: 'normal',
             wordWrap: 'break-word',
-            width: '30%'
+            width: this.props.compareMode ? '40%' : '30%'
         };
         let tag = this.props.entry.tagGroup + ', ' + this.props.entry.tagElement;
         let rowClass = 'tagBorder';
@@ -225,6 +230,10 @@ export class DicomTableRow extends React.Component<DicomTableRowProps, DicomTabl
                             onClick={this.props.handleDeletingEntry}
                         />
                     );
+                } else {
+                    firstIcon = secondIcon = (
+                        <ActionLock className="row-icon row-icon-lock" />
+                    );
                 }
             }
 
@@ -237,6 +246,8 @@ export class DicomTableRow extends React.Component<DicomTableRowProps, DicomTabl
                 <TableRowColumn style={tagStyle}>
                     {firstIcon}
                     {secondIcon}
+                </TableRowColumn>
+                <TableRowColumn style={tableRowColumnStyle1}>
                     {tag}
                 </TableRowColumn>
                 <TableRowColumn style={tableRowColumnStyle2}>{this.props.entry.tagName}</TableRowColumn>

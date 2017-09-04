@@ -76,7 +76,7 @@ export class DicomSimpleTable extends React.Component<DicomSimpleTableProps, Dic
                         adjustForCheckbox={false}
                     >
                         {/* Header containing tag value names*/}
-                        <DicomTableHeader />
+                        <DicomTableHeader compare={this.props.reducer.getState().comparisonActive}/>
                     </TableHeader>
 
                     <TableBody selectable={false} displayRowCheckbox={false}>
@@ -120,8 +120,6 @@ export class DicomSimpleTable extends React.Component<DicomSimpleTableProps, Dic
 
         return entries.reduce(
             (arr: JSX.Element[], entry, entryIndex) => {
-                // let dasKey = ((depth + 1) * 100000 + (entryIndex));
-
                 if (entry.sequence.length > 0) {
                     arr.push(
                         <DicomSequenceRow

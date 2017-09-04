@@ -369,28 +369,24 @@ const comparisonHeaderData = [
 
 describe('dicom-table', () => {
     let reducer: ApplicationStateReducer = new ApplicationStateReducer();
-    it('Render one row with DICOM entry', () => {
-        const div = shallow(<DicomTableRow entry={dicomTestEntry} shouldShowTag={true} />);
-        expect(div.find('TableRow').find('TableRowColumn').length).to.equal(5);
-    });
 
     it('Render DicomTable with the correct amount of expandable lists', () => {
         const div = shallow(<DicomExtendedTable data={arrayTest} reducer={reducer} />);
         expect(div.find('List').find('ListItem').length).to.equal(2);
     });
 
-    it('Render correct value of second column - tagName', () => {
+    it('Render correct value of third column - tagName', () => {
         const div = shallow(<DicomTableRow entry={dicomTestEntry} shouldShowTag={true} />);
-        expect(div.find('TableRow').childAt(1).getNode().props.children).to.equal(dicomTestEntry.tagName);
+        expect(div.find('TableRow').childAt(2).getNode().props.children).to.equal(dicomTestEntry.tagName);
     });
     it('Render one row with DICOM entry', () => {
         const div = shallow(<DicomTableRow entry={dicomTestEntry} shouldShowTag={true} />);
-        expect(div.find('TableRow').find('TableRowColumn').length).to.equal(5);
+        expect(div.find('TableRow').find('TableRowColumn').length).to.equal(6);
     });
 
     it('Render DicomTable with correct header', () => {
-        const div = shallow(<DicomTableHeader />);
-        expect(div.find('TableRow').find('TableHeaderColumn').length).to.equal(5);
+        const div = shallow(<DicomTableHeader compare={true}/>);
+        expect(div.find('TableRow').find('TableHeaderColumn').length).to.equal(6);
     });
 
     it('Render DicomTable with List containing data', () => {

@@ -2,7 +2,7 @@ import * as React from 'react';
 import { TableRow, TableHeaderColumn } from 'material-ui';
 
 export interface DicomTableHeaderProps {
-
+    compare: boolean;
 }
 
 export interface DicomTableHeaderState {
@@ -15,43 +15,58 @@ export class DicomTableHeader extends React.Component<DicomTableHeaderProps, Dic
     }
 
     public render() {
-        let tableRowStyle = { 
-            color: '#FFFFFF', 
+        let tableRowStyle = {
+            color: '#FFFFFF',
             backgroundColor: '#009999',
             fontSize: '0.9em',
             width: '10%'
         };
-        let tableRowStyle2 = { 
-            color: '#FFFFFF', 
+        let optionsRowStyle = {
+            color: '#FFFFFF',
             backgroundColor: '#009999',
             fontSize: '0.9em',
-            width: '25%' 
+            width: this.props.compare ? '0%' : '10%'
         };
-        let tableRowStyle3 = { 
-            color: '#FFFFFF', 
+        let tableRowStyle1 = {
+            color: '#FFFFFF',
             backgroundColor: '#009999',
             fontSize: '0.9em',
-            width: '30%' 
+            width: '15%'
+        };
+        let tableRowStyle2 = {
+            color: '#FFFFFF',
+            backgroundColor: '#009999',
+            fontSize: '0.9em',
+            width: '25%'
+        };
+        let tableRowStyle3 = {
+            color: '#FFFFFF',
+            backgroundColor: '#009999',
+            fontSize: '0.9em',
+            width: this.props.compare ? '40%' : '30%'
         };
 
         return (
-                <TableRow>
-                    <TableHeaderColumn style={tableRowStyle2}>
-                        Tag group, tag element
+            <TableRow>
+                <TableHeaderColumn style={optionsRowStyle}>
+                    {this.props.compare ? '' : 'Options'}
                     </TableHeaderColumn>
-                    <TableHeaderColumn style={tableRowStyle2}>
-                        Tag name
+                <TableHeaderColumn style={tableRowStyle1}>
+                    Tag group, element
                     </TableHeaderColumn>
-                    <TableHeaderColumn style={tableRowStyle3}>
-                        Tag value
+                <TableHeaderColumn style={tableRowStyle2}>
+                    Tag name
                     </TableHeaderColumn>
-                    <TableHeaderColumn style={tableRowStyle}>
-                        VR
+                <TableHeaderColumn style={tableRowStyle3}>
+                    Tag value
                     </TableHeaderColumn>
-                    <TableHeaderColumn style={tableRowStyle}>
-                        VM
+                <TableHeaderColumn style={tableRowStyle}>
+                    VR
                     </TableHeaderColumn>
-                </TableRow>
+                <TableHeaderColumn style={tableRowStyle}>
+                    VM
+                    </TableHeaderColumn>
+            </TableRow>
         );
     }
 }
