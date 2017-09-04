@@ -19,7 +19,7 @@ describe('FileSearcher -> searchFile() ->', () => {
         reducer.updateCurrentFile(testFile);
         reducer.setSearchExpression('test');
         let fs = new FileSearcher(reducer);
-        expect(fs.searchFile().entries.length).to.equal(0);
+        expect(fs.searchFile(testFile.dicomData).entries.length).to.equal(0);
     });
 
     it('find exact match on tagGroup', () => {
@@ -28,7 +28,7 @@ describe('FileSearcher -> searchFile() ->', () => {
         reducer.updateCurrentFile(testFile);
         reducer.setSearchExpression('0001');
         let fs = new FileSearcher(reducer);
-        expect(fs.searchFile().entries.length).to.equal(1);
+        expect(fs.searchFile(testFile.dicomData).entries.length).to.equal(1);
     });
 
 
@@ -39,7 +39,7 @@ describe('FileSearcher -> searchFile() ->', () => {
         reducer.setSearchExpression('0002');
 
         let fs = new FileSearcher(reducer);
-        expect(fs.searchFile().entries.length).to.equal(1);
+        expect(fs.searchFile(testFile.dicomData).entries.length).to.equal(1);
     });
 
     it('find exact match on tagName', () => {
@@ -48,7 +48,7 @@ describe('FileSearcher -> searchFile() ->', () => {
         reducer.updateCurrentFile(testFile);
         reducer.setSearchExpression('Test name');
         let fs = new FileSearcher(reducer);
-        expect(fs.searchFile().entries.length).to.equal(1);
+        expect(fs.searchFile(testFile.dicomData).entries.length).to.equal(1);
     });
 
     it('find partial match on tagGroup', () => {
@@ -58,7 +58,7 @@ describe('FileSearcher -> searchFile() ->', () => {
         reducer.setSearchExpression('1');
 
         let fs = new FileSearcher(reducer);
-        expect(fs.searchFile().entries.length).to.equal(1);
+        expect(fs.searchFile(testFile.dicomData).entries.length).to.equal(1);
     });
 
     it('find partial match on tagElement', () => {
@@ -68,7 +68,7 @@ describe('FileSearcher -> searchFile() ->', () => {
         reducer.setSearchExpression('02');
 
         let fs = new FileSearcher(reducer);
-        expect(fs.searchFile().entries.length).to.equal(1);
+        expect(fs.searchFile(testFile.dicomData).entries.length).to.equal(1);
     });
 
     it('find partial match on tagName', () => {
@@ -78,7 +78,7 @@ describe('FileSearcher -> searchFile() ->', () => {
         reducer.setSearchExpression('est n');
 
         let fs = new FileSearcher(reducer);
-        expect(fs.searchFile().entries.length).to.equal(1);
+        expect(fs.searchFile(testFile.dicomData).entries.length).to.equal(1);
     });
 
     it('find case insensitive match', () => {
@@ -88,7 +88,7 @@ describe('FileSearcher -> searchFile() ->', () => {
         reducer.setSearchExpression('TEsT nAmE');
 
         let fs = new FileSearcher(reducer);
-        expect(fs.searchFile().entries.length).to.equal(1);
+        expect(fs.searchFile(testFile.dicomData).entries.length).to.equal(1);
     });
 
     it('match on both tag element and group returned just once', () => {
@@ -98,7 +98,7 @@ describe('FileSearcher -> searchFile() ->', () => {
         reducer.setSearchExpression('00');
 
         let fs = new FileSearcher(reducer);
-        expect(fs.searchFile().entries.length).to.equal(1);
+        expect(fs.searchFile(testFile.dicomData).entries.length).to.equal(1);
     });
 
     it('find match in one row in two row table', () => {
@@ -123,7 +123,7 @@ describe('FileSearcher -> searchFile() ->', () => {
         reducer.setSearchExpression('11');
 
         let fs = new FileSearcher(reducer);
-        expect(fs.searchFile().entries.length).to.equal(1);
+        expect(fs.searchFile(testFile.dicomData).entries.length).to.equal(1);
     });
 
     it('no search on tag value', () => {
@@ -133,7 +133,7 @@ describe('FileSearcher -> searchFile() ->', () => {
         reducer.setSearchExpression('Test value');
 
         let fs = new FileSearcher(reducer);
-        expect(fs.searchFile().entries.length).to.equal(0);
+        expect(fs.searchFile(testFile.dicomData).entries.length).to.equal(0);
     });
 
     it('no search on tagVR and tagVM', () => {
@@ -143,7 +143,7 @@ describe('FileSearcher -> searchFile() ->', () => {
         reducer.setSearchExpression('TV');
 
         let fs = new FileSearcher(reducer);
-        expect(fs.searchFile().entries.length).to.equal(0);
+        expect(fs.searchFile(testFile.dicomData).entries.length).to.equal(0);
     });
 
     it('sequence search returns sequence', () => {
@@ -153,8 +153,8 @@ describe('FileSearcher -> searchFile() ->', () => {
         reducer.setSearchExpression('Sequence name');
 
         let fs = new FileSearcher(reducer);
-        expect(fs.searchFile().entries.length).to.equal(1);
-        expect(fs.searchFile().entries[0].tagName).to.equal('Sequence name');
+        expect(fs.searchFile(testFile.dicomData).entries.length).to.equal(1);
+        expect(fs.searchFile(testFile.dicomData).entries[0].tagName).to.equal('Sequence name');
     });
 
     it('sequence name search returns whole sequence', () => {
@@ -164,7 +164,7 @@ describe('FileSearcher -> searchFile() ->', () => {
         reducer.setSearchExpression('Sequence name');
 
         let fs = new FileSearcher(reducer);
-        let res = fs.searchFile();
+        let res = fs.searchFile(testFile.dicomData);
         expect(res.entries[0].sequence.length).to.equal(1);
         expect(res.entries[0].sequence[0].tagName).to.equal('Test name');
     });
@@ -176,7 +176,7 @@ describe('FileSearcher -> searchFile() ->', () => {
         reducer.setSearchExpression('Test name');
 
         let fs = new FileSearcher(reducer);
-        let res = fs.searchFile();
+        let res = fs.searchFile(testFile.dicomData);
         expect(res.entries[0].tagName).to.equal('Sequence name');
         expect(res.entries[0].sequence[0].tagName).to.equal('Test name');
     });
@@ -184,7 +184,7 @@ describe('FileSearcher -> searchFile() ->', () => {
     it('search on no file', () => {
         let reducer = new ApplicationStateReducer();
         let fs = new FileSearcher(reducer);
-        expect(fs.searchFile().entries).to.deep.equal([]);
+        expect(fs.searchFile({entries: []}).entries).to.deep.equal([]);
     });
 
     it('sequence is not added if do not contain specific value', () => {
@@ -194,7 +194,7 @@ describe('FileSearcher -> searchFile() ->', () => {
         reducer.setSearchExpression('Specific Value');
 
         let fs = new FileSearcher(reducer);
-        let res = fs.searchFile();
+        let res = fs.searchFile(testFile.dicomData);
         expect(res.entries.length).to.equal(0);
     });
 });

@@ -110,7 +110,7 @@ export default class TagViewer extends React.Component<TagViewerProps, TagViewer
             }
         } else {
             if (this.props.reducer.getState().searchExpression !== '') {
-                data = this.fileSearcher.searchFile();
+                data = this.fileSearcher.searchFile(data);
             }
         }
 

@@ -13,13 +13,10 @@ export class FileSearcher {
      * @description Method which search data of current file.
      * @returns {DicomSimpleData} filtered data to show.
      */
-    public searchFile(): DicomSimpleData {
+    public searchFile(simpleData: DicomSimpleData): DicomSimpleData {
         let searchExpression = this.reducer.getState().searchExpression;
-        let searchFile = this.reducer.getState().currentFile;
-
-        if (searchFile) {
-            let data = searchFile.dicomData;
-            return { entries: this.findResultsOfSearch(searchExpression, data.entries) };
+        if (simpleData) {
+            return { entries: this.findResultsOfSearch(searchExpression, simpleData.entries) };
         }
         return { entries: [] };
     }
