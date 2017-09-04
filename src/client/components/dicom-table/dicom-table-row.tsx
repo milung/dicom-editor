@@ -8,6 +8,7 @@ import { getValueMultiplicity } from '../../utils/dicom-reader';
 import { validateDicomEntry, ErrorType } from '../../utils/dicom-validator';
 import { vrTooltipDictionary } from '../../utils/vr-tooltips-dictionary';
 import { ValidationTooltip } from './validation-tooltip';
+import * as ReactTooltip from 'react-tooltip';
 
 var fileDownload = require('react-file-download');
 const PIXEL_DATA_GROUP: string = '7fe0';
@@ -232,7 +233,12 @@ export class DicomTableRow extends React.Component<DicomTableRowProps, DicomTabl
                     );
                 } else {
                     firstIcon = secondIcon = (
-                        <ActionLock className="row-icon row-icon-lock" />
+                        <div className="tooltip">
+                            <ActionLock data-tip="lockTooltip" className="row-icon row-icon-lock" />
+                            <ReactTooltip aria-haspopup="true" place="right" effect="solid">
+                                <p> {'This value can not be edited'} </p>
+                            </ReactTooltip>
+                        </div>
                     );
                 }
             }
