@@ -1,6 +1,7 @@
 var HtmlWebpackPlugin = require('html-webpack-plugin');
 var path = require('path');
 var webpack = require('webpack');
+var CopyWebpackPlugin = require('copy-webpack-plugin');
 
 module.exports = {
     entry: './src/client/index.tsx',
@@ -52,6 +53,7 @@ module.exports = {
                 'NODE_ENV': JSON.stringify('dev')
             }
         }),
+        new CopyWebpackPlugin([ { from: './src/assets/**/*', to: './dist' } ])
     ],
     devtool: 'inline-source-map',
     resolve: {

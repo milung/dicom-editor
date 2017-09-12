@@ -2,6 +2,7 @@ var HtmlWebpackPlugin = require('html-webpack-plugin');
 var path = require('path');
 var webpack = require('webpack');
 var CompressionPlugin = require("compression-webpack-plugin");
+var CopyWebpackPlugin = require('copy-webpack-plugin');
 
 module.exports = {
     entry: './src/client/index.tsx',
@@ -88,6 +89,7 @@ module.exports = {
             threshold: 10240,
             minRatio: 0.8
         }),
+        new CopyWebpackPlugin([ { from: './src/assets', to: 'assets' } ])
     ],
     devtool: 'source-map',
     resolve: {
