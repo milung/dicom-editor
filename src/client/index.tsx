@@ -13,7 +13,7 @@ injectTapEventPlugin();
  */
 if (process.env.NODE_ENV === 'production') {
   if ('serviceWorker' in navigator) {
-    navigator.serviceWorker.register('/service-worker.js')
+    navigator.serviceWorker.register('service-worker.js')
       .then(function (registration: ServiceWorkerRegistration) {
         // tslint:disable-next-line:no-console
         console.log('Registration succeeded. Scope is ' + registration.scope);
