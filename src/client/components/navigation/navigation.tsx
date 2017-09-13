@@ -105,7 +105,7 @@ export class Navigation extends React.Component<NavigationProps, NavigationState
                     onRequestChange={(sideBarOpen) => this.setState({ sideBarOpen })}
                 >
                     <div id="logo-left-wrapper">
-                        <img src="../../../assets/img/logo.png" alt="Dicom Viewer" id="logo-left" />
+                        <img src="../../assets/img/logo.png" alt="Dicom Viewer" id="logo-left" />
                     </div>
                     <div id="dicom-title"><span>DICOM VIEWER</span></div>
                     <MenuItem
