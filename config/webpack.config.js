@@ -53,7 +53,7 @@ module.exports = {
                 'NODE_ENV': JSON.stringify('dev')
             }
         }),
-        new CopyWebpackPlugin([ { from: './src/assets/**/*', to: './dist' } ])
+        new CopyWebpackPlugin([ { from: './src/assets/**/*', to: './dist' }, {from: './src/service-worker.js'}  ])
     ],
     devtool: 'inline-source-map',
     resolve: {

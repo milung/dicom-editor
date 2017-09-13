@@ -89,7 +89,7 @@ module.exports = {
             threshold: 10240,
             minRatio: 0.8
         }),
-        new CopyWebpackPlugin([ { from: './src/assets', to: 'assets' } ])
+        new CopyWebpackPlugin([ { from: './src/assets', to: 'assets' }, {from: './src/service-worker.js'} ])
     ],
     devtool: 'source-map',
     resolve: {
